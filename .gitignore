@@ -2,3 +2,7 @@
 *.elf
 *.hex
 
+*.o
+*.a
+
+.vagrant/
