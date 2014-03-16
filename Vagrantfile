@@ -16,6 +16,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # doesn't already exist on the user's system.
   config.vm.box_url = "https://dl.dropboxusercontent.com/u/12183944/ArchSTM32.box"
 
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ['modifyvm', :id, '--usb', 'on']
+    vb.customize ['usbfilter', 'add', '0', '--target', :id, '--name', 'STMicroelectronics STM32 STLink [0100]', '--vendorid', '0x0483']
+  end
+
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
