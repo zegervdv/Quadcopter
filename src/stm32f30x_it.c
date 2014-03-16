@@ -1,6 +1,6 @@
-/***************************************
- * STM32F30X General Interrupt handlers
- **************************************/
+/**
+ * stm32f30x_it.c: Manage interrupt handlers
+ */
 
 #include "stm32f3_discovery.h"
 

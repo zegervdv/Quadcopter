@@ -10,6 +10,7 @@ SRCS += Libraries/STM32F30x_StdPeriph_Driver/src/stm32f30x_misc.c
 SRCS += src/main.c
 SRCS += src/newlib_stubs.c
 SRCS += src/stm32f30x_it.c
+SRCS += src/bluetooth.c
 
 # Binaries will be generated with this name (.elf, .bin, .hex, etc)
 PROJ_NAME=quadrocopter
