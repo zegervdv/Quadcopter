@@ -26,7 +26,7 @@ void init_usart3() {
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_7);
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_7);
 
-  usart3_init_struct.USART_BaudRate = 9600;
+  usart3_init_struct.USART_BaudRate = 115200;
   usart3_init_struct.USART_WordLength = USART_WordLength_8b;
   usart3_init_struct.USART_StopBits = USART_StopBits_1;
   usart3_init_struct.USART_Parity = USART_Parity_No;
