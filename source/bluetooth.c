@@ -1,5 +1,8 @@
 /**
  * bluetooth.c
+ *
+ * Bluetooth communication with RN42 over UART
+ * Using USART3 on PC10 and PC11
  */
 
 #include "bluetooth.h"
