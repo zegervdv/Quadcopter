@@ -7,6 +7,8 @@
 
 #include "bluetooth.h"
 
+char cmd;
+
 void init_usart3() {
   // Initialize USART3
   // Tx: PIN PC10
@@ -38,7 +40,7 @@ void init_usart3() {
   USART_Init(USART3, &usart3_init_struct);
 
   USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
-  
+
   NVIC_init_struct.NVIC_IRQChannel = USART3_IRQn;
   NVIC_init_struct.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_init_struct.NVIC_IRQChannelSubPriority = 0;
@@ -58,18 +60,8 @@ void init_bluetooth() {
  * TODO: Configure controls here
  */
 void USART3_IRQHandler(void) {
-  if(USART_GetITStatus(USART3, USART_IT_RXNE))
-  {
-		char t = USART3->RDR; // the character from the USART1 data register is saved in t
-    
-    STM_EVAL_LEDToggle(LED3);
-		if(t == 'a'){ 
-      // If received data is "a", toggle LED4
-      STM_EVAL_LEDToggle(LED4);
-		}
-		else{ 
-      
-		}
+  if(USART_GetITStatus(USART3, USART_IT_RXNE)) {
+		cmd = USART3->RDR; // the character from the USART1 data register is saved in t
   }
 }
 
