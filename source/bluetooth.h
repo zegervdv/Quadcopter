@@ -37,3 +37,10 @@ void bluetooth_init(void);
  */
 void bluetooth_reset(void);
 
+/**
+ * Write data to bluetooth module
+ * data - char array with data
+ * size - size of the data array
+ */
+void bluetooth_write(char* data, int size);
+

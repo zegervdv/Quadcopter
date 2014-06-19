@@ -77,6 +77,13 @@ void bluetooth_reset() {
   GPIOC->BSRR= RST_PIN;
 }
 
+void bluetooth_write(char* data, int size) {
+  int i = 0;
+  for (i = 0; i < size; i++) {
+    USART_SendData(USART3, data[i]);
+  }
+}
+
 void bluetooth_init() {
   // Configure USART3
   init_usart3();

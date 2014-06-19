@@ -18,8 +18,13 @@ int main(void) {
   while(1) {
     /* Loop and wait for interrupts */
     int i = 100000;
-    
-    while(i--); 
+    char* stats;
+
+    stats = "x\r";
+
+    bluetooth_write(stats, 2);
+
+    while(i--);
     /* USART_SendData(USART3, 0x74); */
 
     switch(cmd) {
@@ -40,7 +45,7 @@ int main(void) {
         STM_EVAL_LEDToggle(LED6);
         break;
     }
-    
+
     cmd = '\0';
   }
 }
