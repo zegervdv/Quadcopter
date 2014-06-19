@@ -17,6 +17,11 @@ extern char cmd;
  * Initialize bluetooth communication
  *
  */
-void init_bluetooth(void);
+void bluetooth_init(void);
 
+
+/**
+ * Reset the RN42 module
+ */
+void bluetooth_reset(void);
 

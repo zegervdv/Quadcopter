@@ -7,6 +7,8 @@
 
 #include "bluetooth.h"
 
+#define RST_PIN GPIO_Pin_12
+
 char cmd;
 
 void init_usart3() {
@@ -50,9 +52,37 @@ void init_usart3() {
   USART_Cmd(USART3, ENABLE);
 }
 
-void init_bluetooth() {
+void init_reset() {
+  // Reset the module using PC12
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+
+  GPIO_InitStructure.GPIO_Pin = RST_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  // Set Reset pin high
+  GPIOC->BSRR = RST_PIN;
+}
+
+void bluetooth_reset() {
+  int i = 1000000;
+
+  GPIOC->BRR = RST_PIN;
+  while(i--);
+  GPIOC->BSRR= RST_PIN;
+}
+
+void bluetooth_init() {
   // Configure USART3
   init_usart3();
+  init_reset();
+
+  bluetooth_reset();
 }
 
 /**

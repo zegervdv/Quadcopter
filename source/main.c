@@ -12,15 +12,16 @@ int main(void) {
   STM_EVAL_LEDInit(LED7);
   STM_EVAL_LEDInit(LED10);
 
-  init_bluetooth();
+  bluetooth_init();
 
 
   while(1) {
     /* Loop and wait for interrupts */
-    int i = 10000000;
-    while(i--); 
-    USART_SendData(USART3, 0x74);
+    int i = 100000;
     
+    while(i--); 
+    /* USART_SendData(USART3, 0x74); */
+
     switch(cmd) {
       case 'z':
         STM_EVAL_LEDToggle(LED3);
@@ -35,6 +36,8 @@ int main(void) {
         STM_EVAL_LEDToggle(LED10);
         break;
     }
+    
+    cmd = '\0';
   }
 }
 
