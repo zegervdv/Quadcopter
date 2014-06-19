@@ -70,7 +70,7 @@ void init_reset() {
 }
 
 void bluetooth_reset() {
-  int i = 1000000;
+  int i = 10000000;
 
   GPIOC->BRR = RST_PIN;
   while(i--);
@@ -87,11 +87,10 @@ void bluetooth_init() {
 
 /**
  * USART3 Interrupt handler
- * TODO: Configure controls here
  */
 void USART3_IRQHandler(void) {
   if(USART_GetITStatus(USART3, USART_IT_RXNE)) {
-		cmd = USART3->RDR; // the character from the USART1 data register is saved in t
+		cmd = USART3->RDR;
   }
 }
 

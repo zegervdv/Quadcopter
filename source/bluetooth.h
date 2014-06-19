@@ -11,6 +11,18 @@
 #include "stm32f3_discovery.h"
 #include "stm32f30x_misc.h"
 
+/**
+ * Command codes
+ *
+ * z     - forward
+ * s     - reverse
+ * q     - left
+ * d     - right
+ * SPACE - stop
+ *
+ */
+
+
 extern char cmd;
 
 /**

@@ -35,6 +35,10 @@ int main(void) {
       case 's':
         STM_EVAL_LEDToggle(LED10);
         break;
+      case ' ':
+        STM_EVAL_LEDToggle(LED7);
+        STM_EVAL_LEDToggle(LED6);
+        break;
     }
     
     cmd = '\0';
