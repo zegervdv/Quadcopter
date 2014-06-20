@@ -44,6 +44,11 @@ int main(void) {
         STM_EVAL_LEDToggle(LED7);
         STM_EVAL_LEDToggle(LED6);
         break;
+      default:
+        STM_EVAL_LEDOff(LED3);
+        STM_EVAL_LEDOff(LED6);
+        STM_EVAL_LEDOff(LED7);
+        STM_EVAL_LEDOff(LED10);
     }
 
     cmd = '\0';
