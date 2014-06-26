@@ -6,3 +6,4 @@
 *.a
 
 .vagrant/
+debug/read_sensors
