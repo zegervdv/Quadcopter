@@ -7,18 +7,22 @@ SRCS = main.c
 SRCS += system_stm32f30x.c
 SRCS += stm32f30x_it.c
 SRCS += bluetooth.c
+SRCS += sensors.c
 
 # Drivers
 SRCS += stm32f30x_rcc.c\
 				stm32f30x_exti.c\
 				stm32f30x_gpio.c\
 				stm32f30x_i2c.c\
+				stm32f30x_spi.c\
 				stm32f30x_it.c\
 				stm32f30x_rtc.c\
 				stm32f30x_misc.c\
 				stm32f30x_usart.c\
 				stm32f30x_syscfg.c\
-				stm32f3_discovery.c
+				stm32f3_discovery.c\
+				stm32f3_discovery_l3gd20.c\
+				stm32f3_discovery_lsm303dlhc.c
 
 # Binaries will be generated with this name (.elf, .bin, .hex, etc)
 PROJ_NAME=drone
@@ -47,6 +51,7 @@ CFLAGS += -DARM_MATH_ROUNDING
 CFLAGS += -D__FPU_PRESENT
 CFLAGS += -DARM_MATH_MATRIX_CHECK
 CFLAGS += -DDELAY_TIME=100
+CFLAGS += -DUSE_DEFAULT_TIMEOUT_CALLBACK 
 
 CFLAGS += -L/usr/arm-none-eabi/lib/thumb/cortex-m4/float-abi-hard/fpuv4-sp-d16
 CFLAGS += --specs=nosys.specs

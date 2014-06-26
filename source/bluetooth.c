@@ -79,8 +79,18 @@ void bluetooth_reset() {
 
 void bluetooth_write(char* data, int size) {
   int i = 0;
+
+  // Send synchronization
+  for (i = 0; i < 2; i++)
+    USART_SendData(USART3, 0x55);
+
+
   for (i = 0; i < size; i++) {
+    while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
     USART_SendData(USART3, data[i]);
+    int j = 10000;
+    while(j > 0)
+      j--;
   }
 }
 
