@@ -9,11 +9,6 @@
 #include "stm32f3_discovery_lsm303dlhc.h"
 
 
-union float_to_bytes {
-  float f;
-  char bytes[sizeof(float)];
-};
-
 /**
  * Initialize the onboard L3GD20 gyroscope
  */

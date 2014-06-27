@@ -15,8 +15,6 @@
 
 
 int main(void) {
-  union float_to_bytes ftb;
-
   STM_EVAL_LEDInit(LED3);
   STM_EVAL_LEDInit(LED6);
   STM_EVAL_LEDInit(LED7);
@@ -31,11 +29,10 @@ int main(void) {
   while(1) {
     /* Loop and wait for interrupts */
     int i = 100000;
-    unsigned char stats[BUFFERSIZE];
+    uint8_t stats[BUFFERSIZE];
     uint8_t gyro_data[GYROBUFFER] = {0};
     uint8_t comp_data[COMPBUFFER] = {0};
     uint8_t acc_data[ACCBUFFER] = {0};
-    uint8_t j,k;
 
     // Read sensors
     gyroscope_read(gyro_data);

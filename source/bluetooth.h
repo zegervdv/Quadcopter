@@ -42,5 +42,5 @@ void bluetooth_reset(void);
  * data - char array with data
  * size - size of the data array
  */
-void bluetooth_write(char* data, int size);
+void bluetooth_write(uint8_t* data, int size);
 

@@ -76,7 +76,7 @@ int main(int argc, char const* argv[]) {
 
   printf("Gyroscope:\n");
   for (i = 1; i < 4; i++) {
-    val = (float) ((int)(((unsigned int) data[2*i+1] << 8) + data[2*i])) / L3G_Sensitivity_500dps;
+    val = (float) ((signed int)(((unsigned int) data[2*i+1] << 8) + data[2*i])) / L3G_Sensitivity_500dps;
     printf("%f dps\n", val);
   }
 
@@ -85,7 +85,7 @@ int main(int argc, char const* argv[]) {
     val = (float)((int)(((unsigned int)data[2*i] << 8) + data[2*i+1])*1000)/ LSM303DLHC_M_SENSITIVITY_XY_8_1Ga;
     printf("%f Ga\n", val);
   }
-  val = (float)((int)(((unsigned int)data[12] << 8) + data[13])*1000)/ LSM303DLHC_M_SENSITIVITY_Z_8_1Ga;
+  val = (float)((signed int)(((unsigned int)data[12] << 8) + data[13])*1000)/ LSM303DLHC_M_SENSITIVITY_Z_8_1Ga;
   printf("%f Ga\n", val);
 
   printf("Accelerometer:\n");
