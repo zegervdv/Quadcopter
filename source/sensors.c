@@ -18,7 +18,7 @@ void gyroscope_init(void) {
   L3GD20_InitStructure.Axes_Enable = L3GD20_AXES_ENABLE;
   L3GD20_InitStructure.Band_Width = L3GD20_BANDWIDTH_4;
   L3GD20_InitStructure.BlockData_Update = L3GD20_BlockDataUpdate_Continous;
-  L3GD20_InitStructure.Endianness = L3GD20_BLE_LSB;
+  L3GD20_InitStructure.Endianness = L3GD20_BLE_MSB;
   L3GD20_InitStructure.Full_Scale = L3GD20_FULLSCALE_500;
   L3GD20_Init(&L3GD20_InitStructure);
 
@@ -76,7 +76,7 @@ void accelerometer_init(void) {
   LSM303DLHCAcc_InitStructure.Axes_Enable= LSM303DLHC_AXES_ENABLE;
   LSM303DLHCAcc_InitStructure.AccFull_Scale = LSM303DLHC_FULLSCALE_2G;
   LSM303DLHCAcc_InitStructure.BlockData_Update = LSM303DLHC_BlockUpdate_Continous;
-  LSM303DLHCAcc_InitStructure.Endianness=LSM303DLHC_BLE_LSB;
+  LSM303DLHCAcc_InitStructure.Endianness=LSM303DLHC_BLE_MSB;
   LSM303DLHCAcc_InitStructure.High_Resolution=LSM303DLHC_HR_ENABLE;
   /* Configure the accelerometer main parameters */
   LSM303DLHC_AccInit(&LSM303DLHCAcc_InitStructure);
