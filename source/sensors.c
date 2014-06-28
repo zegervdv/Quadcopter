@@ -35,8 +35,13 @@ void gyroscope_read(uint8_t* data) {
 
 void gyroscope_to_float(uint8_t* data, float* value) {
   uint8_t i;
-  for(i = 0; i < 3; i++)
-    value[i] = (float) (((uint16_t) data[2*i] << 8) + data[2*i + 1]) / L3G_Sensitivity_500dps;
+  uint32_t temp;
+  for(i = 0; i < 3; i++) {
+    temp = ((uint32_t) data[2*i] << 8) + data[2*i+1];
+    if(temp & 0x8000)
+      temp -= 0xFFFF;
+    value[i] = (float) temp / L3G_Sensitivity_500dps;
+  }
 }
 
 void compass_init(void) {
@@ -60,11 +65,18 @@ void compass_read(uint8_t* data) {
 
 void compass_to_float(uint8_t* data, float* value) {
   uint8_t i;
-
+  uint32_t temp[3];
   for(i = 0; i < 2; i++) {
-    value[i]=(float)((int16_t)(((uint16_t)data[2*i] << 8) + data[2*i+1])*1000)/LSM303DLHC_M_SENSITIVITY_XY_8_1Ga;
+    temp[i] = (((uint16_t)data[2*i] << 8) + data[2*i+1])*1000;
+    temp[i] /= LSM303DLHC_M_SENSITIVITY_XY_8_1Ga;
   }
-  value[2]=(float)((int16_t)(((uint16_t)data[4] << 8) + data[5])*1000)/LSM303DLHC_M_SENSITIVITY_Z_8_1Ga;
+  temp[2] = (((uint16_t)data[4] << 8) + data[5])*1000;
+  temp[2] /= LSM303DLHC_M_SENSITIVITY_Z_8_1Ga;
+
+  for(i = 0; i < 3; i++) {
+    if(temp[i] & 0x8000)
+      value[i] = (float)(temp[i] - 0xFFFF);
+  }
 }
 
 void accelerometer_init(void) {
@@ -95,3 +107,12 @@ void accelerometer_read(uint8_t* data) {
   LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, data, 6);
 }
 
+void accelerometer_to_float(uint8_t* data, float* value) {
+  uint8_t i;
+  uint32_t temp;
+  
+  for (i = 0; i < 3; i++) {
+    temp = ((uint16_t)(data[2*i] << 8) + data[2*i+1]) >> 4;
+    value[i] = (float) temp / LSM_Acc_Sensitivity_2g;
+  }
+}

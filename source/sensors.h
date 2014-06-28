@@ -56,3 +56,10 @@ void accelerometer_init(void);
  * data - uint8_t array of size 6
  */
 void accelerometer_read(uint8_t* data);
+
+/**
+ * Convert raw data from accelerometer to float
+ * data - uint8_t array with raw data bytes
+ * value - array of 3 floats
+ */
+void accelerometer_to_float(uint8_t* data, float* value);
