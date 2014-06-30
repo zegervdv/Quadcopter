@@ -88,9 +88,9 @@ void bluetooth_write(uint8_t* data, int size) {
   for (i = 0; i < size; i++) {
     while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
     USART_SendData(USART3, data[i]);
-    int j = 10000;
-    while(j > 0)
-      j--;
+    /* int j = 100000; */
+    /* while(j > 0) */
+    /*   j--; */
   }
 }
 
@@ -106,8 +106,8 @@ void bluetooth_init() {
  * USART3 Interrupt handler
  */
 void USART3_IRQHandler(void) {
-  if(USART_GetITStatus(USART3, USART_IT_RXNE)) {
-		cmd = USART3->RDR;
+  if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
+		cmd = USART_ReceiveData(USART3);
   }
 }
 
