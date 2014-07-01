@@ -138,5 +138,5 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sen
 
   // TODO: Calculate pitch and roll
   data->pitch = 0;
-  data-roll = 0;
+  data->roll = 0;
 }
