@@ -6,7 +6,8 @@
  */
 
 #include "sensors.h"
-#include "sensor_data.h"
+
+#define SQ(x) ((x) * (x))
 
 void gyroscope_init(void) {
   L3GD20_InitTypeDef L3GD20_InitStructure;
@@ -92,7 +93,7 @@ void accelerometer_init(void) {
   LSM303DLHCAcc_InitStructure.High_Resolution=LSM303DLHC_HR_ENABLE;
   /* Configure the accelerometer main parameters */
   LSM303DLHC_AccInit(&LSM303DLHCAcc_InitStructure);
-  
+
   /* Fill the accelerometer LPF structure */
   LSM303DLHCFilter_InitStructure.HighPassFilter_Mode_Selection =LSM303DLHC_HPM_NORMAL_MODE;
   LSM303DLHCFilter_InitStructure.HighPassFilter_CutOff_Frequency = LSM303DLHC_HPFCF_16;
@@ -110,9 +111,32 @@ void accelerometer_read(uint8_t* data) {
 void accelerometer_to_float(uint8_t* data, float* value) {
   uint8_t i;
   uint32_t temp;
-  
+
   for (i = 0; i < 3; i++) {
     temp = ((uint16_t)(data[2*i] << 8) + data[2*i+1]) >> 4;
     value[i] = (float) temp / LSM_Acc_Sensitivity_2g;
   }
+}
+
+void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sensor_data* data) {
+  float parsed[3] = {0};
+
+  gyroscope_to_float(gyro, parsed);
+  data->x_rotation = parsed[0];
+  data->y_rotation = parsed[1];
+  data->z_rotation = parsed[2];
+
+  compass_to_float(magneto, parsed);
+  data->x_magnetic = parsed[0];
+  data->y_magnetic = parsed[1];
+  data->z_magnetic = parsed[2];
+
+  accelerometer_to_float(accelero, parsed);
+  data->x_acceleration = -1 * parsed[0];
+  data->y_acceleration = -1 * parsed[1];
+  data->z_acceleration = parsed[2];
+
+  // TODO: Calculate pitch and roll
+  data->pitch = 0;
+  data-roll = 0;
 }
