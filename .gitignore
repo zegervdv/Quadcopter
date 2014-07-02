@@ -7,3 +7,5 @@
 
 .vagrant/
 debug/read_sensors
+
+*.pyc
