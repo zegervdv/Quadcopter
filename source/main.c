@@ -15,9 +15,14 @@
 
 
 int main(void) {
+
   STM_EVAL_LEDInit(LED3);
+  STM_EVAL_LEDInit(LED4);
+  STM_EVAL_LEDInit(LED5);
   STM_EVAL_LEDInit(LED6);
   STM_EVAL_LEDInit(LED7);
+  STM_EVAL_LEDInit(LED8);
+  STM_EVAL_LEDInit(LED9);
   STM_EVAL_LEDInit(LED10);
 
   bluetooth_init();
@@ -47,32 +52,12 @@ int main(void) {
 
     while(i--);
     /* USART_SendData(USART3, 0x74); */
-
-    switch(cmd) {
-      case 'z':
-        STM_EVAL_LEDToggle(LED3);
-        break;
-      case 'q':
-        STM_EVAL_LEDToggle(LED6);
-        break;
-      case 'd':
-        STM_EVAL_LEDToggle(LED7);
-        break;
-      case 's':
-        STM_EVAL_LEDToggle(LED10);
-        break;
-      case ' ':
-        STM_EVAL_LEDToggle(LED7);
-        STM_EVAL_LEDToggle(LED6);
-        break;
-      default:
-        STM_EVAL_LEDOff(LED3);
-        STM_EVAL_LEDOff(LED6);
-        STM_EVAL_LEDOff(LED7);
-        STM_EVAL_LEDOff(LED10);
-    }
-
-    cmd = '\0';
+	
+	for(i=0;i<8;i++){
+		if(cmd & (0x01<<i)){STM_EVAL_LEDOn(LED3+i);}
+		else{STM_EVAL_LEDOff(LED3+i);}
+	}
+	
   }
 }
 
