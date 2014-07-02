@@ -38,6 +38,7 @@ int main(void) {
     uint8_t gyro_data[GYROBUFFER] = {0};
     uint8_t comp_data[COMPBUFFER] = {0};
     uint8_t acc_data[ACCBUFFER] = {0};
+    sensor_data data;
 
     // Read sensors
     gyroscope_read(gyro_data);
@@ -49,6 +50,8 @@ int main(void) {
     memcpy(stats + GYROBUFFER + COMPBUFFER, acc_data, ACCBUFFER);
 
     bluetooth_write(stats, BUFFERSIZE);
+
+    sensors_format_data(gyro_data, comp_data, acc_data, &data);
 
     while(i--);
     /* USART_SendData(USART3, 0x74); */
