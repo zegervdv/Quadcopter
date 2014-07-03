@@ -38,61 +38,65 @@ class ControlPad(QWidget):
         return QSize(420,220)
 
     def keyPressEvent(self, event):
+		if event.isAutoRepeat():
+			return
 
-        i=-1
-        key = event.key()
-    	if key == Qt.Key_Left:
-            i=0
-    	if key == Qt.Key_Right:
-            i=1
-        if key == Qt.Key_Up:
-            i=2
-        if key == Qt.Key_Down:
-            i=3
-        if key == Qt.Key_4:
-            i=4
-        if key == Qt.Key_6:
-            i=5
-        if key == Qt.Key_8:
-            i=6
-        if key == Qt.Key_2:
-            i=7
-        if key == Qt.Key_Tab:
-            self.emit(SIGNAL("TabPressed()"))
+		i=-1
+		key = event.key()
+		if key == Qt.Key_Left:
+			i=0
+		if key == Qt.Key_Right:
+			i=1
+		if key == Qt.Key_Up:
+			i=2
+		if key == Qt.Key_Down:
+			i=3
+		if key == Qt.Key_4:
+			i=4
+		if key == Qt.Key_6:
+			i=5
+		if key == Qt.Key_8:
+			i=6
+		if key == Qt.Key_2:
+			i=7
+		if key == Qt.Key_Tab:
+			self.emit(SIGNAL("TabPressed()"))
 
 
-        if i!=-1:
-            if self.keys[i]!=True:
-                self.keys[i]=True
-                self.keyChanged()
-                self.repaint()
+		if i!=-1:
+			if self.keys[i]!=True:
+				self.keys[i]=True
+				self.keyChanged()
+				self.repaint()
 
     def keyReleaseEvent(self, event):
+		if event.isAutoRepeat():
+			return
 
-        i=-1
-        key = event.key()
-    	if key == Qt.Key_Left:
-            i=0
-    	if key == Qt.Key_Right:
-            i=1
-        if key == Qt.Key_Up:
-            i=2
-        if key == Qt.Key_Down:
-            i=3
-        if key == Qt.Key_4:
-            i=4
-        if key == Qt.Key_6:
-            i=5
-        if key == Qt.Key_8:
-            i=6
-        if key == Qt.Key_2:
-            i=7
+		i=-1
+		key = event.key()
+		if key == Qt.Key_Left:
+			i=0
+		if key == Qt.Key_Right:
+			i=1
+		if key == Qt.Key_Up:
+			i=2
+		if key == Qt.Key_Down:
+			i=3
+		if key == Qt.Key_4:
+			i=4
+		if key == Qt.Key_6:
+			i=5
+		if key == Qt.Key_8:
+			i=6
+		if key == Qt.Key_2:
+			i=7
 
-        if i!=-1:
-            if self.keys[i]!=False:
-                self.keys[i]=False
-                self.keyChanged()
-                self.repaint()
+		if i!=-1:
+			if self.keys[i]!=False:
+				self.keys[i]=False
+				self.keyChanged()
+				self.repaint()
 
     def keyChanged(self):
         a=0x00

@@ -41,8 +41,7 @@ def ThreadCloser():
 if __name__ == '__main__':
 
 	app = QApplication(sys.argv)
-	app.aboutToQuit.connect(ThreadCloser)
-	
+	app.aboutToQuit.connect(ThreadCloser)	
 		
 	bt=BluetoothThread(sendBuffer,receiveBuffer)
 	rm=BluetoothWindow(receiveBuffer,sendBuffer)
@@ -70,6 +69,5 @@ if __name__ == '__main__':
 
 			rm.setWindowTitle("QuadCopter Remote")
 			rm.showMaximized()
-
+	
 	sys.exit(app.exec_())
-

@@ -18,7 +18,7 @@ class BluetoothThread(QThread):
 		if self.ser.isOpen():
 			while len(self.sendbuf):
 				a=self.sendbuf.pop(0)
-				self.ser.write(chr(a))
+				self.ser.write(a)
 				time.sleep(0.05)
 
     def initialize(self,port):

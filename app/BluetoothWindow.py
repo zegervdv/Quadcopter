@@ -133,19 +133,15 @@ class BluetoothWindow(QMainWindow):
 
     def sendText(self):
 		text=self.input.toPlainText()
-		if len(text)==1:
-			self.output.appendPlainText("You said:\n"+text+"\n")
-			qba= QByteArray()
-			qba.append(text[0])
-			a= str(qba)
-			self.sendbuf.append(a)
-			self.emit(SIGNAL("Send()"))
-			self.input.clear()
+		self.output.appendPlainText("You said:\n"+text+"\n")
+		self.sendbuf.append(str(text))
+		self.emit(SIGNAL("Send()"))
+		self.input.clear()
 
     def sendKey(self, text):
 	
 		self.output.appendPlainText("You said:\n"+str(int(text))+"\n")
-		self.sendbuf.append(text)
+		self.sendbuf.append(chr(text))
 		self.emit(SIGNAL("Send()"))
 
     def swapFocus(self):
