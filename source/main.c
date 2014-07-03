@@ -5,6 +5,7 @@
 
 #include "bluetooth.h"
 #include "sensors.h"
+#include "controls.h"
 #include <string.h>
 
 
@@ -39,6 +40,9 @@ int main(void) {
     uint8_t comp_data[COMPBUFFER] = {0};
     uint8_t acc_data[ACCBUFFER] = {0};
     sensor_data data;
+    command_typedef command;
+    union read_command read_command;
+    uint8_t test[3];
 
     // Read sensors
     gyroscope_read(gyro_data);
@@ -54,13 +58,12 @@ int main(void) {
     sensors_format_data(gyro_data, comp_data, acc_data, &data);
 
     while(i--);
-    /* USART_SendData(USART3, 0x74); */
-	
-	for(i=0;i<8;i++){
-		if(cmd & (0x01<<i)){STM_EVAL_LEDOn(LED3+i);}
-		else{STM_EVAL_LEDOff(LED3+i);}
-	}
-	
+
+    for(i=0;i<8;i++){
+      if(cmd & (0x01<<i)){STM_EVAL_LEDOn(LED3+i);}
+      else{STM_EVAL_LEDOff(LED3+i);}
+    }
+
   }
 }
 
