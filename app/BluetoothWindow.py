@@ -34,6 +34,9 @@ class BluetoothWindow(QMainWindow):
 		self.sendbuf=outbuf
 		self.receivebuf=inbuf
 
+                self.pitchbuffer = [0] * 10
+                self.rollbuffer = [0] * 10
+
 		self.cp=ControlPad()
 		self.input=ChatInput()
 		self.output=QPlainTextEdit()
@@ -112,6 +115,14 @@ class BluetoothWindow(QMainWindow):
 			# Calculate pitch and roll
 			pitch = math.atan2(accelerometer[0], math.sqrt(accelerometer[1]**2 + accelerometer[2]**2))
 			roll = math.atan2(accelerometer[1], math.sqrt(accelerometer[0]**2 + accelerometer[2]**2))
+
+                        self.pitchbuffer.pop(0)
+                        self.rollbuffer.pop(0)
+                        self.pitchbuffer.append(pitch)
+                        self.rollbuffer.append(roll)
+                        
+                        pitch = sum(self.pitchbuffer) / len(self.pitchbuffer)
+                        roll = sum(self.rollbuffer) / len(self.rollbuffer)
 			
 			self.ai.setPitch(math.degrees(pitch))
 			self.ai.setRoll(math.degrees(roll))
