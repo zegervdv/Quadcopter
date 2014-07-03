@@ -3,6 +3,11 @@
  * Define functions for controlling and stabilizing the quadcopter
  */
 
+#ifndef CONTROLS_H
+#define CONTROLS_H
+
+#define CONTROL_MSG_SIZE 3
+
 /**
  * Command structure
  * longitudinal - signed byte: positive for forward, value indicates speed
@@ -18,6 +23,8 @@ typedef struct {
 } command_typedef;
 
 union read_command {
-  uint8_t input[3];
+  uint8_t input[CONTROL_MSG_SIZE];
   command_typedef formatted;
 };
+
+#endif

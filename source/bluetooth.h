@@ -10,9 +10,10 @@
 #include "stm32f30x_usart.h"
 #include "stm32f3_discovery.h"
 #include "stm32f30x_misc.h"
+#include "controls.h"
 
 
-extern char cmd;
+extern uint8_t command_bytes[CONTROL_MSG_SIZE];
 
 /**
  * Initialize bluetooth communication

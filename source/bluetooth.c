@@ -9,8 +9,7 @@
 
 #define RST_PIN GPIO_Pin_12
 
-char cmd;
-
+uint8_t command_bytes[CONTROL_MSG_SIZE];
 void init_usart3() {
   // Initialize USART3
   // Tx: PIN PC10
@@ -107,7 +106,15 @@ void bluetooth_init() {
  */
 void USART3_IRQHandler(void) {
   if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
-		cmd = USART_ReceiveData(USART3);
+    static uint8_t cnt = 0;
+		char t = USART_ReceiveData(USART3);
+
+    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE) ) {
+      command_bytes[cnt] = t;
+      cnt++;
+    }else {
+      cnt = 0;
+    }
   }
 }
 

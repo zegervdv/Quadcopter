@@ -42,7 +42,6 @@ int main(void) {
     sensor_data data;
     command_typedef command;
     union read_command read_command;
-    uint8_t test[3];
 
     // Read sensors
     gyroscope_read(gyro_data);
@@ -56,13 +55,41 @@ int main(void) {
     bluetooth_write(stats, BUFFERSIZE);
 
     sensors_format_data(gyro_data, comp_data, acc_data, &data);
+    
+    // Convert received bytes to command
+    memcpy(read_command.input, command_bytes, CONTROL_MSG_SIZE);
+    command = read_command.formatted;
+
+    if (command.longitudinal > 0) {
+      STM_EVAL_LEDOn(LED3);
+    }else if (command.longitudinal < 0) {
+      STM_EVAL_LEDOn(LED10);
+    }else {
+      STM_EVAL_LEDOff(LED3);
+      STM_EVAL_LEDOff(LED10);
+    }
+
+    if (command.lateral > 0) {
+      STM_EVAL_LEDOn(LED7);
+    }else if (command.lateral < 0) {
+      STM_EVAL_LEDOn(LED6);
+    }else {
+      STM_EVAL_LEDOff(LED6);
+      STM_EVAL_LEDOff(LED7);
+    }
+
+    if (command.rotation > 0) {
+      STM_EVAL_LEDOn(LED5);
+    }else if (command.rotation < 0) {
+      STM_EVAL_LEDOn(LED4);
+    }else {
+      STM_EVAL_LEDOff(LED4);
+      STM_EVAL_LEDOff(LED5);
+    }
 
     while(i--);
-
-    for(i=0;i<8;i++){
-      if(cmd & (0x01<<i)){STM_EVAL_LEDOn(LED3+i);}
-      else{STM_EVAL_LEDOff(LED3+i);}
-    }
+    // Reset command bytes
+    memset(command_bytes, 0, CONTROL_MSG_SIZE);
 
   }
 }
