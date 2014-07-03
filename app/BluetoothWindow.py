@@ -103,11 +103,15 @@ class BluetoothWindow(QMainWindow):
 				if accelerometer[i] & 0x800:
 					accelerometer[i] -= 0xFFF
 
+                        # Rotate axes
+                        magnetometer = [-mag for mag in magnetometer]
+                        accelerometer = [-acc for acc in accelerometer]
+
 			#self.output.appendPlainText("Device said:\n"+" ".join(gyroscope)+"\n"+" ".join(magnetometer)+"\n"+" ".join(accelerometer)+"\n")
 
 			# Calculate pitch and roll
-			pitch = math.atan2(-accelerometer[0], math.sqrt(accelerometer[1]**2 + accelerometer[2]**2))
-			roll = math.atan2(-accelerometer[1], math.sqrt(accelerometer[0]**2 + accelerometer[2]**2))
+			pitch = math.atan2(accelerometer[0], math.sqrt(accelerometer[1]**2 + accelerometer[2]**2))
+			roll = math.atan2(accelerometer[1], math.sqrt(accelerometer[0]**2 + accelerometer[2]**2))
 			
 			self.ai.setPitch(math.degrees(pitch))
 			self.ai.setRoll(math.degrees(roll))
@@ -115,8 +119,8 @@ class BluetoothWindow(QMainWindow):
 			#print "Pitch: {0}".format(math.degrees(pitch))
 			#print "Roll: {0}".format(math.degrees(roll))
 
-			Xh = -1 * magnetometer[0] * math.cos(pitch) + magnetometer[2] * math.sin(pitch)
-			Yh = -1 * magnetometer[0] * math.sin(roll) * math.sin(pitch) - magnetometer[1] * math.cos(roll) - magnetometer[2] * math.sin(roll) * math.cos(pitch)
+			Xh = magnetometer[0] * math.cos(pitch) + magnetometer[2] * math.sin(pitch)
+			Yh = magnetometer[0] * math.sin(roll) * math.sin(pitch) + magnetometer[1] * math.cos(roll) - magnetometer[2] * math.sin(roll) * math.cos(pitch)
 
 			heading = math.atan2(Yh, Xh)
 
