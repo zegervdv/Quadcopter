@@ -20,6 +20,7 @@ SRCS += stm32f30x_rcc.c\
 				stm32f30x_misc.c\
 				stm32f30x_usart.c\
 				stm32f30x_syscfg.c\
+				stm32f30x_crc.c\
 				stm32f3_discovery.c\
 				stm32f3_discovery_l3gd20.c\
 				stm32f3_discovery_lsm303dlhc.c

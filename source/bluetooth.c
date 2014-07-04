@@ -6,10 +6,15 @@
  */
 
 #include "bluetooth.h"
+#include "string.h"
 
 #define RST_PIN GPIO_Pin_12
 
-uint8_t command_bytes[CONTROL_MSG_SIZE];
+/**
+ * Store received command bytes plus 8 bit CRC
+ */
+uint8_t command_bytes[CONTROL_MSG_SIZE + 1];
+
 void init_usart3() {
   // Initialize USART3
   // Tx: PIN PC10
@@ -98,7 +103,28 @@ void bluetooth_init() {
   init_usart3();
   init_reset();
 
+  // Configure the clock for CRC
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
+  CRC_DeInit();
+  CRC_SetInitRegister(0);
+  CRC_PolynomialSizeSelect(CRC_PolSize_8);
+  CRC_SetPolynomial(0xD5);
+
   bluetooth_reset();
+}
+
+uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum) {
+  uint8_t check = 0;
+  uint8_t* end = data_bytes + size;
+  CRC_ResetDR();
+
+  while(data_bytes < end) {
+    CRC_CalcCRC8bits(*data_bytes++);
+  }
+
+  check = (uint8_t)CRC_GetCRC();
+
+  return check == checksum;
 }
 
 /**
@@ -109,7 +135,7 @@ void USART3_IRQHandler(void) {
     static uint8_t cnt = 0;
 		char t = USART_ReceiveData(USART3);
 
-    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE) ) {
+    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE + 1) ) {
       command_bytes[cnt] = t;
       cnt++;
     }else {
@@ -117,4 +143,5 @@ void USART3_IRQHandler(void) {
     }
   }
 }
+
 

@@ -5,15 +5,12 @@
  */
 
 #include "stm32f30x.h"
-#include "stm32f30x_rcc.h"
-#include "stm32f30x_gpio.h"
-#include "stm32f30x_usart.h"
+#include "stm32f30x_conf.h"
 #include "stm32f3_discovery.h"
-#include "stm32f30x_misc.h"
 #include "controls.h"
 
 
-extern uint8_t command_bytes[CONTROL_MSG_SIZE];
+extern uint8_t command_bytes[CONTROL_MSG_SIZE + 1];
 
 /**
  * Initialize bluetooth communication
@@ -33,4 +30,15 @@ void bluetooth_reset(void);
  * size - size of the data array
  */
 void bluetooth_write(uint8_t* data, int size);
+
+/**
+ * Test integrity of the data bytes received using CRC
+ * CRC is performed on blocks of 4 bytes, function will pad with zero bytes
+ * data_bytes - array of bytes
+ * size       - number of bytes
+ * checksum   - checksum byte
+ *
+ * returns 0 if checksums do not match
+ */
+uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum);
 

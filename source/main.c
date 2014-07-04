@@ -55,10 +55,12 @@ int main(void) {
     bluetooth_write(stats, BUFFERSIZE);
 
     sensors_format_data(gyro_data, comp_data, acc_data, &data);
-    
-    // Convert received bytes to command
-    memcpy(read_command.input, command_bytes, CONTROL_MSG_SIZE);
-    command = read_command.formatted;
+   
+    if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
+      // Convert received bytes to command
+      memcpy(read_command.input, command_bytes, CONTROL_MSG_SIZE);
+      command = read_command.formatted;
+    }
 
     if (command.longitudinal > 0) {
       STM_EVAL_LEDOn(LED3);
