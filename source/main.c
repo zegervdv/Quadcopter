@@ -41,7 +41,6 @@ int main(void) {
     uint8_t acc_data[ACCBUFFER] = {0};
     sensor_data data;
     command_typedef command;
-    union read_command read_command;
 
     // Read sensors
     gyroscope_read(gyro_data);
@@ -58,31 +57,30 @@ int main(void) {
    
     if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
       // Convert received bytes to command
-      memcpy(read_command.input, command_bytes, CONTROL_MSG_SIZE);
-      command = read_command.formatted;
+      controls_format(command_bytes, &command);
     }
 
-    if (command.longitudinal > 0) {
+    if (command.pitch < 0) {
       STM_EVAL_LEDOn(LED3);
-    }else if (command.longitudinal < 0) {
+    }else if (command.pitch > 0) {
       STM_EVAL_LEDOn(LED10);
     }else {
       STM_EVAL_LEDOff(LED3);
       STM_EVAL_LEDOff(LED10);
     }
 
-    if (command.lateral > 0) {
+    if (command.roll > 0) {
       STM_EVAL_LEDOn(LED7);
-    }else if (command.lateral < 0) {
+    }else if (command.roll < 0) {
       STM_EVAL_LEDOn(LED6);
     }else {
       STM_EVAL_LEDOff(LED6);
       STM_EVAL_LEDOff(LED7);
     }
 
-    if (command.rotation > 0) {
+    if (command.yaw > 0) {
       STM_EVAL_LEDOn(LED5);
-    }else if (command.rotation < 0) {
+    }else if (command.yaw < 0) {
       STM_EVAL_LEDOn(LED4);
     }else {
       STM_EVAL_LEDOff(LED4);
