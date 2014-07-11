@@ -14,9 +14,12 @@
 #define ACCBUFFER     (3 * 2)
 #define BUFFERSIZE    (GYROBUFFER + COMPBUFFER + ACCBUFFER)
 
+uint8_t enabled = 0;
 
 int main(void) {
+  uint8_t j = 0;
 
+  // Enable LEDS
   STM_EVAL_LEDInit(LED3);
   STM_EVAL_LEDInit(LED4);
   STM_EVAL_LEDInit(LED5);
@@ -26,15 +29,19 @@ int main(void) {
   STM_EVAL_LEDInit(LED9);
   STM_EVAL_LEDInit(LED10);
 
+  // Initialize Peripherals
   bluetooth_init();
   gyroscope_init();
   compass_init();
   accelerometer_init();
 
+  // Initialize User Button
+  STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
+
 
   while(1) {
     /* Loop and wait for interrupts */
-    int i = 100000;
+    int i = 1000000;
     uint8_t stats[BUFFERSIZE];
     uint8_t gyro_data[GYROBUFFER] = {0};
     uint8_t comp_data[COMPBUFFER] = {0};
@@ -54,43 +61,54 @@ int main(void) {
     bluetooth_write(stats, BUFFERSIZE);
 
     sensors_format_data(gyro_data, comp_data, acc_data, &data);
-   
-    if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
-      // Convert received bytes to command
-      controls_format(command_bytes, &command);
-    }
 
-    if (command.pitch < 0) {
-      STM_EVAL_LEDOn(LED3);
-    }else if (command.pitch > 0) {
-      STM_EVAL_LEDOn(LED10);
-    }else {
-      STM_EVAL_LEDOff(LED3);
-      STM_EVAL_LEDOff(LED10);
-    }
+    if (enabled) {
 
-    if (command.roll > 0) {
-      STM_EVAL_LEDOn(LED7);
-    }else if (command.roll < 0) {
-      STM_EVAL_LEDOn(LED6);
-    }else {
-      STM_EVAL_LEDOff(LED6);
-      STM_EVAL_LEDOff(LED7);
-    }
+      if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
+        // Convert received bytes to command
+        controls_format(command_bytes, &command);
+      }
 
-    if (command.yaw > 0) {
-      STM_EVAL_LEDOn(LED5);
-    }else if (command.yaw < 0) {
-      STM_EVAL_LEDOn(LED4);
+      if (command.pitch < 0) {
+        STM_EVAL_LEDOn(LED3);
+      }else if (command.pitch > 0) {
+        STM_EVAL_LEDOn(LED10);
+      }else {
+        STM_EVAL_LEDOff(LED3);
+        STM_EVAL_LEDOff(LED10);
+      }
+
+      if (command.roll > 0) {
+        STM_EVAL_LEDOn(LED7);
+      }else if (command.roll < 0) {
+        STM_EVAL_LEDOn(LED6);
+      }else {
+        STM_EVAL_LEDOff(LED6);
+        STM_EVAL_LEDOff(LED7);
+      }
+
+      if (command.yaw > 0) {
+        STM_EVAL_LEDOn(LED5);
+      }else if (command.yaw < 0) {
+        STM_EVAL_LEDOn(LED4);
+      }else {
+        STM_EVAL_LEDOff(LED4);
+        STM_EVAL_LEDOff(LED5);
+      }
+
+      // Reset command bytes
+      memset(command_bytes, 0, CONTROL_MSG_SIZE);
     }else {
-      STM_EVAL_LEDOff(LED4);
-      STM_EVAL_LEDOff(LED5);
-    }
+      if (j == 8) {
+        for (j = 0; j < 8; j++)
+          STM_EVAL_LEDOff(LED3 + j);
+        j = 0;
+      }else {
+        STM_EVAL_LEDOn(LED3 + j++);
+      }
+    } 
 
     while(i--);
-    // Reset command bytes
-    memset(command_bytes, 0, CONTROL_MSG_SIZE);
-
   }
 }
 

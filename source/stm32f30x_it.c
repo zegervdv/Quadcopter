@@ -3,14 +3,16 @@
  */
 
 #include "stm32f3_discovery.h"
+#include "stm32f30x.h"
 
 int i;
+extern uint8_t enabled;
 
-
-void EXTI0_IRQHandler(void)
-{
-  if ((EXTI_GetITStatus(USER_BUTTON_EXTI_LINE) == SET)&&(STM_EVAL_PBGetState(BUTTON_USER) != RESET))
-  {
+/**
+ * User Button
+ */
+void EXTI0_IRQHandler(void) {
+  if ((EXTI_GetITStatus(USER_BUTTON_EXTI_LINE) == SET)&&(STM_EVAL_PBGetState(BUTTON_USER) != RESET)) {
     /* Delay */
     for(i=0; i<0x7FFFF; i++);
 
@@ -18,8 +20,13 @@ void EXTI0_IRQHandler(void)
 
     for(i=0; i<0x7FFFF; i++);
 
-    USART_SendData(USART3, 't');
-    STM_EVAL_LEDToggle(LED4);
+    if (enabled)
+      enabled = 0;
+    else
+      enabled = 1;
+
+    EXTI_ClearITPendingBit(USER_BUTTON_EXTI_LINE);
+
   }
 }
 
