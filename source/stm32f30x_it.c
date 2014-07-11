@@ -22,3 +22,15 @@ void EXTI0_IRQHandler(void)
     STM_EVAL_LEDToggle(LED4);
   }
 }
+
+/**
+ * Set LED3 and LED10 on Hard Fault
+ */
+void HardFault_Handler(void) {
+  /* Go to infinite loop when Hard Fault exception occurs */
+  while (1)
+  {
+    STM_EVAL_LEDOn(LED3);
+    STM_EVAL_LEDOn(LED10);
+  }
+}
