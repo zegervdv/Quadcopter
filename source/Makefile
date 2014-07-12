@@ -39,7 +39,7 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 SIZE=arm-none-eabi-size
 
-CFLAGS  = -g -O0 -Wall -Tstm32_flash.ld
+CFLAGS  =  -Wall -Tstm32_flash.ld
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant
 CFLAGS += -I.
@@ -76,12 +76,16 @@ SRCS += $(STM_COMMON)/Libraries/CMSIS/Device/ST/STM32F30x/Source/Templates/TrueS
 OBJS = $(SRCS:.c=.o)
 
 
-.PHONY: proj
+.PHONY: debug
 
-all: proj
+all: debug
 	$(SIZE) $(PROJ_NAME).elf
 
-proj: $(PROJ_NAME).elf
+debug: CFLAGS += -g -O0 -DDEBUG 
+debug: $(PROJ_NAME).elf
+
+release: CFLAGS += -O2
+release: $(PROJ_NAME).elf
 
 $(PROJ_NAME).elf: $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBPATHS) $(LIBS)
@@ -95,6 +99,8 @@ clean:
 	rm -f $(PROJ_NAME).bin
 	rm -f $(PROJ_NAME).hex
 
+remake: clean all
+
 # Flash the STM32F4
-burn: proj
+burn: all
 	st-flash write $(PROJ_NAME).bin 0x8000000

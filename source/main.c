@@ -62,7 +62,9 @@ int main(void) {
 
     sensors_format_data(gyro_data, comp_data, acc_data, &data);
 
+#ifndef DEBUG
     if (enabled) {
+#endif
 
       if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
         // Convert received bytes to command
@@ -98,6 +100,7 @@ int main(void) {
 
       // Reset command bytes
       memset(command_bytes, 0, CONTROL_MSG_SIZE);
+#ifndef DEBUG
     }else {
       if (j == 8) {
         for (j = 0; j < 8; j++)
@@ -106,7 +109,8 @@ int main(void) {
       }else {
         STM_EVAL_LEDOn(LED3 + j++);
       }
-    } 
+    }
+#endif
 
     while(i--);
   }
