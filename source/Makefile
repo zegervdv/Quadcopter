@@ -21,6 +21,7 @@ SRCS += stm32f30x_rcc.c\
 				stm32f30x_misc.c\
 				stm32f30x_usart.c\
 				stm32f30x_syscfg.c\
+				stm32f30x_tim.c\
 				stm32f30x_crc.c\
 				stm32f3_discovery.c\
 				stm32f3_discovery_l3gd20.c\
@@ -81,7 +82,7 @@ OBJS = $(SRCS:.c=.o)
 all: debug
 	$(SIZE) $(PROJ_NAME).elf
 
-debug: CFLAGS += -g -O0 -DDEBUG 
+debug: CFLAGS += -g -O0 -DDEBUG
 debug: $(PROJ_NAME).elf
 
 release: CFLAGS += -O2
