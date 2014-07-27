@@ -25,7 +25,7 @@
  */
 #define MOTOR_LEFT_FRONT    (uint8_t)(0x1)
 #define MOTOR_RIGHT_FRONT   (uint8_t)(0x2)
-#define MOTOR_LEFT_BACK     (uint8_t)(0x4) 
+#define MOTOR_LEFT_BACK     (uint8_t)(0x4)
 #define MOTOR_RIGHT_BACK    (uint8_t)(0x8)
 
 
@@ -45,4 +45,4 @@ void motors_init(void);
  *         MOTOR_RIGHT_BACK
  * speed - value of speed to be set
  */
-void motors_set_speed(uint8_t motor, uint16_t speed);
+void motors_set_speed(uint8_t motor, uint32_t speed);

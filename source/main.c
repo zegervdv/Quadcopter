@@ -6,6 +6,7 @@
 #include "bluetooth.h"
 #include "sensors.h"
 #include "controls.h"
+#include "motors.h"
 #include <string.h>
 
 
@@ -34,6 +35,7 @@ int main(void) {
   gyroscope_init();
   compass_init();
   accelerometer_init();
+  motors_init();
 
   // Initialize User Button
   STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);

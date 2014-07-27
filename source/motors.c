@@ -30,7 +30,7 @@ void motors_init(void) {
   // Set TIM1 scaler
   TIM_TimeBaseStructure.TIM_Prescaler = PWM_PRESCALER;
   TIM_TimeBaseStructure.TIM_Period = PWM_PERIOD;
-  TIM_TimeBaseStructure.ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 
