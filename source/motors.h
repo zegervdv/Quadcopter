@@ -22,6 +22,10 @@
 
 /**
  * Identifiers for motors
+ * LEFT FRONT   -   PC6  -  CH1
+ * RIGHT FRONT  -   PC9  -  CH4
+ * LEFT BACK    -   PC7  -  CH2
+ * RIGHT BACK   -   PC8  -  CH3
  */
 #define MOTOR_LEFT_FRONT    (uint8_t)(0x1)
 #define MOTOR_RIGHT_FRONT   (uint8_t)(0x2)

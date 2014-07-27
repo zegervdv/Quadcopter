@@ -5,34 +5,34 @@
 #include "motors.h"
 
 void motors_init(void) {
-  // Select TIMER1 on pins PA8, PA9, PA10 and PA11
+  // Select TIM8 on pins PC6, PC7, PC8 and PC9
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   TIM_OCInitTypeDef TIM_OCInitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 
   // Initialize GPIO pins
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  // Select the Alternate Function TIM1 for pins
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_6);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_6);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_6);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_11);
+  // Select the Alternate Function TIM8 for pins
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_4);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_4);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_4);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource9, GPIO_AF_4);
 
-  // Set TIM1 scaler
+  // Set TIM8 scaler
   TIM_TimeBaseStructure.TIM_Prescaler = PWM_PRESCALER;
   TIM_TimeBaseStructure.TIM_Period = PWM_PERIOD;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
 
   // Initialize Output Comparators
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -45,20 +45,20 @@ void motors_init(void) {
   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Set;
 
   // Initalize channels
-  TIM_OC1Init(TIM1, &TIM_OCInitStructure);
-  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
+  TIM_OC1Init(TIM8, &TIM_OCInitStructure);
+  TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable);
 
-  TIM_OC2Init(TIM1, &TIM_OCInitStructure);
-  TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);
+  TIM_OC2Init(TIM8, &TIM_OCInitStructure);
+  TIM_OC2PreloadConfig(TIM8, TIM_OCPreload_Enable);
 
-  TIM_OC3Init(TIM1, &TIM_OCInitStructure);
-  TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
+  TIM_OC3Init(TIM8, &TIM_OCInitStructure);
+  TIM_OC3PreloadConfig(TIM8, TIM_OCPreload_Enable);
 
-  TIM_OC4Init(TIM1, &TIM_OCInitStructure);
-  TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
+  TIM_OC4Init(TIM8, &TIM_OCInitStructure);
+  TIM_OC4PreloadConfig(TIM8, TIM_OCPreload_Enable);
 
-  TIM_ARRPreloadConfig(TIM1, DISABLE);
-  TIM_CtrlPWMOutputs(TIM1, ENABLE);
-  TIM_Cmd(TIM1, ENABLE);
+  TIM_ARRPreloadConfig(TIM8, DISABLE);
+  TIM_CtrlPWMOutputs(TIM8, ENABLE);
+  TIM_Cmd(TIM8, ENABLE);
 }
 
