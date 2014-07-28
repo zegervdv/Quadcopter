@@ -56,8 +56,11 @@ void init_usart3() {
   USART_Cmd(USART3, ENABLE);
 }
 
+/**
+ * Initialize PC12 as reset pin for RN42
+ * Drive HIGH for normal operation
+ */
 void init_reset() {
-  // Reset the module using PC12
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
@@ -70,15 +73,30 @@ void init_reset() {
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   // Set Reset pin high
-  GPIOC->BSRR = RST_PIN;
+  GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
+}
+
 }
 
 void bluetooth_reset() {
-  int i = 10000000;
+  GPIO_WriteBit(GPIOC, RST_PIN, Bit_RESET);
+  Delay(50);
+  GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
+}
 
-  GPIOC->BRR = RST_PIN;
-  while(i--);
-  GPIOC->BSRR= RST_PIN;
+void bluetooth_init() {
+  // Configure USART3
+  init_usart3();
+  init_reset();
+
+  // Configure the clock for CRC
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
+  CRC_DeInit();
+  CRC_SetInitRegister(0);
+  CRC_PolynomialSizeSelect(CRC_PolSize_8);
+  CRC_SetPolynomial(0xD5);
+
+  bluetooth_reset();
 }
 
 void bluetooth_write(uint8_t* data, int size) {
@@ -96,21 +114,6 @@ void bluetooth_write(uint8_t* data, int size) {
     /* while(j > 0) */
     /*   j--; */
   }
-}
-
-void bluetooth_init() {
-  // Configure USART3
-  init_usart3();
-  init_reset();
-
-  // Configure the clock for CRC
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
-  CRC_DeInit();
-  CRC_SetInitRegister(0);
-  CRC_PolynomialSizeSelect(CRC_PolSize_8);
-  CRC_SetPolynomial(0xD5);
-
-  bluetooth_reset();
 }
 
 uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum) {

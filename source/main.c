@@ -29,6 +29,11 @@ int main(void) {
   STM_EVAL_LEDInit(LED9);
   STM_EVAL_LEDInit(LED10);
 
+  // Initialize SysTick
+  RCC_ClocksTypeDef RCC_Clocks;
+  RCC_GetClocksFreq(&RCC_Clocks);
+  SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
+
   // Initialize Peripherals
   bluetooth_init();
   gyroscope_init();
@@ -38,7 +43,7 @@ int main(void) {
 
   // Initialize User Button
   STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
-
+  
 
   while(1) {
     /* Loop and wait for interrupts */
