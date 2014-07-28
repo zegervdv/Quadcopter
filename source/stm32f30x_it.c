@@ -2,11 +2,11 @@
  * stm32f30x_it.c: Manage interrupt handlers
  */
 
-#include "stm32f3_discovery.h"
-#include "stm32f30x.h"
+#include "stm32f30x_it.h"
 
 int i;
 extern uint8_t enabled;
+static __IO uint32_t TimingDelay;
 
 /**
  * User Button
@@ -41,3 +41,30 @@ void HardFault_Handler(void) {
     STM_EVAL_LEDOn(LED10);
   }
 }
+
+/**
+ * Wait for amount of milliseconds
+ * nTime - time to wait in milliseconds
+ */
+void Delay(__IO uint32_t nTime) {
+  TimingDelay = nTime;
+  while(TimingDelay != 0);
+}
+
+/**
+ * Delay Decrementer
+ */
+void TimingDelay_Decrement(void) {
+  if (TimingDelay != 0x00)
+  {
+    TimingDelay--;
+  }
+}
+
+/**
+ * SysTick Handler
+ */
+void SysTick_Handler(void) {
+  TimingDelay_Decrement();
+}
+

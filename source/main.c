@@ -3,6 +3,7 @@
  * 2014
  */
 
+#include "stm32f30x_it.h"
 #include "bluetooth.h"
 #include "sensors.h"
 #include "controls.h"
@@ -18,8 +19,6 @@
 uint8_t enabled = 0;
 
 int main(void) {
-  uint8_t j = 0;
-
   // Enable LEDS
   STM_EVAL_LEDInit(LED3);
   STM_EVAL_LEDInit(LED4);
@@ -43,7 +42,6 @@ int main(void) {
 
   while(1) {
     /* Loop and wait for interrupts */
-    int i = 1000000;
     uint8_t stats[BUFFERSIZE];
     uint8_t gyro_data[GYROBUFFER] = {0};
     uint8_t comp_data[COMPBUFFER] = {0};
@@ -104,17 +102,11 @@ int main(void) {
       memset(command_bytes, 0, CONTROL_MSG_SIZE);
 #ifndef DEBUG
     }else {
-      if (j == 8) {
-        for (j = 0; j < 8; j++)
-          STM_EVAL_LEDOff(LED3 + j);
-        j = 0;
-      }else {
-        STM_EVAL_LEDOn(LED3 + j++);
-      }
+      // Animation
     }
 #endif
-
-    while(i--);
+    // PID tuning
+    Delay(1000);
   }
 }
 
