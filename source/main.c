@@ -111,7 +111,7 @@ int main(void) {
     }
 #endif
     // PID tuning
-    Delay(1000);
+    Delay(10);
   }
 }
 
