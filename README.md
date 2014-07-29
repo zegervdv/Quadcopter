@@ -11,6 +11,19 @@ To build a self-stabilizing quadcopter controlled via bluetooth.
 * STM32F3-Discovery
 * RN42-I/RM Bluetooth module
 
+### Pin Mapping
+
+| Pin  | Function                       |
+| ---  | --------                       |
+| PC10 | USART3 TX - Bluetooth comm.    |
+| PC11 | USART3 RX - Bluetooth comm.    |
+| PC12 | GPIO OUT - Reset Bluetooth     |
+| PD1  | GPIO IN - Connection Bluetooth |
+| PC6  | PWM - Left Front motor         |
+| PC7  | PWM - Left Back motor          |
+| PC8  | PWM - Right Back motor         |
+| PC9  | PWM - Right Front motor        |
+
 ## Getting Started
 
 ### Compiling and programming
