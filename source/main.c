@@ -44,7 +44,6 @@ int main(void) {
   // Initialize User Button
   STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
   
-
   while(1) {
     /* Loop and wait for interrupts */
     uint8_t stats[BUFFERSIZE];
@@ -63,7 +62,8 @@ int main(void) {
     memcpy(stats + GYROBUFFER, comp_data, COMPBUFFER);
     memcpy(stats + GYROBUFFER + COMPBUFFER, acc_data, ACCBUFFER);
 
-    bluetooth_write(stats, BUFFERSIZE);
+    if (bluetooth_connected() == Bit_SET)
+      bluetooth_write(stats, BUFFERSIZE);
 
     sensors_format_data(gyro_data, comp_data, acc_data, &data);
 
@@ -71,7 +71,7 @@ int main(void) {
     if (enabled) {
 #endif
 
-      if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
+      if ((bluetooth_connected() == Bit_SET) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE]))) {
         // Convert received bytes to command
         controls_format(command_bytes, &command);
       }

@@ -26,6 +26,13 @@ void bluetooth_init(void);
 void bluetooth_reset(void);
 
 /**
+ * Write data to bluetooth module
+ * data - char array with data
+ * size - size of the data array
+ */
+void bluetooth_write(uint8_t* data, int size);
+
+/**
  * Test integrity of the data bytes received using CRC
  * CRC is performed on blocks of 4 bytes, function will pad with zero bytes
  * data_bytes - array of bytes
@@ -37,9 +44,9 @@ void bluetooth_reset(void);
 uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum);
 
 /**
- * Write data to bluetooth module
- * data - char array with data
- * size - size of the data array
+ * Test if RN42 module is connected to remote
+ *
+ * returs Bit_RESET if device is not connected
+ * returs Bit_SET if device is connected
  */
-void bluetooth_write(uint8_t* data, int size);
-
+uint8_t bluetooth_connected(void);

@@ -8,7 +8,8 @@
 #include "bluetooth.h"
 #include "string.h"
 
-#define RST_PIN GPIO_Pin_12
+#define RST_PIN   GPIO_Pin_12
+#define CONN_PIN  GPIO_Pin_1
 
 /**
  * Store received command bytes plus 8 bit CRC
@@ -76,18 +77,27 @@ void init_reset() {
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
 }
 
-}
+/**
+ * Initialize PD1 to read RN42 GPIO2
+ * Pin is HIGH when bluetooth is connected to remote host
+ */
+void init_connection() {
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 
-void bluetooth_reset() {
-  GPIO_WriteBit(GPIOC, RST_PIN, Bit_RESET);
-  Delay(50);
-  GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
+  GPIO_InitStructure.GPIO_Pin = CONN_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
 
 void bluetooth_init() {
   // Configure USART3
   init_usart3();
   init_reset();
+  init_connection();
 
   // Configure the clock for CRC
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
@@ -97,6 +107,12 @@ void bluetooth_init() {
   CRC_SetPolynomial(0xD5);
 
   bluetooth_reset();
+}
+
+void bluetooth_reset() {
+  GPIO_WriteBit(GPIOC, RST_PIN, Bit_RESET);
+  Delay(50);
+  GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
 }
 
 void bluetooth_write(uint8_t* data, int size) {
@@ -128,6 +144,10 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
   check = (uint8_t)CRC_GetCRC();
 
   return check == checksum;
+}
+
+uint8_t bluetooth_connected(void) {
+  return GPIO_ReadInputDataBit(GPIOD, CONN_PIN);  
 }
 
 /**
