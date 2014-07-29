@@ -41,12 +41,12 @@ void motors_init(void);
 
 /**
  * Set PWM duty cycle
- * TODO: Use TIM_SetCompare<CHANNEL>();
  * motor - Select one or more motors to set:
  *         MOTOR_LEFT_FRONT
  *         MOTOR_RIGHT_FRONT
  *         MOTOR_LEFT_BACK
  *         MOTOR_RIGHT_BACK
- * speed - value of speed to be set
+ * speed - value of speed to be set as (percentage x100) of maximum speed
+ *         range: [0..PWM_PERIOD]
  */
 void motors_set_speed(uint8_t motor, uint32_t speed);
