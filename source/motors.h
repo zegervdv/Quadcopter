@@ -41,13 +41,20 @@
 #define MOTOR_LEFT_BACK     (uint8_t)(0x4)
 #define MOTOR_RIGHT_BACK    (uint8_t)(0x8)
 
+/**
+ * Test if motor speed is within valid range
+ */
 #define IS_VALID_SPEED(SPEED) ((SPEED >= MOTOR_SPEED_MIN) && (SPEED <= MOTOR_SPEED_MAX))
+
+/**
+ * Convert percentage of full speed to PWM pulse width
+ */
+#define MOTOR_SPEED_PERCENTAGE(PERCENTAGE) (uint32_t)((PERCENTAGE * ((MOTOR_SPEED_MAX - MOTOR_SPEED_MIN) / 100)) + MOTOR_SPEED_MIN)
 
 /**
  * Initialize timers for PWM control
  */
 void motors_init(void);
-
 
 /**
  * Set PWM duty cycle
