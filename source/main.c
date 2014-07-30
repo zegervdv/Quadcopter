@@ -51,7 +51,7 @@ int main(void) {
     uint8_t comp_data[COMPBUFFER] = {0};
     uint8_t acc_data[ACCBUFFER] = {0};
     sensor_data data;
-    command_typedef command;
+    command_typedef command = {0};
 
     // Read sensors
     gyroscope_read(gyro_data);

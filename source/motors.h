@@ -17,8 +17,17 @@
 #define TIM_FREQ      (uint32_t)(2e6)
 #define PWM_PRESCALER (uint32_t)(SYS_CLK / TIM_FREQ)
 #define PWM_FREQ      (uint32_t)(200)
-#define PWM_PERIOD    (uint32_t)(TIM_FREQ / PWM_FREQ)
+#define PWM_PERIOD    (uint32_t)((TIM_FREQ / PWM_FREQ))
 #define PWM_PULSE     (uint32_t)(PWM_PERIOD / (1000.0/PWM_FREQ))
+
+/**
+ * Commonly used motor speeds
+ * PWM pulse widths
+ */
+#define MOTOR_SPEED_MIN  (uint32_t)(1 * PWM_PULSE)
+#define MOTOR_SPEED_HALF (uint32_t)(1.5 * PWM_PULSE)
+#define MOTOR_SPEED_MAX  (uint32_t)(2 * PWM_PULSE)
+#define MOTOR_SPEED_OFF  (uint32_t)(1 * PWM_PULSE)
 
 /**
  * Identifiers for motors
@@ -32,6 +41,7 @@
 #define MOTOR_LEFT_BACK     (uint8_t)(0x4)
 #define MOTOR_RIGHT_BACK    (uint8_t)(0x8)
 
+#define IS_VALID_SPEED(SPEED) ((SPEED >= MOTOR_SPEED_MIN) && (SPEED <= MOTOR_SPEED_MAX))
 
 /**
  * Initialize timers for PWM control
@@ -46,7 +56,9 @@ void motors_init(void);
  *         MOTOR_RIGHT_FRONT
  *         MOTOR_LEFT_BACK
  *         MOTOR_RIGHT_BACK
- * speed - value of speed to be set as (percentage x100) of maximum speed
- *         range: [0..PWM_PERIOD]
+ * speed - uint in range of [2000 - 4000]
+ *         2000 = 0%   (1.0ms) -  motors off
+ *         3000 = 50%  (1.5ms) -  half speed
+ *         4000 = 100% (2.0ms) -  full speed
  */
 void motors_set_speed(uint8_t motor, uint32_t speed);
