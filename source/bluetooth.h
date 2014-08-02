@@ -46,7 +46,7 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
 /**
  * Test if RN42 module is connected to remote
  *
- * returs Bit_RESET if device is not connected
- * returs Bit_SET if device is connected
+ * returns 0 if device is not connected
+ * returns 1 if device is connected
  */
 uint8_t bluetooth_connected(void);

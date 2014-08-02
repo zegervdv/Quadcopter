@@ -147,7 +147,7 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
 }
 
 uint8_t bluetooth_connected(void) {
-  return GPIO_ReadInputDataBit(GPIOD, CONN_PIN);  
+  return GPIO_ReadInputDataBit(GPIOD, CONN_PIN) == Bit_SET;
 }
 
 /**
