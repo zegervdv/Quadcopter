@@ -9,7 +9,7 @@
 #include "string.h"
 
 #define RST_PIN   GPIO_Pin_12
-#define CONN_PIN  GPIO_Pin_1
+#define CONN_PIN  GPIO_Pin_0
 
 /**
  * Store received command bytes plus 8 bit CRC

@@ -18,7 +18,7 @@ To build a self-stabilizing quadcopter controlled via bluetooth.
 | PC10 | USART3 TX - Bluetooth comm.    |
 | PC11 | USART3 RX - Bluetooth comm.    |
 | PC12 | GPIO OUT - Reset Bluetooth     |
-| PD1  | GPIO IN - Connection Bluetooth |
+| PD0  | GPIO IN - Connection Bluetooth |
 | PC6  | PWM - Left Front motor         |
 | PC7  | PWM - Left Back motor          |
 | PC8  | PWM - Right Back motor         |
