@@ -3,12 +3,8 @@
  * 2014
  */
 
-#include "stm32f30x_it.h"
-#include "bluetooth.h"
-#include "sensors.h"
-#include "controls.h"
-#include "motors.h"
 #include <string.h>
+#include "system.h"
 
 
 #define GYROBUFFER    (3 * 2)
@@ -19,31 +15,9 @@
 uint8_t enabled = 0;
 
 int main(void) {
-  // Enable LEDS
-  STM_EVAL_LEDInit(LED3);
-  STM_EVAL_LEDInit(LED4);
-  STM_EVAL_LEDInit(LED5);
-  STM_EVAL_LEDInit(LED6);
-  STM_EVAL_LEDInit(LED7);
-  STM_EVAL_LEDInit(LED8);
-  STM_EVAL_LEDInit(LED9);
-  STM_EVAL_LEDInit(LED10);
+  // Initialize system
+  quadcopter_init();
 
-  // Initialize SysTick
-  RCC_ClocksTypeDef RCC_Clocks;
-  RCC_GetClocksFreq(&RCC_Clocks);
-  SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
-
-  // Initialize Peripherals
-  bluetooth_init();
-  gyroscope_init();
-  compass_init();
-  accelerometer_init();
-  motors_init();
-
-  // Initialize User Button
-  STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
-  
   while(1) {
     /* Loop and wait for interrupts */
     uint8_t stats[BUFFERSIZE];
