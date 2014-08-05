@@ -29,4 +29,16 @@ void quadcopter_init(void) {
 
   // Initialize User Button
   STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
+
+  // Clear reset flag
+  if(RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
+    RCC_ClearFlag();
+
+  // Setup Indepented Watchdog
+  IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+  IWDG_SetPrescaler(IWDG_Prescaler_32);
+  IWDG_SetReload(WDG_RLD_TIME(250));
+
+  IWDG_ReloadCounter();
+  IWDG_Enable();
 }

@@ -86,6 +86,9 @@ int main(void) {
 #endif
     // PID tuning
     Delay(10);
+
+    // Reset Watchdog
+    IWDG_ReloadCounter();
   }
 }
 
