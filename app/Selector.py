@@ -1,7 +1,7 @@
 #Gert-Jan De Vestel
-import PySide
-from PySide.QtGui import QDialog, QPushButton,QVBoxLayout
-from PySide.QtCore import QObject,SIGNAL
+import PyQt4
+from PyQt4.QtGui import QDialog, QPushButton,QVBoxLayout
+from PyQt4.QtCore import QObject,SIGNAL
 
 
 class Selector(QDialog):

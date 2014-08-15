@@ -1,6 +1,6 @@
-import PySide
-from PySide.QtCore import QThread,QObject,SIGNAL
-from PySide.QtGui import QErrorMessage
+import PyQt4
+from PyQt4.QtCore import QThread,QObject,SIGNAL
+from PyQt4.QtGui import QErrorMessage
 import serial, time, sys,copy
 
 class BluetoothThread(QThread):

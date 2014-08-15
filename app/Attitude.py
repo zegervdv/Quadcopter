@@ -1,7 +1,7 @@
 ﻿#author: De Vestel Gert-Jan
-import PySide
-from PySide.QtCore import *
-from PySide.QtGui import *
+import PyQt4
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 import sys
 import time
 

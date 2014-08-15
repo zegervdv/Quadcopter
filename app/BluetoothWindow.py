@@ -1,6 +1,6 @@
-import PySide
-from PySide.QtCore import SIGNAL,QObject,QEvent,Qt
-from PySide.QtGui import QPlainTextEdit,QWidget,QInputDialog,QSplitter,QMainWindow
+import PyQt4
+from PyQt4.QtCore import SIGNAL,QObject,QEvent,Qt
+from PyQt4.QtGui import QPlainTextEdit,QWidget,QInputDialog,QSplitter,QMainWindow
 from ControlPad import *
 from Compass import *
 from Attitude import *
@@ -34,8 +34,8 @@ class BluetoothWindow(QMainWindow):
 		self.sendbuf=outbuf
 		self.receivebuf=inbuf
 
-                self.pitchbuffer = [0] * 10
-                self.rollbuffer = [0] * 10
+		self.pitchbuffer = [0] * 10
+		self.rollbuffer = [0] * 10
 
 		self.cp=ControlPad()
 		self.input=ChatInput()
@@ -106,9 +106,9 @@ class BluetoothWindow(QMainWindow):
 				if accelerometer[i] & 0x800:
 					accelerometer[i] -= 0xFFF
 
-                        # Rotate axes
-                        magnetometer = [-mag for mag in magnetometer]
-                        accelerometer = [-acc for acc in accelerometer]
+			# Rotate axes
+			magnetometer = [-mag for mag in magnetometer]
+			accelerometer = [-acc for acc in accelerometer]
 
 			#self.output.appendPlainText("Device said:\n"+" ".join(gyroscope)+"\n"+" ".join(magnetometer)+"\n"+" ".join(accelerometer)+"\n")
 
@@ -116,13 +116,13 @@ class BluetoothWindow(QMainWindow):
 			pitch = math.atan2(accelerometer[0], math.sqrt(accelerometer[1]**2 + accelerometer[2]**2))
 			roll = math.atan2(accelerometer[1], math.sqrt(accelerometer[0]**2 + accelerometer[2]**2))
 
-                        self.pitchbuffer.pop(0)
-                        self.rollbuffer.pop(0)
-                        self.pitchbuffer.append(pitch)
-                        self.rollbuffer.append(roll)
-                        
-                        pitch = sum(self.pitchbuffer) / len(self.pitchbuffer)
-                        roll = sum(self.rollbuffer) / len(self.rollbuffer)
+			self.pitchbuffer.pop(0)
+			self.rollbuffer.pop(0)
+			self.pitchbuffer.append(pitch)
+			self.rollbuffer.append(roll)
+			
+			pitch = sum(self.pitchbuffer) / len(self.pitchbuffer)
+			roll = sum(self.rollbuffer) / len(self.rollbuffer)
 			
 			self.ai.setPitch(math.degrees(pitch))
 			self.ai.setRoll(math.degrees(roll))
