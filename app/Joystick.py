@@ -18,6 +18,12 @@ class Joystick(QWidget):
         self.y=0.5
         self.setMouseTracking(True)
         self.im=None
+        
+    def reset(self):
+        self.follow=False
+        self.x=0.5
+        self.y=0.5
+        self.repaint()
 
     def paintEvent(self, event):
 

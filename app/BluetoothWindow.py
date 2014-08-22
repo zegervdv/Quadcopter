@@ -114,7 +114,7 @@ class BluetoothWindow(QMainWindow):
             magnetometer = [-mag for mag in magnetometer]
             accelerometer = [-acc for acc in accelerometer]
 
-            #self.output.appendPlainText("Device said:\n"+" ".join(gyroscope)+"\n"+" ".join(magnetometer)+"\n"+" ".join(accelerometer)+"\n")
+            #self.output.appendPlainText("Device said:\n"+" ".join(gyroscope)
 
             # Calculate pitch and roll
             pitch = math.atan2(accelerometer[0], math.sqrt(accelerometer[1]**2 + accelerometer[2]**2))
@@ -138,7 +138,7 @@ class BluetoothWindow(QMainWindow):
             Yh = magnetometer[0] * math.sin(roll) * math.sin(pitch) + magnetometer[1] * math.cos(roll) - magnetometer[2] * math.sin(roll) * math.cos(pitch)
 
             heading = math.atan2(Yh, Xh)
-
+            
             if math.degrees(heading) < 0:
                 heading += math.pi * 2
 
@@ -146,6 +146,7 @@ class BluetoothWindow(QMainWindow):
 
             self.compass.setOrientation(math.degrees(heading))
             #self.output.appendPlainText("Device said:\n"+str(pitch)+" "+str(roll)+" "+str(heading))
+            self.repaint()            
             
         except:
             pass
@@ -168,7 +169,14 @@ class BluetoothWindow(QMainWindow):
             self.input.setFocus()
         else:
             self.cp.setFocus()
-
+            
+    def reset(self):
+        self.output.clear()
+        self.input.clear()
+        self.cp.reset()
+        self.compass.reset()
+        self.ai.reset()
+        self.joystick.reset()
 
 
 if __name__ == '__main__':

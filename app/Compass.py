@@ -26,6 +26,10 @@ class Compass(QWidget):
         self.parent=parent
         self.orientation=0
         self.resize(size,size)
+    
+    def reset(self):
+        self.orientation=0
+        self.repaint()
 
     def paintEvent(self, event):
 

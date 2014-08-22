@@ -11,6 +11,10 @@ class ControlPad(QWidget):
         self.keys=[False,False,False,False,False,False,False,False]
         self.x=[25,125,75,75,225,325,275,275]
         self.y=[75,75,25,125,75,75,25,125]
+        
+    def reset(self):
+        self.keys=[False,False,False,False,False,False,False,False]
+        self.repaint()
 
 
     def paintEvent(self, event):
@@ -43,21 +47,21 @@ class ControlPad(QWidget):
 
 		i=-1
 		key = event.key()
-		if key == Qt.Key_Left:
+		if key == Qt.Key_Q:
 			i=0
-		if key == Qt.Key_Right:
+		if key == Qt.Key_D:
 			i=1
-		if key == Qt.Key_Up:
+		if key == Qt.Key_Z:
 			i=2
-		if key == Qt.Key_Down:
+		if key == Qt.Key_W:
 			i=3
-		if key == Qt.Key_4:
+		if key == Qt.Key_Left:
 			i=4
-		if key == Qt.Key_6:
+		if key == Qt.Key_Right:
 			i=5
-		if key == Qt.Key_8:
+		if key == Qt.Key_Up:
 			i=6
-		if key == Qt.Key_2:
+		if key == Qt.Key_Down:
 			i=7
 		if key == Qt.Key_Tab:
 			self.emit(SIGNAL("TabPressed()"))
@@ -75,21 +79,21 @@ class ControlPad(QWidget):
 
 		i=-1
 		key = event.key()
-		if key == Qt.Key_Left:
+		if key == Qt.Key_Q:
 			i=0
-		if key == Qt.Key_Right:
+		if key == Qt.Key_D:
 			i=1
-		if key == Qt.Key_Up:
+		if key == Qt.Key_Z:
 			i=2
-		if key == Qt.Key_Down:
+		if key == Qt.Key_W:
 			i=3
-		if key == Qt.Key_4:
+		if key == Qt.Key_Left:
 			i=4
-		if key == Qt.Key_6:
+		if key == Qt.Key_Right:
 			i=5
-		if key == Qt.Key_8:
+		if key == Qt.Key_Up:
 			i=6
-		if key == Qt.Key_2:
+		if key == Qt.Key_Down:
 			i=7
 
 		if i!=-1:

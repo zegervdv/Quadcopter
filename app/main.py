@@ -11,6 +11,9 @@ import serial
 import serial.tools
 from serial.tools import list_ports
 
+
+app = QApplication(sys.argv)
+    
 sendBuffer=[]
 receiveBuffer=[]
 
@@ -36,40 +39,52 @@ def serial_ports():
 def ThreadCloser():
     bt.stop()
     pass
+            
+
+def startup():
+
+    p=list(serial_ports())
+    p.append("Rescan")
+    p.append("Exit")
+
+    buttonBox=Selector(p)
+    if buttonBox.exec_():
+        a= buttonBox.getValue()
+        
+        if a==len(p)-1:
+            sys.exit()
+        elif a==len(p)-2:
+            startup()
+            return                
+        else:
+            rm.reset()
+            bt.initialize(p[a])
+            rm.showMaximized()
+
+    else:
+        sys.exit()
+        
 
 if __name__ == '__main__':
 
-    app = QApplication(sys.argv)
     app.aboutToQuit.connect(ThreadCloser)    
-        
-    bt=BluetoothThread(sendBuffer,receiveBuffer)
-    rm=BluetoothWindow(receiveBuffer,sendBuffer)
-
     app.setApplicationName("QuadCopter Remote")
-           
-    
     app.setWindowIcon(QIcon('logo.png'))
 
     if (os.name == 'nt'):
     # This is needed to display the app icon on the taskbar on Windows 7
         import ctypes
         myappid = 'QuadCopter Remote' # arbitrary string
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)       
 
-    p=list(serial_ports())
 
-    buttonBox=Selector(p)
-    if buttonBox.exec_():
-        a= buttonBox.getValue()
-        if a==-1:
-            pass
-        else:
-            bt.initialize(p[a])
+    bt=BluetoothThread(sendBuffer,receiveBuffer)
+    rm=BluetoothWindow(receiveBuffer,sendBuffer)
+    QObject.connect(bt,SIGNAL("Post()"), rm.receiveText)
+    QObject.connect(rm,SIGNAL("Send()"), bt.send)
+    rm.setWindowTitle("QuadCopter Remote")
 
-            QObject.connect(bt,SIGNAL("Post()"), rm.receiveText)
-            QObject.connect(rm,SIGNAL("Send()"), bt.send)
-        
-            rm.setWindowTitle("QuadCopter Remote")
-            rm.showMaximized()
+    startup()
+    app.connect(bt,SIGNAL("Closing"),startup)
     
     sys.exit(app.exec_())

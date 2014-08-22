@@ -26,6 +26,7 @@ class Selector(QDialog):
 
         self.value=-1
         self.setLayout(self.selectorLayout)
+        self.setMinimumSize(400,100)
 
 
     def buttonClicked(self):
