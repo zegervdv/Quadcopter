@@ -8,19 +8,14 @@
 
 #include "stm32f30x_conf.h"
 
-#define CONTROL_MSG_SIZE 5
-
-#define ROLL_SCALE        (float) 0.0040906154343617
-#define PITCH_SCALE       (float) 0.0040906154343617
-#define THROTTLE_SCALE    1
-#define YAW_SCALE         1
+#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 1) 
 
 /**
  * Command structure
- * roll     - float between - 30° and +29.765625° (in radians)
- * pitch    - float between - 30° and +29.765625° (in radians)
- * throttle - float
- * yaw      - float between - and + (in radians)
+ * roll     - float between - 30° and +30° (in radians)
+ * pitch    - float between - 30° and +30° (in radians)
+ * throttle - float between - 0% and 100%
+ * yaw      - float between - 180° and +180° (in radians)
  */
 typedef struct {
   float roll;
@@ -30,8 +25,8 @@ typedef struct {
 } command_typedef;
 
 union unsigned_to_signed {
-  uint8_t input[CONTROL_MSG_SIZE];
-  int8_t formatted[CONTROL_MSG_SIZE];
+  uint8_t input[CONTROL_MSG_SIZE - 1];
+  float formatted[4];
 };
 
 /**

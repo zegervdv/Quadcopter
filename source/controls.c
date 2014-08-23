@@ -8,10 +8,10 @@
 
 void controls_format(uint8_t* data, command_typedef* command) {
   union unsigned_to_signed uts;
-  memcpy(uts.input, data, CONTROL_MSG_SIZE);
+  memcpy(uts.input, &data[1], CONTROL_MSG_SIZE - 1);
 
-  command->roll = (float)uts.formatted[0] / ROLL_SCALE;
-  command->pitch = (float)uts.formatted[1] / PITCH_SCALE;
-  command->throttle = (float)uts.formatted[2] / THROTTLE_SCALE;
-  command->yaw = (float)uts.formatted[3] / YAW_SCALE;
+  command->roll = (float)uts.formatted[0];
+  command->pitch = (float)uts.formatted[1];
+  command->throttle = (float)uts.formatted[2];
+  command->yaw = (float)uts.formatted[3];
 }
