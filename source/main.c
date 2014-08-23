@@ -10,7 +10,7 @@
 #define GYROBUFFER    (3 * 2)
 #define COMPBUFFER    (3 * 2)
 #define ACCBUFFER     (3 * 2)
-#define BUFFERSIZE    (GYROBUFFER + COMPBUFFER + ACCBUFFER)
+#define BUFFERSIZE    (5 * (sizeof(float)))
 
 uint8_t enabled = 0;
 
@@ -32,14 +32,12 @@ int main(void) {
     compass_read(comp_data);
     accelerometer_read(acc_data);
 
-    memcpy(stats, gyro_data, GYROBUFFER);
-    memcpy(stats + GYROBUFFER, comp_data, COMPBUFFER);
-    memcpy(stats + GYROBUFFER + COMPBUFFER, acc_data, ACCBUFFER);
+    sensors_format_data(gyro_data, comp_data, acc_data, &data);
+
+    memcpy(stats, &data.roll, BUFFERSIZE);
 
     if (bluetooth_connected())
       bluetooth_write(stats, BUFFERSIZE);
-
-    sensors_format_data(gyro_data, comp_data, acc_data, &data);
 
 #ifndef DEBUG
     if (enabled) {

@@ -43,8 +43,11 @@ typedef struct {
   float x_acceleration;
   float y_acceleration;
   float z_acceleration;
-  float pitch;
   float roll;
+  float pitch;
+  float yaw;
+  float height;
+  float battery;
 } sensor_data;
 
 /**

@@ -123,6 +123,7 @@ void accelerometer_to_float(uint8_t* data, float* value) {
 
 void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sensor_data* data) {
   float parsed[3] = {0};
+  float xh, yh;
 
   gyroscope_to_float(gyro, parsed);
   data->x_rotation = parsed[0];
@@ -141,4 +142,12 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sen
 
   data->pitch = atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration)));
   data->roll = atan2(data->y_acceleration, sqrt(SQ(data->x_acceleration) + SQ(data->z_acceleration)));
+
+  xh = data->x_magnetic * cos(data->pitch) + data->z_magnetic * sin(data->pitch);
+  yh = data->x_magnetic * sin(data->roll) + data->y_magnetic * cos(data->roll) - data->z_magnetic * sin(data->roll) * cos(data->pitch);
+  data->yaw = atan2(yh,xh);
+
+  // TODO: Add Height and battery level
+  data->height = 0;
+  data->battery = 0;
 }

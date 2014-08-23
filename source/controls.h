@@ -8,7 +8,7 @@
 
 #include "stm32f30x_conf.h"
 
-#define CONTROL_MSG_SIZE 4
+#define CONTROL_MSG_SIZE 5
 
 #define ROLL_SCALE        (float) 0.0040906154343617
 #define PITCH_SCALE       (float) 0.0040906154343617
