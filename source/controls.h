@@ -11,6 +11,12 @@
 #define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 1) 
 
 /**
+ * Indicator modes
+ */
+#define COMMAND_MODE   (0x00)
+#define TAKEOFF_MODE   (0xFF)
+
+/**
  * Command structure
  * roll     - float between - 30° and +30° (in radians)
  * pitch    - float between - 30° and +30° (in radians)
