@@ -42,12 +42,13 @@ The data send from the quadcopter has following formatting:
 
 ### Transmitting
 
-| Byte  | Name     | Value       |
-| ---   | ----     | ---         |
-| 0-3   | Roll     | [-π/6, π/6] |
-| 4-7   | Pitch    | [-π/6, π/6] |
-| 8-11  | Throttle | [0, 100%]   |
-| 12-15 | Yaw      | [-π, π]     |
+| Byte  | Name      | Value       |
+| ---   | ----      | ---         |
+| 0     | Indicator |             |
+| 1-4   | Roll      | [-π/6, π/6] |
+| 5-8   | Pitch     | [-π/6, π/6] |
+| 9-12  | Throttle  | [0, 100%]   |
+| 13-16 | Yaw       | [-π, π]     |
 
 ## Getting Started
 
