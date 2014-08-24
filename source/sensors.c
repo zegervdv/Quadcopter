@@ -148,6 +148,6 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sen
   data->yaw = atan2(yh,xh);
 
   // TODO: Add Height and battery level
-  data->height = 0;
+  data->altitude = 0;
   data->battery = 0;
 }

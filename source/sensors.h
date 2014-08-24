@@ -46,7 +46,7 @@ typedef struct {
   float roll;
   float pitch;
   float yaw;
-  float height;
+  float altitude;
   float battery;
 } sensor_data;
 

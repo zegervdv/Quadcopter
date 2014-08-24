@@ -30,15 +30,14 @@ To build a self-stabilizing quadcopter controlled via bluetooth.
 
 The data send from the quadcopter has following formatting:
 
-| Byte  | Name    | Value     |
-| ---   | ---     | ---       |
-| 0     | Sync    | 0x55      |
-| 1     | Sync    | 0x55      |
-| 2-5   | Roll    | [-π, π]   |
-| 6-9   | Pitch   | [-π, π]   |
-| 10-13 | Yaw     | [-π, π]   |
-| 14-17 | Height  | [0, 10m]  |
-| 18-21 | Battery | [0, 100%] |
+| Byte  | Name     | Value     |
+| ---   | ---      | ---       |
+| 0-1   | Sync     | 0x5555    |
+| 2-5   | Roll     | [-π, π]   |
+| 6-9   | Pitch    | [-π, π]   |
+| 10-13 | Yaw      | [-π, π]   |
+| 14-17 | Altitude | [0, 10m]  |
+| 18-21 | Battery  | [0, 100%] |
 
 ### Transmitting
 
