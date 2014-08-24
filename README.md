@@ -49,6 +49,13 @@ The data send from the quadcopter has following formatting:
 | 5-8   | Pitch     | [-π/6, π/6] |
 | 9-12  | Throttle  | [0, 100%]   |
 | 13-16 | Yaw       | [-π, π]     |
+| 17    | CRC       |             |
+
+| Indicator | Mode            |
+| ---       | ---             |
+| 00        | Normal Command  |
+| FF        | Takeoff/Land    |
+| other     | Reserved        |
 
 ## Getting Started
 
