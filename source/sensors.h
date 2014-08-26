@@ -5,6 +5,7 @@
  * of the STM32F3 Discovery
  */
 
+#include "stm32f30x_conf.h"
 #include "stm32f3_discovery_l3gd20.h"
 #include "stm32f3_discovery_lsm303dlhc.h"
 
@@ -106,11 +107,31 @@ void accelerometer_read(uint8_t* data);
 void accelerometer_to_float(uint8_t* data, float* value);
 
 /**
+ * Initialze ADC to measure battery voltage
+ */
+void battery_init(void);
+
+/**
+ * Read battery voltage
+ * data - float pointer to hold sampled voltage
+ */
+void battery_read(float* data);
+
+/**
+ * Convert raw data to flaot
+ * data - sampled battery voltage
+ * value - estimated battery percentage
+ */
+void battery_to_float(float* data, float* value);
+
+/**
  * Format raw sensor data into sensor_data struct
  * converts raw data to scaled floats and calculates pitch and roll
  * gyro     - uint8_t array with raw gyroscope data
  * accelero - uint8_t array with raw accelerometer data
  * magneto  - uint8_t array with raw magnetometer data
+ * altitude - float with altitude
+ * battery  - float with battery voltage
  * data     - pointer to sensor_data struct to hold data
  */
-void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sensor_data* data);
+void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data);

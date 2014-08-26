@@ -121,7 +121,61 @@ void accelerometer_to_float(uint8_t* data, float* value) {
   }
 }
 
-void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sensor_data* data) {
+void battery_init(void) {
+  GPIO_InitTypeDef gpio_init;
+  ADC_InitTypeDef adc_init;
+  ADC_CommonInitTypeDef adc_common_init;
+
+  RCC_ADCCLKConfig(RCC_ADC12PLLCLK_Div2);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ADC12, ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+
+  gpio_init.GPIO_Pin = GPIO_Pin_1;
+  gpio_init.GPIO_Mode = GPIO_Mode_AN;
+  gpio_init.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOC, &gpio_init);
+
+  ADC_StructInit(&adc_init);
+  ADC_VoltageRegulatorCmd(ADC1, ENABLE);
+
+  /* Calibrate ADC */
+  ADC_SelectCalibrationMode(ADC1, ADC_CalibrationMode_Single);
+  ADC_StartCalibration(ADC1);
+  while(ADC_GetCalibrationStatus(ADC1) != RESET);
+  /* calibration_value = ADC_GetCalibrationValue(ADC1); */
+
+  adc_common_init.ADC_Mode = ADC_Mode_Independent;
+  adc_common_init.ADC_Clock = ADC_Clock_AsynClkMode;
+  adc_common_init.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+  adc_common_init.ADC_DMAMode = ADC_DMAMode_OneShot;
+  adc_common_init.ADC_TwoSamplingDelay = 0;
+  ADC_CommonInit(ADC1, &adc_common_init);
+
+  adc_init.ADC_ContinuousConvMode = ADC_ContinuousConvMode_Enable;
+  adc_init.ADC_Resolution = ADC_Resolution_12b;
+  adc_init.ADC_ExternalTrigConvEvent = ADC_ExternalTrigConvEvent_0;
+  adc_init.ADC_ExternalTrigEventEdge = ADC_ExternalTrigEventEdge_None;
+  adc_init.ADC_DataAlign = ADC_DataAlign_Right;
+  adc_init.ADC_OverrunMode = ADC_OverrunMode_Disable;
+  adc_init.ADC_AutoInjMode = ADC_AutoInjec_Disable;
+  adc_init.ADC_NbrOfRegChannel = 1;
+  ADC_Init(ADC1, &adc_init);
+
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_7Cycles5);
+  ADC_Cmd(ADC1, ENABLE);
+
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_RDY));
+  ADC_StartConversion(ADC1);
+}
+
+void battery_read(float* data) {
+  __IO uint16_t raw;
+  while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+  raw = ADC_GetConversionValue(ADC1);
+  *data = (float)((raw * 3300)/0xFFF);
+}
+
+void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data) {
   float parsed[3] = {0};
   float xh, yh;
 
@@ -148,6 +202,6 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, sen
   data->yaw = atan2(yh,xh);
 
   // TODO: Add Height and battery level
-  data->altitude = 0;
-  data->battery = 0;
+  data->altitude = altitude;
+  data->battery = battery;
 }

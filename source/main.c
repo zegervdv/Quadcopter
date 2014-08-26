@@ -18,21 +18,25 @@ int main(void) {
   // Initialize system
   quadcopter_init();
 
+  uint8_t stats[BUFFERSIZE];
+  uint8_t gyro_data[GYROBUFFER] = {0};
+  uint8_t comp_data[COMPBUFFER] = {0};
+  uint8_t acc_data[ACCBUFFER] = {0};
+  float alt_data = 0;
+  float bat_data = 0;
+  sensor_data data;
+  command_typedef command = {0};
+
   while(1) {
     /* Loop and wait for interrupts */
-    uint8_t stats[BUFFERSIZE];
-    uint8_t gyro_data[GYROBUFFER] = {0};
-    uint8_t comp_data[COMPBUFFER] = {0};
-    uint8_t acc_data[ACCBUFFER] = {0};
-    sensor_data data;
-    command_typedef command = {0};
 
     // Read sensors
     gyroscope_read(gyro_data);
     compass_read(comp_data);
     accelerometer_read(acc_data);
+    battery_read(&bat_data);
 
-    sensors_format_data(gyro_data, comp_data, acc_data, &data);
+    sensors_format_data(gyro_data, comp_data, acc_data, alt_data, bat_data, &data);
 
     memcpy(stats, &data.roll, BUFFERSIZE);
 

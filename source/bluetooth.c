@@ -105,8 +105,9 @@ void bluetooth_init() {
   CRC_SetInitRegister(0);
   CRC_PolynomialSizeSelect(CRC_PolSize_8);
   CRC_SetPolynomial(0xD5);
-
-  bluetooth_reset();
+  
+  if (!bluetooth_connected())
+    bluetooth_reset();
 }
 
 void bluetooth_reset() {
