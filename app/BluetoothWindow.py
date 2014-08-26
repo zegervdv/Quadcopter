@@ -119,7 +119,7 @@ class BluetoothWindow(QMainWindow):
         #height=struct.unpack('f', heightdata)
         #battery=struct.unpack('f', batterydata)
         
-        print roll,pitch, yaw
+        print math.degrees(pitch[0]),math.degrees(roll[0]),math.degrees(yaw[0])
            
         self.ai.setPitch(math.degrees(pitch[0]))
         self.ai.setRoll(math.degrees(roll[0]))
