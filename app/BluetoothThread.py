@@ -1,7 +1,7 @@
 import PyQt4
 from PyQt4.QtCore import QThread,QObject,SIGNAL
 from PyQt4.QtGui import QErrorMessage
-import serial, time, sys,copy
+import serial, time, sys,copy,struct,crcmod
 
 
 class BluetoothThread(QThread):
@@ -21,8 +21,31 @@ class BluetoothThread(QThread):
         if self.ser.isOpen():
             while len(self.sendbuf):
                 a=self.sendbuf.pop(0)
-                self.ser.write(a)
-                time.sleep(0.05)
+                
+                data=[]
+                
+                if a[0]==0:
+                    if len(a)!=5:
+                        continue
+                    data.append(chr(0x00))
+                    for i in range(1,5):
+                        data+=struct.pack('f', a[i])
+                else:
+                    if len(a)!=16:
+                        continue
+                    data.append(chr(0xFF))
+                    for i in range(1,5):
+                        data+=chr(a[i])
+                 
+                crc = crcmod.Crc(0x1D5, initCrc=0, rev=False)
+                crc.update(data)
+                crc_byte = crc.crcValue
+                    
+                data+=[chr(crc_byte),'\n']
+                
+                for d in data:
+                    self.ser.write(d)
+                    time.sleep(0.05)
 
     def initialize(self,port):
         self.runThread=True
@@ -62,17 +85,17 @@ class BluetoothThread(QThread):
             t=time.time()
             
             if len(a)==0:
-                if t-self.timestamp>5:
-                    print "Connection lost"
-                    self.emit(SIGNAL("Closing"))
-                    break
-                else:
+#                if t-self.timestamp>5:
+#                    print "Connection lost"
+#                    self.emit(SIGNAL("Closing"))
+#                    break
+#                else:
                     continue
             
             self.timestamp=t
             self.databuffer.append(a)
             
-            if len(self.databuffer)<20:
+            if len(self.databuffer)<22:
                 continue
             
             if self.databuffer[0]=='U' and self.databuffer[1]=='U':

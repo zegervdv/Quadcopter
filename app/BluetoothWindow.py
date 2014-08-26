@@ -1,11 +1,11 @@
 import PyQt4
 from PyQt4.QtCore import SIGNAL,QObject,QEvent,Qt
 from PyQt4.QtGui import QPlainTextEdit,QWidget,QInputDialog,QSplitter,QMainWindow
-from ControlPad import *
+from KeyPad import *
 from Compass import *
 from Attitude import *
 from Joystick import *
-import math
+import math, struct
 
 class ChatInput(QPlainTextEdit):
 
@@ -38,7 +38,7 @@ class BluetoothWindow(QMainWindow):
         self.pitchbuffer = [0] * 10
         self.rollbuffer = [0] * 10
 
-        self.cp=ControlPad()
+        self.kp=KeyPad()
         self.input=ChatInput()
         self.output=QPlainTextEdit()
         self.compass=Compass()
@@ -59,7 +59,7 @@ class BluetoothWindow(QMainWindow):
 
         self.ver.addWidget(self.input)
         self.ver.addWidget(self.joystick)
-        self.ver.addWidget(self.cp)
+        self.ver.addWidget(self.kp)
 
         self.ver2.addWidget(self.output)
         self.ver2.addWidget(self.hor2)
@@ -69,11 +69,11 @@ class BluetoothWindow(QMainWindow):
 
         self.setCentralWidget(self.hor)
 
-        QObject.connect(self.input,SIGNAL("EnterPressed()"), self.sendText)
+        QObject.connect(self.input,SIGNAL("EnterPressed()"), self.sendCommand)
         QObject.connect(self.input,SIGNAL("TabPressed()"), self.swapFocus)
-        QObject.connect(self.cp,SIGNAL("TabPressed()"), self.swapFocus)
-        QObject.connect(self.cp,SIGNAL("Key(int)"), self.sendKey)
-        QObject.connect(self.joystick,SIGNAL("Moved(int)"), self.sendKey)
+        QObject.connect(self.kp,SIGNAL("TabPressed()"), self.swapFocus)
+        QObject.connect(self.kp,SIGNAL("Changed()"), self.sendData)
+        QObject.connect(self.joystick,SIGNAL("Changed()"), self.sendData)
 
         self.ver.setStretchFactor(0,7)
         self.ver.setStretchFactor(1,3)
@@ -85,95 +85,89 @@ class BluetoothWindow(QMainWindow):
         self.hor2.setStretchFactor(1,5)
 
     def receiveText(self):
-        try:
-            GYRO_SENSITIVITY_500 = 57.1429
-            MAGN_SENSITIVITY_8_1 = [230, 230, 205]
-            
-            raw=[]
-            for i in range(len(self.receivebuf)):
-                raw.append(ord(self.receivebuf.pop(0)))
-                
-            merged = [((raw[2*i] << 8) + raw[2*i+1]) for i in range(9)]
-            
-            # Fix signedness
-            for i in range(5):
-                if merged[i] & 0x8000:
-                    merged[i] -= 0xFFFF
+          
+#        | 2-5   | Roll    | [-pi, pi]   |
+#        | 6-9   | Pitch   | [-pi, pi]   |
+#        | 10-13 | Yaw     | [-pi, pi]   |
+#        | 14-17 | Height  | [0, 10m]  |
+#        | 18-21 | Battery | [0, 100%] |
+        
+        rolldata=""
+        pitchdata=""
+        yawdata=""
+        heightdata=""
+        batterydata=""
+        
+        for i in range(4):
+            rolldata+=self.receivebuf.pop(0)
+        
+        for i in range(4):
+            pitchdata+=self.receivebuf.pop(0)
+        
+        for i in range(4):
+            yawdata+=self.receivebuf.pop(0)
+        
+        for i in range(4):
+            heightdata+=self.receivebuf.pop(0)
+        
+        for i in range(4):
+            batterydata+=self.receivebuf.pop(0)
+        
+        roll=struct.unpack('f', rolldata)
+        pitch=struct.unpack('f', pitchdata)
+        yaw=struct.unpack('f', yawdata)
+        #height=struct.unpack('f', heightdata)
+        #battery=struct.unpack('f', batterydata)
+        
+        print roll,pitch, yaw
+           
+        self.ai.setPitch(math.degrees(pitch[0]))
+        self.ai.setRoll(math.degrees(roll[0]))
+        self.compass.setOrientation(math.degrees(yaw[0]))
+        self.repaint()            
 
-            # FS = 500 dps
-            gyroscope = [merged[i] / GYRO_SENSITIVITY_500 for i in range(3)]
-            # FS = 8100 mGauss
-            magnetometer = [merged[i] * 1000 / MAGN_SENSITIVITY_8_1[i-3] for i in range(3,6)]
-            # FS = 2000 mg
-            accelerometer = [merged[i] >> 4 for i in range(6,9)]
-            for i in xrange(len(accelerometer)):
-                if accelerometer[i] & 0x800:
-                    accelerometer[i] -= 0xFFF
 
-            # Rotate axes
-            magnetometer = [-mag for mag in magnetometer]
-            accelerometer = [-acc for acc in accelerometer]
-
-            #self.output.appendPlainText("Device said:\n"+" ".join(gyroscope)
-
-            # Calculate pitch and roll
-            pitch = math.atan2(accelerometer[0], math.sqrt(accelerometer[1]**2 + accelerometer[2]**2))
-            roll = math.atan2(accelerometer[1], math.sqrt(accelerometer[0]**2 + accelerometer[2]**2))
-
-            self.pitchbuffer.pop(0)
-            self.rollbuffer.pop(0)
-            self.pitchbuffer.append(pitch)
-            self.rollbuffer.append(roll)
-            
-            pitch = sum(self.pitchbuffer) / len(self.pitchbuffer)
-            roll = sum(self.rollbuffer) / len(self.rollbuffer)
-            
-            self.ai.setPitch(math.degrees(pitch))
-            self.ai.setRoll(math.degrees(roll))
-
-            #print "Pitch: {0}".format(math.degrees(pitch))
-            #print "Roll: {0}".format(math.degrees(roll))
-
-            Xh = magnetometer[0] * math.cos(pitch) + magnetometer[2] * math.sin(pitch)
-            Yh = magnetometer[0] * math.sin(roll) * math.sin(pitch) + magnetometer[1] * math.cos(roll) - magnetometer[2] * math.sin(roll) * math.cos(pitch)
-
-            heading = math.atan2(Yh, Xh)
-            
-            if math.degrees(heading) < 0:
-                heading += math.pi * 2
-
-            #print "Heading: {0}".format(math.degrees(heading))
-
-            self.compass.setOrientation(math.degrees(heading))
-            #self.output.appendPlainText("Device said:\n"+str(pitch)+" "+str(roll)+" "+str(heading))
-            self.repaint()            
-            
-        except:
-            pass
-
-    def sendText(self):
+    def sendCommand(self):
         text=self.input.toPlainText()
         self.output.appendPlainText("You said:\n"+text+"\n")
-        self.sendbuf.append(str(text))
+        t=list(str(text))   
+        l=float(16)
+        t+=['0']*int(l*math.ceil(len(t)/l)-len(t))   
+        
+        for i in range(int(math.ceil(len(t)/l))): 
+            n=[1]
+            for j in range(int(l)):
+                n.append(t[l*i+j])
+                
+            self.sendbuf.append(n)
+            
         self.emit(SIGNAL("Send()"))
         self.input.clear()
 
-    def sendKey(self, text):
-    
-        self.output.appendPlainText("You said:\n"+str(int(text))+"\n")
-        self.sendbuf.append(chr(text))
+    def sendData(self):
+        
+        t,y=self.kp.getValues()
+        r,p=self.joystick.getValues()
+        
+        r=-math.pi/6.0+(math.pi*r/3.0)
+        p=-math.pi/6.0+(math.pi*p/3.0)
+        y=-math.pi+(2*math.pi*y)
+        
+        self.sendbuf.append((0,r,t,p,y))
+        self.output.appendPlainText("New status:\n"+str(r)+" "+str(t)+" "+str(p)+" "+str(y)+"\n")
+        
         self.emit(SIGNAL("Send()"))
 
     def swapFocus(self):
-        if self.cp.hasFocus():
+        if self.kp.hasFocus():
             self.input.setFocus()
         else:
-            self.cp.setFocus()
+            self.kp.setFocus()
             
     def reset(self):
         self.output.clear()
         self.input.clear()
-        self.cp.reset()
+        self.kp.reset()
         self.compass.reset()
         self.ai.reset()
         self.joystick.reset()

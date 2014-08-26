@@ -46,8 +46,6 @@ class Joystick(QWidget):
             painter.setBrush(Qt.red)
         painter.drawEllipse((self.x-sticksize/2)*200,(self.y-sticksize/2)*200,sticksize*200,sticksize*200)
        
-       
-       
         painter.setPen(Qt.yellow)
         painter.drawLine(0,100,200,100)  
         painter.drawLine(100,0,100,200) 
@@ -86,13 +84,14 @@ class Joystick(QWidget):
             
         self.x=a/side
         self.y=b/side
-        
-        pos=int(self.x*4)<<4
-        pos=pos|int(self.y*4)
 
-        self.emit(SIGNAL("Moved(int)"),pos)        
+        self.emit(SIGNAL("Changed()"))        
         
         self.repaint()
+        
+    def getValues(self):
+        return self.x,self.y
+        
         
     def mousePressEvent(self, event):
         self.follow=not self.follow
