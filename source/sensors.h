@@ -34,6 +34,13 @@
 #define LSM303DLHC_M_SENSITIVITY_Z_5_6Ga      295   /*!< magnetometer Z axis sensitivity for 5.6 Ga full scale [LSB/Ga] */
 #define LSM303DLHC_M_SENSITIVITY_Z_8_1Ga      205   /*!< magnetometer Z axis sensitivity for 8.1 Ga full scale [LSB/Ga] */
 
+/**
+ * Define scaling for battery voltage
+ */
+#define BAT_R1    ((float) 560.0)
+#define BAT_R2    ((float) 820.0)
+#define BAT_SCALE ((float) (BAT_R1 + BAT_R2)/(BAT_R1))
+
 typedef struct {
   float x_rotation;
   float y_rotation;
@@ -120,7 +127,7 @@ void battery_read(float* data);
 /**
  * Convert raw data to flaot
  * data - sampled battery voltage
- * value - estimated battery percentage
+ * value - converted battery voltage
  */
 void battery_to_float(float* data, float* value);
 

@@ -23,6 +23,7 @@ To build a self-stabilizing quadcopter controlled via bluetooth.
 | PC7  | PWM - Left Back motor          |
 | PC8  | PWM - Right Back motor         |
 | PC9  | PWM - Right Front motor        |
+| PC1  | ADC1 - Battery Voltage         |
 
 ## Communication
 

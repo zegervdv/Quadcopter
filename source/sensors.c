@@ -175,8 +175,13 @@ void battery_read(float* data) {
   *data = (float)((raw * 3300)/0xFFF);
 }
 
+void battery_to_float(float* data, float* value) {
+  *value = (*data) * BAT_SCALE;
+}
+
 void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data) {
   float parsed[3] = {0};
+  float val = 0;
   float xh, yh;
 
   gyroscope_to_float(gyro, parsed);
@@ -201,7 +206,9 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
   yh = data->x_magnetic * sin(data->roll) + data->y_magnetic * cos(data->roll) - data->z_magnetic * sin(data->roll) * cos(data->pitch);
   data->yaw = atan2(yh,xh);
 
-  // TODO: Add Height and battery level
+  // TODO: Add Height
   data->altitude = altitude;
-  data->battery = battery;
+
+  battery_to_float(&battery, &val);
+  data->battery = val;
 }
