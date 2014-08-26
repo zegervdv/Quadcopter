@@ -25,6 +25,7 @@ void quadcopter_init(void) {
   gyroscope_init();
   compass_init();
   accelerometer_init();
+  battery_init();
   motors_init();
 
   // Initialize User Button
