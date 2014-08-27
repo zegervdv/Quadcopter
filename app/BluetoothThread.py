@@ -19,6 +19,7 @@ class BluetoothThread(QThread):
 
     def send(self):
         if self.ser.isOpen():
+            
             while len(self.sendbuf):
                 a=self.sendbuf.pop(0)
                 
@@ -36,9 +37,9 @@ class BluetoothThread(QThread):
                     data.append(chr(0xFF))
                     for i in range(1,5):
                         data+=chr(a[i])
-                 
+                        
                 crc = crcmod.Crc(0x1D5, initCrc=0, rev=False)
-                crc.update(data)
+                crc.update(str(data))
                 crc_byte = crc.crcValue
                     
                 data+=[chr(crc_byte),'\n']
