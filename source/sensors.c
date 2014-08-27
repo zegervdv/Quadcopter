@@ -111,12 +111,12 @@ void accelerometer_read(uint8_t* data) {
 
 void accelerometer_to_float(uint8_t* data, float* value) {
   uint8_t i;
-  int32_t temp;
+  int16_t temp;
 
   for (i = 0; i < 3; i++) {
-    temp = ((uint16_t)(data[2*i] << 8) + data[2*i+1]) >> 4;
-    if (temp & 0x800)
-      temp -= 0xFFF;
+    temp = (int16_t)((uint16_t)(data[2*i] << 8) + data[2*i+1]) / 16;
+    /* if (temp & 0x800) */
+    /*   temp -= 0xFFF; */
     value[i] = (float) temp / LSM_Acc_Sensitivity_2g;
   }
 }
@@ -195,8 +195,8 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
   data->z_magnetic = parsed[2];
 
   accelerometer_to_float(accelero, parsed);
-  data->x_acceleration = -1.0 * parsed[0];
-  data->y_acceleration = -1.0 * parsed[1];
+  data->x_acceleration = parsed[0];
+  data->y_acceleration = parsed[1];
   data->z_acceleration = parsed[2];
 
   data->pitch = atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration)));
