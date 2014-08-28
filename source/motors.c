@@ -65,12 +65,12 @@ void motors_init(void) {
 void motors_set_speed(uint8_t motor, uint32_t speed) {
   if(IS_VALID_SPEED(speed)) {
     if(MOTOR_LEFT_FRONT & motor)
-      TIM_SetCompare1(TIM8, speed);
-    if(MOTOR_RIGHT_FRONT & motor)
-      TIM_SetCompare4(TIM8, speed);
-    if(MOTOR_LEFT_BACK & motor)
       TIM_SetCompare2(TIM8, speed);
-    if(MOTOR_RIGHT_BACK & motor)
+    if(MOTOR_RIGHT_FRONT & motor)
       TIM_SetCompare3(TIM8, speed);
+    if(MOTOR_LEFT_BACK & motor)
+      TIM_SetCompare1(TIM8, speed);
+    if(MOTOR_RIGHT_BACK & motor)
+      TIM_SetCompare4(TIM8, speed);
   }
 }
