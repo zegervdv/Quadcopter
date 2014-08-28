@@ -6,8 +6,6 @@ import serial, time, sys,copy,struct,crcmod
 
 class BluetoothThread(QThread):
     
-    timestamp=0
-
     def __init__(self, sbuf, rbuf, parent=None):
         QThread.__init__(self,parent)
 
@@ -18,7 +16,35 @@ class BluetoothThread(QThread):
         self.databuffer=[]
 
     def send(self):
-        pass
+        if self.ser.isOpen():
+            
+            while len(self.sendbuf)>0:
+                a=self.sendbuf.pop(0)
+                    
+                data=[]
+                
+                if a[0]==0:
+                    if len(a)!=5:
+                        continue
+                    data.append(chr(0x00))
+                    for i in range(1,5):
+                        data+=struct.pack('f', a[i])
+                else:
+                    if len(a)!=16:
+                        continue
+                    data.append(chr(0xFF))
+                    for i in range(1,5):
+                        data+=chr(a[i])
+                        
+                crc = crcmod.Crc(0x1D5, initCrc=0, rev=False)
+                crc.update(str(data))
+                crc_byte = crc.crcValue
+                        
+                data+=[chr(crc_byte),'\n']
+              
+                for d in data:
+                    self.ser.write(d)
+                    time.sleep(0.05)
 
     def initialize(self,port):
         self.runThread=True
@@ -34,7 +60,7 @@ class BluetoothThread(QThread):
         self.ser.bytesize = serial.EIGHTBITS #number of bits per bytes
         self.ser.parity = serial.PARITY_NONE #set parity check: no parity
         self.ser.stopbits = serial.STOPBITS_ONE #number of stop bits
-        self.ser.timeout = 0          #block read
+        self.ser.timeout = None          #block read
         self.ser.xonxoff = False     #disable software flow control
         self.ser.rtscts = False     #disable hardware (RTS/CTS) flow control
         self.ser.dsrdtr = False       #disable hardware (DSR/DTR) flow control
@@ -54,47 +80,7 @@ class BluetoothThread(QThread):
     def run(self):
         while self.runThread:
             
-            if self.ser.isOpen() and len(self.sendbuf)>0:
-                a=self.sendbuf.pop(0)
-                
-                data=[]
-                
-                if a[0]==0:
-                    if len(a)!=5:
-                        continue
-                    data.append(chr(0x00))
-                    for i in range(1,5):
-                        data+=struct.pack('f', a[i])
-                else:
-                    if len(a)!=16:
-                        continue
-                    data.append(chr(0xFF))
-                    for i in range(1,5):
-                        data+=chr(a[i])
-                        
-#                crc = crcmod.Crc(0x1D5, initCrc=0, rev=False)
-#                crc.update(str(data))
-#                crc_byte = crc.crcValue
-#                    
-#                data+=[chr(crc_byte),chr('\n')]
-                data+=[chr('\n')]
-                
-                for d in data:
-                    self.ser.write(d)
-                    time.sleep(0.05)
-       
-            a=self.ser.read()           
-            t=time.time()
-            
-            if len(a)==0:
-#                if t-self.timestamp>5:
-#                    print "Connection lost"
-#                    self.emit(SIGNAL("Closing"))
-#                    break
-#                else:
-                    continue
-            
-            self.timestamp=t
+            a=self.ser.read()       
             self.databuffer.append(a)
             
             if len(self.databuffer)<22:

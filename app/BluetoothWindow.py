@@ -124,8 +124,7 @@ class BluetoothWindow(QMainWindow):
         self.ai.setPitch(math.degrees(pitch[0]))
         self.ai.setRoll(math.degrees(roll[0]))
         self.compass.setOrientation(math.degrees(yaw[0]))
-        self.repaint()            
-
+        self.repaint()           
 
     def sendCommand(self):
         text=self.input.toPlainText()
