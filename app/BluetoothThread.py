@@ -18,35 +18,7 @@ class BluetoothThread(QThread):
         self.databuffer=[]
 
     def send(self):
-        if self.ser.isOpen():
-            
-            while len(self.sendbuf):
-                a=self.sendbuf.pop(0)
-                
-                data=[]
-                
-                if a[0]==0:
-                    if len(a)!=5:
-                        continue
-                    data.append(chr(0x00))
-                    for i in range(1,5):
-                        data+=struct.pack('f', a[i])
-                else:
-                    if len(a)!=16:
-                        continue
-                    data.append(chr(0xFF))
-                    for i in range(1,5):
-                        data+=chr(a[i])
-                        
-                crc = crcmod.Crc(0x1D5, initCrc=0, rev=False)
-                crc.update(str(data))
-                crc_byte = crc.crcValue
-                    
-                data+=[chr(crc_byte),'\n']
-                
-                for d in data:
-                    self.ser.write(d)
-                    time.sleep(0.05)
+        pass
 
     def initialize(self,port):
         self.runThread=True
@@ -81,6 +53,35 @@ class BluetoothThread(QThread):
 
     def run(self):
         while self.runThread:
+            
+            if self.ser.isOpen() and len(self.sendbuf)>0:
+                a=self.sendbuf.pop(0)
+                
+                data=[]
+                
+                if a[0]==0:
+                    if len(a)!=5:
+                        continue
+                    data.append(chr(0x00))
+                    for i in range(1,5):
+                        data+=struct.pack('f', a[i])
+                else:
+                    if len(a)!=16:
+                        continue
+                    data.append(chr(0xFF))
+                    for i in range(1,5):
+                        data+=chr(a[i])
+                        
+#                crc = crcmod.Crc(0x1D5, initCrc=0, rev=False)
+#                crc.update(str(data))
+#                crc_byte = crc.crcValue
+#                    
+#                data+=[chr(crc_byte),chr('\n')]
+                data+=[chr('\n')]
+                
+                for d in data:
+                    self.ser.write(d)
+                    time.sleep(0.05)
        
             a=self.ser.read()           
             t=time.time()

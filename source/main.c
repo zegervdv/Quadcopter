@@ -38,17 +38,7 @@ int main(void) {
 
     sensors_format_data(gyro_data, comp_data, acc_data, alt_data, bat_data, &data);
 
-    //memcpy(stats, &data.roll, BUFFERSIZE);
-	float a=1.12;
-	memcpy(stats, &a, sizeof(float));
-	a=2.23;
-	memcpy(stats+sizeof(float), &a, sizeof(float));
-	a=3.34;
-	memcpy(stats+2*sizeof(float), &a, sizeof(float));
-	a=4.45;
-	memcpy(stats+3*sizeof(float), &a, sizeof(float));
-	a=5.56;
-	memcpy(stats+4*sizeof(float), &a, sizeof(float));
+    memcpy(stats, &data.roll, BUFFERSIZE);
 	
 	if (bluetooth_connected())
       bluetooth_write(stats, BUFFERSIZE);
