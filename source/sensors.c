@@ -115,8 +115,6 @@ void accelerometer_to_float(uint8_t* data, float* value) {
 
   for (i = 0; i < 3; i++) {
     temp = (int16_t)((uint16_t)(data[2*i] << 8) + data[2*i+1]) / 16;
-    /* if (temp & 0x800) */
-    /*   temp -= 0xFFF; */
     value[i] = (float) temp / LSM_Acc_Sensitivity_2g;
   }
 }
@@ -189,15 +187,16 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
   data->y_rotation = parsed[1];
   data->z_rotation = parsed[2];
 
+  // Rotate axes
   compass_to_float(magneto, parsed);
-  data->x_magnetic = parsed[0];
-  data->y_magnetic = parsed[1];
-  data->z_magnetic = parsed[2];
+  data->x_magnetic = -1.0 * parsed[0];
+  data->y_magnetic = -1.0 * parsed[1];
+  data->z_magnetic = -1.0 * parsed[2];
 
   accelerometer_to_float(accelero, parsed);
-  data->x_acceleration = parsed[0];
-  data->y_acceleration = parsed[1];
-  data->z_acceleration = parsed[2];
+  data->x_acceleration = -1.0 * parsed[0];
+  data->y_acceleration = -1.0 * parsed[1];
+  data->z_acceleration = -1.0 * parsed[2];
 
   data->pitch = atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration)));
   data->roll = atan2(data->y_acceleration, sqrt(SQ(data->x_acceleration) + SQ(data->z_acceleration)));
