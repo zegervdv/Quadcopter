@@ -36,7 +36,7 @@ int main(void) {
     accelerometer_read(acc_data);
     battery_read(&bat_data);
 
-    sensors_format_data(gyro_data, comp_data, acc_data, alt_data, bat_data, &data);
+    sensors_format_data(gyro_data, acc_data, comp_data, alt_data, bat_data, &data);
 
     memcpy(stats, &data.roll, BUFFERSIZE);
 	
