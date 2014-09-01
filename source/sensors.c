@@ -212,7 +212,9 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
 
   xh = data->x_magnetic * cos(data->pitch) + data->z_magnetic * sin(data->pitch);
   yh = data->x_magnetic * sin(data->roll) + data->y_magnetic * cos(data->roll) - data->z_magnetic * sin(data->roll) * cos(data->pitch);
-  data->yaw = atan2(yh,xh);
+  sensor_moving_average.yaw = sensor_moving_average.yaw - atan2(yh,xh) - (sensor_moving_average.yaw / AVG_WNDW_SIZE);
+
+  data->yaw = sensor_moving_average.yaw / AVG_WNDW_SIZE;
 
   // TODO: Add Height
   data->altitude = altitude;
