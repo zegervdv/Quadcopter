@@ -41,6 +41,17 @@
 #define BAT_R2    ((float) 820.0)
 #define BAT_SCALE ((float) (BAT_R1 + BAT_R2)/(BAT_R1))
 
+/**
+ * Moving average window size
+ */
+#define AVG_WNDW_SIZE   ((float) 10.0)
+
+typedef struct {
+  float roll;
+  float pitch;
+  float yaw;
+} sensor_average;
+
 typedef struct {
   float x_rotation;
   float y_rotation;

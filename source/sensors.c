@@ -10,6 +10,12 @@
 
 #define SQ(x) ((x) * (x))
 
+/**
+ * Moving averages for Pitch, Roll and Yaw
+ * Values are N * Moving Average
+ */
+sensor_average sensor_moving_average = {0};
+
 void gyroscope_init(void) {
   L3GD20_InitTypeDef L3GD20_InitStructure;
   L3GD20_FilterConfigTypeDef L3GD20_FilterStructure;
@@ -198,8 +204,11 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
   data->y_acceleration = -1.0 * parsed[1];
   data->z_acceleration = -1.0 * parsed[2];
 
-  data->pitch = atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration)));
-  data->roll = atan2(data->y_acceleration, sqrt(SQ(data->x_acceleration) + SQ(data->z_acceleration)));
+  sensor_moving_average.pitch = sensor_moving_average.pitch - atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.pitch / AVG_WNDW_SIZE);
+  sensor_moving_average.roll = sensor_moving_average.roll - atan2(data->y_acceleration, sqrt(SQ(data->x_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.roll / AVG_WNDW_SIZE);
+
+  data->pitch = sensor_moving_average.pitch / AVG_WNDW_SIZE;
+  data->roll = sensor_moving_average.roll / AVG_WNDW_SIZE;
 
   xh = data->x_magnetic * cos(data->pitch) + data->z_magnetic * sin(data->pitch);
   yh = data->x_magnetic * sin(data->roll) + data->y_magnetic * cos(data->roll) - data->z_magnetic * sin(data->roll) * cos(data->pitch);
