@@ -15,9 +15,9 @@
  */
 #define SYS_CLK       (uint32_t)(72e6)
 #define TIM_FREQ      (uint32_t)(2e6)
-#define PWM_PRESCALER (uint32_t)(SYS_CLK / TIM_FREQ)
+#define PWM_PRESCALER (uint32_t)((SYS_CLK / TIM_FREQ) - 1)
 #define PWM_FREQ      (uint32_t)(200)
-#define PWM_PERIOD    (uint32_t)((TIM_FREQ / PWM_FREQ))
+#define PWM_PERIOD    (uint32_t)((TIM_FREQ / PWM_FREQ) - 1)
 #define PWM_PULSE     (uint32_t)(PWM_PERIOD / (1000.0/PWM_FREQ))
 
 /**
