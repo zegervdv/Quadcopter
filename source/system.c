@@ -15,6 +15,8 @@ void quadcopter_init(void) {
   STM_EVAL_LEDInit(LED9);
   STM_EVAL_LEDInit(LED10);
 
+  STM_EVAL_LEDOn(LED6);
+  STM_EVAL_LEDOn(LED7);
   // Initialize SysTick
   RCC_ClocksTypeDef RCC_Clocks;
   RCC_GetClocksFreq(&RCC_Clocks);
@@ -42,4 +44,6 @@ void quadcopter_init(void) {
 
   IWDG_ReloadCounter();
   IWDG_Enable();
+  STM_EVAL_LEDOff(LED6);
+  STM_EVAL_LEDOff(LED7);
 }
