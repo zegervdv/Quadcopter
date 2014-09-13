@@ -26,6 +26,7 @@ int main(void) {
   float bat_data = 0;
   sensor_data data;
 
+  motors_set_speed(MOTOR_ALL, 700);
   while(1) {
     /* Loop and wait for interrupts */
 

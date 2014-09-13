@@ -40,6 +40,7 @@
 #define MOTOR_RIGHT_FRONT   (uint8_t)(0x2)
 #define MOTOR_LEFT_BACK     (uint8_t)(0x4)
 #define MOTOR_RIGHT_BACK    (uint8_t)(0x8)
+#define MOTOR_ALL           (uint8_t)(MOTOR_LEFT_FRONT | MOTOR_RIGHT_FRONT | MOTOR_LEFT_BACK | MOTOR_RIGHT_BACK)
 
 /**
  * Test if motor speed is within valid range
