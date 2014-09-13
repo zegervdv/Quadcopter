@@ -88,6 +88,7 @@ class Joystick(QWidget):
         self.emit(SIGNAL("Changed()"))        
         
         self.repaint()
+        event.accept()
         
     def getValues(self):
         return self.x,self.y
@@ -96,17 +97,22 @@ class Joystick(QWidget):
     def mousePressEvent(self, event):
         self.follow=not self.follow
         self.repaint()
+        event.accept()
         
     def mouseReleaseEvent(self, event):
+        event.accept()
         pass
 
     def wheelEvent(self, event):
+        event.accept()
         pass
 
     def enterEvent(self, event):
+        event.accept()
         pass
 
     def leaveEvent(self, event):
+        event.accept()
         pass
 
 

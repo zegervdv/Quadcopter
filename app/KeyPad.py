@@ -86,6 +86,7 @@ class KeyPad(QWidget):
                 self.keys[i]=True
                 self.keyChanged()
                 self.repaint()
+        event.accept()
 
     def keyReleaseEvent(self, event):
         if event.isAutoRepeat():
@@ -115,6 +116,7 @@ class KeyPad(QWidget):
                 self.keys[i]=False
                 self.keyChanged()
                 self.repaint()
+        event.accept()
 
     def keyChanged(self):
         self.emit(SIGNAL("Changed()"))

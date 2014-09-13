@@ -136,7 +136,7 @@ class BluetoothWindow(QMainWindow):
         for i in range(int(math.ceil(len(t)/l))): 
             n=[1]
             for j in range(int(l)):
-                n.append(t[l*i+j])
+                n.append(t[int(l)*i+j])
                 
             self.sendbuf.append(n)
             
