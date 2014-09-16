@@ -6,6 +6,11 @@
 #include "controls.h"
 #include "string.h"
 
+/**
+ * Formatted commands
+ */
+command_typedef command = {0};
+
 void controls_format(uint8_t* data, command_typedef* command) {
   union unsigned_to_signed uts;
   switch (data[0]) {

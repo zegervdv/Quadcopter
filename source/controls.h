@@ -30,6 +30,8 @@ typedef struct {
   float yaw;
 } command_typedef;
 
+extern command_typedef command;
+
 union unsigned_to_signed {
   uint8_t input[CONTROL_MSG_SIZE - 1];
   float formatted[4];

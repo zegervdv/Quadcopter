@@ -25,7 +25,6 @@ int main(void) {
   float alt_data = 0;
   float bat_data = 0;
   sensor_data data;
-  command_typedef command = {0};
 
   while(1) {
     /* Loop and wait for interrupts */
@@ -46,11 +45,6 @@ int main(void) {
 #ifndef DEBUG
     if (enabled) {
 #endif
-
-      if ((bluetooth_connected()) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE]))) {
-        // Convert received bytes to command
-        controls_format(command_bytes, &command);
-      }
 
       if (command.pitch < 0) {
         STM_EVAL_LEDOn(LED3);

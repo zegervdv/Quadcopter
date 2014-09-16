@@ -4,6 +4,9 @@
  * 2014, Zeger Van de Vannet
  */
 
+#ifndef BLUETOOTH_H
+#define BLUETOOTH_H
+
 #include "stm32f30x.h"
 #include "stm32f30x_conf.h"
 #include "stm32f3_discovery.h"
@@ -50,3 +53,5 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
  * returns 1 if device is connected
  */
 uint8_t bluetooth_connected(void);
+
+#endif

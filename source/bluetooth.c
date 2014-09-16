@@ -151,21 +151,5 @@ uint8_t bluetooth_connected(void) {
   return GPIO_ReadInputDataBit(GPIOD, CONN_PIN) == Bit_SET;
 }
 
-/**
- * USART3 Interrupt handler
- */
-void USART3_IRQHandler(void) {
-  if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
-    static uint8_t cnt = 0;
-		char t = USART_ReceiveData(USART3);
-
-    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE + 1) ) {
-      command_bytes[cnt] = t;
-      cnt++;
-    }else {
-      cnt = 0;
-    }
-  }
-}
 
 
