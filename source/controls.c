@@ -15,7 +15,7 @@ void controls_format(uint8_t* data, command_typedef* command) {
   union unsigned_to_signed uts;
   switch (data[0]) {
     case COMMAND_MODE:
-      memcpy(uts.input, &data[1], CONTROL_MSG_SIZE - 1);
+      memcpy(uts.input, &data[1], CONTROL_MSG_SIZE - 2);
 
       command->roll = (float)uts.formatted[0];
       command->pitch = (float)uts.formatted[1];

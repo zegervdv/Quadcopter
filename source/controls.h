@@ -8,7 +8,7 @@
 
 #include "stm32f30x_conf.h"
 
-#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 1) 
+#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 2) 
 
 /**
  * Indicator modes

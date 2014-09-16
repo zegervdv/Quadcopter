@@ -109,3 +109,6 @@ remake: clean all
 # Flash the STM32F4
 burn: all
 	st-flash write $(PROJ_NAME).bin 0x8000000
+
+flash:
+	st-flash write $(PROJ_NAME).bin 0x8000000

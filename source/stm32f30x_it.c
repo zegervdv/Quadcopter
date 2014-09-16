@@ -76,12 +76,12 @@ void USART3_IRQHandler(void) {
   if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
     static uint8_t cnt = 0;
     char t = USART_ReceiveData(USART3);
-    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE + 1) ) {
+    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE) ) {
       command_bytes[cnt] = t;
       cnt++;
     }else {
       STM_EVAL_LEDOn(LED3);
-      if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE, command_bytes[CONTROL_MSG_SIZE])) {
+      if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1])) {
         STM_EVAL_LEDOn(LED10);
         // Convert received bytes to command
         controls_format(command_bytes, &command);
