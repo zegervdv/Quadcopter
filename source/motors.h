@@ -77,3 +77,9 @@ void motors_arm_escs(void);
  *         4000 = 100% (2.0ms)  - full speed
  */
 void motors_set_speed(uint8_t motor, uint32_t speed);
+
+/**
+ * Set duty cycle based on pid values
+ * pid_pwm_values - calculated PID values
+ */
+void motors_pid_apply(control_pid_pwm_typedef pid_pwm_values);

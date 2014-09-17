@@ -8,7 +8,7 @@
 
 #include "stm32f30x_conf.h"
 
-#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 2) 
+#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 2)
 
 /**
  * Indicator modes
@@ -31,11 +31,27 @@ typedef struct {
 } command_typedef;
 
 extern command_typedef command;
+extern uint8_t command_valid;
 
 union unsigned_to_signed {
   uint8_t input[CONTROL_MSG_SIZE - 1];
   float formatted[4];
 };
+
+/**
+ * PID - PWM control values
+ * Output of 3 PID loops scaled for PWM motor control and scaled throttle
+ * roll     - uint16_t between 0 and 2000
+ * pitch    - uint16_t between 0 and 2000
+ * throttle - uint16_t between 2000 and 4000
+ * yaw      - uint16_t between 0 and 2000
+ */
+typedef struct {
+  uint16_t roll;
+  uint16_t pitch;
+  uint16_t throttle;
+  uint16_t yaw;
+} control_pid_pwm_typedef;
 
 /**
  * Convert raw input data to command_typedef

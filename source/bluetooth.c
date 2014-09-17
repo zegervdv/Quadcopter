@@ -139,10 +139,8 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
   CRC_ResetDR();
 
   while(data_bytes < end) {
-    CRC_CalcCRC8bits(*data_bytes++);
+    check = CRC_CalcCRC8bits(*data_bytes++);
   }
-
-  check = (uint8_t)CRC_GetCRC();
 
   return check == checksum;
 }

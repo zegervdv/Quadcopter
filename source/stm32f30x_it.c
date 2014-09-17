@@ -4,6 +4,7 @@
 
 #include "stm32f30x_it.h"
 #include "controls.h"
+#include <string.h>
 
 int i;
 extern uint8_t enabled;
@@ -81,11 +82,11 @@ void USART3_IRQHandler(void) {
       cnt++;
     }else {
       STM_EVAL_LEDOn(LED3);
-      if (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1])) {
-        STM_EVAL_LEDOn(LED10);
-        // Convert received bytes to command
-        controls_format(command_bytes, &command);
-      }
+      command_valid = 0x01;
+      // Convert received bytes to command
+      controls_format(command_bytes, &command);
+      // Reset command bytes
+      memset(command_bytes, 0, CONTROL_MSG_SIZE);
       cnt = 0;
     }
   }

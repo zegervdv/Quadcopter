@@ -25,6 +25,7 @@ int main(void) {
   float alt_data = 0;
   float bat_data = 0;
   sensor_data data;
+  control_pid_pwm_typedef pid_pwm_values = {0};
 
   while(1) {
     /* Loop and wait for interrupts */
@@ -38,13 +39,29 @@ int main(void) {
     sensors_format_data(gyro_data, acc_data, comp_data, alt_data, bat_data, &data);
 
     memcpy(stats, &data.roll, BUFFERSIZE);
-	
-	if (bluetooth_connected())
-      bluetooth_write(stats, BUFFERSIZE);
+
+    if (bluetooth_connected())
+        bluetooth_write(stats, BUFFERSIZE);
 
 #ifndef DEBUG
     if (enabled) {
 #endif
+
+      if ((command_valid) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1]))) {
+        STM_EVAL_LEDOn(LED10);
+      }else {
+        memset(&command, 0, sizeof(command_typedef));
+      }
+      // Reset command flag
+      command_valid = 0x0;
+
+      // PID tuning
+      Delay(10);
+
+      pid_pwm_values.throttle = 2000 + (uint16_t)(command.throttle * 1.5);
+
+      // Set motor speeds
+      motors_pid_apply(pid_pwm_values);
 
       if (command.pitch < 0) {
         STM_EVAL_LEDOn(LED3);
@@ -73,15 +90,11 @@ int main(void) {
         STM_EVAL_LEDOff(LED5);
       }
 
-      // Reset command bytes
-      memset(command_bytes, 0, CONTROL_MSG_SIZE);
 #ifndef DEBUG
     }else {
       // Animation
     }
 #endif
-    // PID tuning
-    Delay(10);
 
     // Reset Watchdog
     IWDG_ReloadCounter();

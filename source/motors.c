@@ -80,3 +80,10 @@ void motors_set_speed(uint8_t motor, uint32_t speed) {
       TIM_SetCompare4(TIM8, speed);
   /* } */
 }
+
+void motors_pid_apply(control_pid_pwm_typedef pid_pwm_values) {
+  motors_set_speed(MOTOR_RIGHT_FRONT, pid_pwm_values.throttle - pid_pwm_values.pitch - pid_pwm_values.roll - pid_pwm_values.yaw);
+  motors_set_speed(MOTOR_LEFT_FRONT, pid_pwm_values.throttle - pid_pwm_values.pitch + pid_pwm_values.roll + pid_pwm_values.yaw);
+  motors_set_speed(MOTOR_RIGHT_BACK, pid_pwm_values.throttle + pid_pwm_values.pitch - pid_pwm_values.roll + pid_pwm_values.yaw);
+  motors_set_speed(MOTOR_LEFT_BACK, pid_pwm_values.throttle + pid_pwm_values.pitch + pid_pwm_values.roll - pid_pwm_values.yaw);
+}

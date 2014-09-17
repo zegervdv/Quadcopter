@@ -11,6 +11,11 @@
  */
 command_typedef command = {0};
 
+/**
+ * Set to 1 if command is valid
+ */
+uint8_t command_valid = 0;
+
 void controls_format(uint8_t* data, command_typedef* command) {
   union unsigned_to_signed uts;
   switch (data[0]) {
