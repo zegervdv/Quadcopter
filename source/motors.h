@@ -27,7 +27,7 @@
  */
 #define MOTOR_SPEED_MIN  (uint32_t)(1.15 * PWM_PULSE)
 #define MOTOR_SPEED_HALF (uint32_t)(1.5 * PWM_PULSE)
-#define MOTOR_SPEED_MAX  (uint32_t)(1.85 * PWM_PULSE)
+#define MOTOR_SPEED_MAX  (uint32_t)(2 * PWM_PULSE)
 #define MOTOR_SPEED_OFF  (uint32_t)(1 * PWM_PULSE)
 
 /**
@@ -70,9 +70,10 @@ void motors_arm_escs(void);
  *         MOTOR_RIGHT_FRONT
  *         MOTOR_LEFT_BACK
  *         MOTOR_RIGHT_BACK
- * speed - uint in range of [2300 - 3700]
- *         2300 = 0%   (1.15ms) - motors off
+ * speed - uint in range of [2000 - 4000]
+ *         2000 = 0%   (1.0 ms) - motors off
+ *         2300 = 15%  (1.15ms) - low speed
  *         3000 = 50%  (1.5ms)  - half speed
- *         3700 = 100% (1.85ms) - full speed
+ *         4000 = 100% (2.0ms)  - full speed
  */
 void motors_set_speed(uint8_t motor, uint32_t speed);
