@@ -62,8 +62,14 @@ void motors_init(void) {
   TIM_Cmd(TIM8, ENABLE);
 }
 
+void motors_arm_escs() {
+  Delay(3000);
+  motors_set_speed(MOTOR_ALL, 2000);
+  Delay(2000);
+}
+
 void motors_set_speed(uint8_t motor, uint32_t speed) {
-  if(IS_VALID_SPEED(speed)) {
+  /* if(IS_VALID_SPEED(speed)) { */
     if(MOTOR_LEFT_FRONT & motor)
       TIM_SetCompare2(TIM8, speed);
     if(MOTOR_RIGHT_FRONT & motor)
@@ -72,5 +78,5 @@ void motors_set_speed(uint8_t motor, uint32_t speed) {
       TIM_SetCompare1(TIM8, speed);
     if(MOTOR_RIGHT_BACK & motor)
       TIM_SetCompare4(TIM8, speed);
-  }
+  /* } */
 }

@@ -37,6 +37,8 @@ void quadcopter_init(void) {
   if(RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
     RCC_ClearFlag();
 
+  motors_arm_escs();
+
   // Setup Independent Watchdog
   IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
   IWDG_SetPrescaler(IWDG_Prescaler_32);
