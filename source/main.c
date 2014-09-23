@@ -58,7 +58,7 @@ int main(void) {
       // PID tuning
       Delay(10);
 
-      pid_pwm_values.throttle = 2000 + (uint16_t)(command.throttle * 1.5);
+      pid_pwm_values.throttle = 3000 + (uint16_t)(command.throttle * 10);
 
       // Set motor speeds
       motors_pid_apply(pid_pwm_values);
