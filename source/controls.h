@@ -18,10 +18,10 @@
 
 /**
  * Command structure
- * roll     - float between - 30° and +30° (in radians)
- * pitch    - float between - 30° and +30° (in radians)
- * throttle - float between - 0% and 100%
- * yaw      - float between - 180° and +180° (in radians)
+ * roll     - float between -30° and +30° (in radians)
+ * pitch    - float between -30° and +30° (in radians)
+ * throttle - float between -100 and 100
+ * yaw      - float between -180° and +180° (in radians)
  */
 typedef struct {
   float roll;
