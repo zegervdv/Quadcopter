@@ -29,7 +29,7 @@ To build a self-stabilizing quadcopter controlled via bluetooth.
 
 ### Receiving
 
-The data send from the quadcopter has following formatting:
+The data sent from the quadcopter has following formatting:
 
 | Byte  | Name     | Value     |
 | ---   | ---      | ---       |
