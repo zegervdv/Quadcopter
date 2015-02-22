@@ -11,6 +11,7 @@ SRCS += bluetooth.c
 SRCS += sensors.c
 SRCS += controls.c
 SRCS += motors.c
+SRCS += pid.c
 
 # Drivers
 SRCS += stm32f30x_rcc.c\

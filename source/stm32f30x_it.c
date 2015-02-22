@@ -9,6 +9,9 @@
 int i;
 extern uint8_t enabled;
 static __IO uint32_t TimingDelay;
+uint16_t capture = 0;
+
+uint8_t pid_run_flag = 0;
 
 /**
  * User Button
@@ -89,5 +92,19 @@ void USART3_IRQHandler(void) {
       memset(command_bytes, 0, CONTROL_MSG_SIZE);
       cnt = 0;
     }
+  }
+}
+
+void TIM3_IRQHandler(void) {
+  if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
+
+    if (pid_run_flag)
+      STM_EVAL_LEDOn(LED10);
+    pid_run_flag = 1;
+    
+    capture = TIM_GetCapture1(TIM3);
+    TIM_SetCompare1(TIM3, capture + 40961);
   }
 }

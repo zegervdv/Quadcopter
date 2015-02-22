@@ -6,6 +6,7 @@
 #include "controls.h"
 #include "motors.h"
 #include "sensors.h"
+#include "pid.h"
 #include "stm32f30x_it.h"
 #include "stm32f30x_iwdg.h"
 

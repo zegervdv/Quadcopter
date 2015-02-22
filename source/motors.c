@@ -81,9 +81,9 @@ void motors_set_speed(uint8_t motor, uint32_t speed) {
   /* } */
 }
 
-void motors_pid_apply(control_pid_pwm_typedef pid_pwm_values) {
-  motors_set_speed(MOTOR_RIGHT_FRONT, pid_pwm_values.throttle - pid_pwm_values.pitch - pid_pwm_values.roll - pid_pwm_values.yaw);
-  motors_set_speed(MOTOR_LEFT_FRONT, pid_pwm_values.throttle - pid_pwm_values.pitch + pid_pwm_values.roll + pid_pwm_values.yaw);
-  motors_set_speed(MOTOR_RIGHT_BACK, pid_pwm_values.throttle + pid_pwm_values.pitch - pid_pwm_values.roll + pid_pwm_values.yaw);
-  motors_set_speed(MOTOR_LEFT_BACK, pid_pwm_values.throttle + pid_pwm_values.pitch + pid_pwm_values.roll - pid_pwm_values.yaw);
+void motors_pid_apply(pid_output_typedef pid_output) {
+  motors_set_speed(MOTOR_RIGHT_FRONT, pid_output.throttle - pid_output.pitch - pid_output.roll - pid_output.yaw);
+  motors_set_speed(MOTOR_LEFT_FRONT, pid_output.throttle - pid_output.pitch + pid_output.roll + pid_output.yaw);
+  motors_set_speed(MOTOR_RIGHT_BACK, pid_output.throttle + pid_output.pitch - pid_output.roll + pid_output.yaw);
+  motors_set_speed(MOTOR_LEFT_BACK, pid_output.throttle + pid_output.pitch + pid_output.roll - pid_output.yaw);
 }

@@ -5,6 +5,8 @@
 
 #include "stm32f30x_conf.h"
 #include "stm32f30x_it.h"
+#include "pid.h"
+
 
 /**
  * System clock runs at 72MHz
@@ -82,4 +84,4 @@ void motors_set_speed(uint8_t motor, uint32_t speed);
  * Set duty cycle based on pid values
  * pid_pwm_values - calculated PID values
  */
-void motors_pid_apply(control_pid_pwm_typedef pid_pwm_values);
+void motors_pid_apply(pid_output_typedef pid_output);

@@ -10,6 +10,9 @@
 #include "stm32f30x_conf.h"
 #include "stm32f30x.h"
 #include "bluetooth.h"
+
+extern uint8_t pid_run_flag;
+
 /**
  * Wait for amount of milliseconds
  * nTime - time to wait in milliseconds

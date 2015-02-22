@@ -24,9 +24,10 @@ int main(void) {
   uint8_t acc_data[ACCBUFFER] = {0};
   float alt_data = 0;
   float bat_data = 0;
+  float lastThrottle;
   sensor_data data;
-  control_pid_pwm_typedef pid_pwm_values = {0};
-
+  pid_output_typedef pid_output = {0};
+  
   while(1) {
     /* Loop and wait for interrupts */
 
@@ -56,12 +57,23 @@ int main(void) {
       command_valid = 0x0;
 
       // PID tuning
-      Delay(10);
+      if (pid_run_flag) {
+        pid_compute(PID_THROTTLE, lastThrottle, command.throttle, &pid_output.throttle);
+        pid_compute(PID_PITCH, data.pitch, command.pitch, &pid_output.pitch);
+        pid_compute(PID_ROLL, data.roll, command.roll, &pid_output.roll);
+        pid_compute(PID_YAW, data.yaw, command.yaw, &pid_output.yaw);
+        pid_run_flag = 0;
+        STM_EVAL_LEDOff(LED10);
+      }
 
-      pid_pwm_values.throttle = 3000 + (uint16_t)(command.throttle * 10);
+      // Save last throttle value
+      lastThrottle = pid_output.throttle * 2 * (MAX_THROTTLE / MOTOR_SPEED_MAX) - MAX_THROTTLE;
+
+      // Add offset to throttle
+      pid_output.throttle += MOTOR_SPEED_HALF;
 
       // Set motor speeds
-      motors_pid_apply(pid_pwm_values);
+      motors_pid_apply(pid_output);
 
       if (command.pitch < 0) {
         STM_EVAL_LEDOn(LED3);

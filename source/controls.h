@@ -38,20 +38,6 @@ union unsigned_to_signed {
   float formatted[4];
 };
 
-/**
- * PID - PWM control values
- * Output of 3 PID loops scaled for PWM motor control and scaled throttle
- * roll     - uint16_t between 0 and 2000
- * pitch    - uint16_t between 0 and 2000
- * throttle - uint16_t between 2000 and 4000
- * yaw      - uint16_t between 0 and 2000
- */
-typedef struct {
-  uint16_t roll;
-  uint16_t pitch;
-  uint16_t throttle;
-  uint16_t yaw;
-} control_pid_pwm_typedef;
 
 /**
  * Convert raw input data to command_typedef
