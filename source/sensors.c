@@ -16,7 +16,8 @@
  */
 sensor_average sensor_moving_average = {0};
 
-void gyroscope_init(void) {
+void gyroscope_init(void)
+{
   L3GD20_InitTypeDef L3GD20_InitStructure;
   L3GD20_FilterConfigTypeDef L3GD20_FilterStructure;
 
@@ -37,11 +38,13 @@ void gyroscope_init(void) {
   L3GD20_FilterCmd(L3GD20_HIGHPASSFILTER_ENABLE);
 }
 
-void gyroscope_read(uint8_t* data) {
+void gyroscope_read(uint8_t* data)
+{
   L3GD20_Read(data, L3GD20_OUT_X_L_ADDR, 6);
 }
 
-void gyroscope_to_float(uint8_t* data, float* value) {
+void gyroscope_to_float(uint8_t* data, float* value)
+{
   uint8_t i;
   int32_t temp;
   for(i = 0; i < 3; i++) {
@@ -52,7 +55,8 @@ void gyroscope_to_float(uint8_t* data, float* value) {
   }
 }
 
-void compass_init(void) {
+void compass_init(void)
+{
   LSM303DLHCMag_InitTypeDef LSM303DLHC_InitStructure;
 
   LSM303DLHC_InitStructure.Temperature_Sensor = LSM303DLHC_TEMPSENSOR_DISABLE;
@@ -62,7 +66,8 @@ void compass_init(void) {
   LSM303DLHC_MagInit(&LSM303DLHC_InitStructure);
 }
 
-void compass_read(uint8_t* data) {
+void compass_read(uint8_t* data)
+{
   LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_H_M, data, 1);
   LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_L_M, data+1, 1);
   LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_H_M, data+2, 1);
@@ -71,7 +76,8 @@ void compass_read(uint8_t* data) {
   LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_L_M, data+5, 1);
 }
 
-void compass_to_float(uint8_t* data, float* value) {
+void compass_to_float(uint8_t* data, float* value)
+{
   uint8_t i;
   int32_t temp[3];
   for(i = 0; i < 2; i++) {
@@ -87,7 +93,8 @@ void compass_to_float(uint8_t* data, float* value) {
   }
 }
 
-void accelerometer_init(void) {
+void accelerometer_init(void)
+{
   LSM303DLHCAcc_InitTypeDef LSM303DLHCAcc_InitStructure;
   LSM303DLHCAcc_FilterConfigTypeDef LSM303DLHCFilter_InitStructure;
 
@@ -111,11 +118,13 @@ void accelerometer_init(void) {
   LSM303DLHC_AccFilterConfig(&LSM303DLHCFilter_InitStructure);
 }
 
-void accelerometer_read(uint8_t* data) {
+void accelerometer_read(uint8_t* data)
+{
   LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, data, 6);
 }
 
-void accelerometer_to_float(uint8_t* data, float* value) {
+void accelerometer_to_float(uint8_t* data, float* value)
+{
   uint8_t i;
   int16_t temp;
 
@@ -125,7 +134,8 @@ void accelerometer_to_float(uint8_t* data, float* value) {
   }
 }
 
-void battery_init(void) {
+void battery_init(void)
+{
   GPIO_InitTypeDef gpio_init;
   ADC_InitTypeDef adc_init;
   ADC_CommonInitTypeDef adc_common_init;
@@ -172,18 +182,21 @@ void battery_init(void) {
   ADC_StartConversion(ADC1);
 }
 
-void battery_read(float* data) {
+void battery_read(float* data)
+{
   __IO uint16_t raw;
   while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
   raw = ADC_GetConversionValue(ADC1);
   *data = (float)((raw * 3300)/0xFFF);
 }
 
-void battery_to_float(float* data, float* value) {
+void battery_to_float(float* data, float* value)
+{
   *value = (*data) * BAT_SCALE;
 }
 
-void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data) {
+void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data)
+{
   float parsed[3] = {0};
   float val = 0;
   float xh, yh;

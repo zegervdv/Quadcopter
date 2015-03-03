@@ -14,7 +14,8 @@
 
 uint8_t enabled = 0;
 
-int main(void) {
+int main(void)
+{
   // Initialize system
   quadcopter_init();
 

@@ -16,7 +16,8 @@ uint8_t pid_run_flag = 0;
 /**
  * User Button
  */
-void EXTI0_IRQHandler(void) {
+void EXTI0_IRQHandler(void) 
+{
   if ((EXTI_GetITStatus(USER_BUTTON_EXTI_LINE) == SET)&&(STM_EVAL_PBGetState(BUTTON_USER) != RESET)) {
     /* Delay */
     for(i=0; i<0x7FFFF; i++);
@@ -38,7 +39,8 @@ void EXTI0_IRQHandler(void) {
 /**
  * Set LED3 and LED10 on Hard Fault
  */
-void HardFault_Handler(void) {
+void HardFault_Handler(void) 
+{
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
@@ -51,7 +53,8 @@ void HardFault_Handler(void) {
  * Wait for amount of milliseconds
  * nTime - time to wait in milliseconds
  */
-void Delay(__IO uint32_t nTime) {
+void Delay(__IO uint32_t nTime) 
+{
   TimingDelay = nTime;
   while(TimingDelay != 0);
 }
@@ -59,7 +62,8 @@ void Delay(__IO uint32_t nTime) {
 /**
  * Delay Decrementer
  */
-void TimingDelay_Decrement(void) {
+void TimingDelay_Decrement(void) 
+{
   if (TimingDelay != 0x00)
   {
     TimingDelay--;
@@ -69,14 +73,16 @@ void TimingDelay_Decrement(void) {
 /**
  * SysTick Handler
  */
-void SysTick_Handler(void) {
+void SysTick_Handler(void) 
+{
   TimingDelay_Decrement();
 }
 
 /**
  * USART3 Interrupt handler
  */
-void USART3_IRQHandler(void) {
+void USART3_IRQHandler(void) 
+{
   if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
     static uint8_t cnt = 0;
     char t = USART_ReceiveData(USART3);
@@ -95,7 +101,8 @@ void USART3_IRQHandler(void) {
   }
 }
 
-void TIM3_IRQHandler(void) {
+void TIM3_IRQHandler(void) 
+{
   if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)
   {
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);

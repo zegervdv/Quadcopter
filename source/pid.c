@@ -12,7 +12,8 @@ typedef struct {
 
 pid_params_typedef pid_params[4];
 
-void pid_init(void) {
+void pid_init(void)
+{
   uint8_t i = 0;
   float SampleTimeInSec = ((float)PID_SAMPLE_TIME)/1000.0;
   for (i = 0; i < 4; i++) {
@@ -42,7 +43,8 @@ void pid_init(void) {
   pid_params[PID_YAW].max = MAX_YAW;
 }
 
-void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal) {
+void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal)
+{
   pid_params_typedef* pid = &pid_params[index];
 
   /*Compute all the working error variables*/

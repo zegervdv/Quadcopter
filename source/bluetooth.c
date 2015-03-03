@@ -16,7 +16,8 @@
  */
 uint8_t command_bytes[CONTROL_MSG_SIZE + 1];
 
-void init_usart3() {
+void init_usart3()
+{
   // Initialize USART3
   // Tx: PIN PC10
   // Rx: PIN PC11
@@ -61,7 +62,8 @@ void init_usart3() {
  * Initialize PC12 as reset pin for RN42
  * Drive HIGH for normal operation
  */
-void init_reset() {
+void init_reset()
+{
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
@@ -81,7 +83,8 @@ void init_reset() {
  * Initialize PD1 to read RN42 GPIO2
  * Pin is HIGH when bluetooth is connected to remote host
  */
-void init_connection() {
+void init_connection()
+{
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 
@@ -93,7 +96,8 @@ void init_connection() {
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
 
-void bluetooth_init() {
+void bluetooth_init()
+{
   // Configure USART3
   init_usart3();
   init_reset();
@@ -110,13 +114,15 @@ void bluetooth_init() {
     bluetooth_reset();
 }
 
-void bluetooth_reset() {
+void bluetooth_reset()
+{
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_RESET);
   Delay(50);
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
 }
 
-void bluetooth_write(uint8_t* data, int size) {
+void bluetooth_write(uint8_t* data, int size)
+{
   int i = 0;
 
   // Send synchronization
@@ -133,7 +139,8 @@ void bluetooth_write(uint8_t* data, int size) {
   }
 }
 
-uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum) {
+uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum)
+{
   uint8_t check = 0;
   uint8_t* end = data_bytes + size;
   CRC_ResetDR();
@@ -145,7 +152,8 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
   return check == checksum;
 }
 
-uint8_t bluetooth_connected(void) {
+uint8_t bluetooth_connected(void)
+{
   return GPIO_ReadInputDataBit(GPIOD, CONN_PIN) == Bit_SET;
 }
 

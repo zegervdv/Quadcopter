@@ -4,7 +4,8 @@
 
 #include "system.h"
 
-void TIM_init() {
+void TIM_init()
+{
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
   TIM_OCInitTypeDef  TIM_OCInitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
@@ -44,7 +45,8 @@ void TIM_init() {
   TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Disable);
 }
 
-void quadcopter_init(void) {
+void quadcopter_init(void)
+{
   // Enable LEDS
   STM_EVAL_LEDInit(LED3);
   STM_EVAL_LEDInit(LED4);
