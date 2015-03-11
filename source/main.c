@@ -76,33 +76,6 @@ int main(void)
       // Set motor speeds
       motors_pid_apply(pid_output);
 
-      if (command.pitch < 0) {
-        STM_EVAL_LEDOn(LED3);
-      }else if (command.pitch > 0) {
-        STM_EVAL_LEDOn(LED10);
-      }else {
-        STM_EVAL_LEDOff(LED3);
-        STM_EVAL_LEDOff(LED10);
-      }
-
-      if (command.roll > 0) {
-        STM_EVAL_LEDOn(LED7);
-      }else if (command.roll < 0) {
-        STM_EVAL_LEDOn(LED6);
-      }else {
-        STM_EVAL_LEDOff(LED6);
-        STM_EVAL_LEDOff(LED7);
-      }
-
-      if (command.yaw > 0) {
-        STM_EVAL_LEDOn(LED5);
-      }else if (command.yaw < 0) {
-        STM_EVAL_LEDOn(LED4);
-      }else {
-        STM_EVAL_LEDOff(LED4);
-        STM_EVAL_LEDOff(LED5);
-      }
-
 #ifndef DEBUG
     }else {
       // Animation
