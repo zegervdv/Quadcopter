@@ -60,7 +60,7 @@ void compass_init(void)
   LSM303DLHCMag_InitTypeDef LSM303DLHC_InitStructure;
 
   LSM303DLHC_InitStructure.Temperature_Sensor = LSM303DLHC_TEMPSENSOR_DISABLE;
-  LSM303DLHC_InitStructure.MagOutput_DataRate =LSM303DLHC_ODR_30_HZ ;
+  LSM303DLHC_InitStructure.MagOutput_DataRate = LSM303DLHC_ODR_30_HZ;
   LSM303DLHC_InitStructure.MagFull_Scale = LSM303DLHC_FS_8_1_GA;
   LSM303DLHC_InitStructure.Working_Mode = LSM303DLHC_CONTINUOS_CONVERSION;
   LSM303DLHC_MagInit(&LSM303DLHC_InitStructure);
@@ -208,24 +208,24 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
 
   // Rotate axes
   compass_to_float(magneto, parsed);
-  data->x_magnetic = parsed[0];
-  data->y_magnetic = parsed[1];
+  data->x_magnetic = -1*parsed[0];
+  data->y_magnetic = -1*parsed[1];
   data->z_magnetic = parsed[2];
 
   accelerometer_to_float(accelero, parsed);
-  data->x_acceleration = parsed[0];
-  data->y_acceleration = parsed[1];
+  data->x_acceleration = -1*parsed[0];
+  data->y_acceleration = -1*parsed[1];
   data->z_acceleration = parsed[2];
 
-  sensor_moving_average.pitch = sensor_moving_average.pitch - atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.pitch / AVG_WNDW_SIZE);
-  sensor_moving_average.roll = sensor_moving_average.roll - atan2(data->y_acceleration, sqrt(SQ(data->x_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.roll / AVG_WNDW_SIZE);
+  sensor_moving_average.pitch = sensor_moving_average.pitch + atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.pitch / AVG_WNDW_SIZE);
+  sensor_moving_average.roll = sensor_moving_average.roll + atan2(data->y_acceleration, sqrt(SQ(data->x_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.roll / AVG_WNDW_SIZE);
 
   data->pitch = sensor_moving_average.pitch / AVG_WNDW_SIZE;
   data->roll = sensor_moving_average.roll / AVG_WNDW_SIZE;
 
   xh = data->x_magnetic * cos(data->pitch) + data->z_magnetic * sin(data->pitch);
   yh = data->x_magnetic * sin(data->roll) + data->y_magnetic * cos(data->roll) - data->z_magnetic * sin(data->roll) * cos(data->pitch);
-  sensor_moving_average.yaw = sensor_moving_average.yaw - atan2(yh,xh) - (sensor_moving_average.yaw / AVG_WNDW_SIZE);
+  sensor_moving_average.yaw = sensor_moving_average.yaw + atan2(yh,xh) - (sensor_moving_average.yaw / AVG_WNDW_SIZE);
 
   data->yaw = sensor_moving_average.yaw / AVG_WNDW_SIZE;
 
