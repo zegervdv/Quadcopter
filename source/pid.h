@@ -3,8 +3,6 @@
 #ifndef PID_H
 #define PID_H
 
-#define PI (float)(3.1415)
-
 // PID Sampling time interval (milliseconds)
 #define PID_SAMPLE_TIME 1000
 

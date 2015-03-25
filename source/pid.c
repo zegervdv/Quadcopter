@@ -1,4 +1,5 @@
 #include "pid.h"
+#include "arm_math.h"
 
 typedef struct {
   float iterm;

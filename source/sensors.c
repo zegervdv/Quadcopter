@@ -227,10 +227,23 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
   xh = data->x_magnetic * cos(data->pitch) + data->z_magnetic * sin(data->pitch);
   yh = data->x_magnetic * sin(data->roll) * sin(data->pitch) + data->y_magnetic * cos(data->roll) - data->z_magnetic * sin(data->roll) * cos(data->pitch);
 
-  // TODO: Test conditions for xh and yh to assure atan(yh/xh) is valid
+  // Test conditions for xh and yh to assure atan(yh/xh) is valid
   // see: https://www.pololu.com/file/0J434/LSM303DLH-compass-app-note.pdf at
   // p23
-  sensor_moving_average.yaw = sensor_moving_average.yaw + atan2(yh,xh) - (sensor_moving_average.yaw / AVG_WNDW_SIZE);
+  if (xh < 0) {
+    val = atan2(yh, xh) + PI;
+  }else if (xh > 0) {
+    val = atan2(yh, xh);
+    if (yh < 0) {
+      val += 2*PI;
+    }
+  }else {
+    val = PI/2;
+    if (yh > 0) {
+      val *= 3;
+    }
+  }
+  sensor_moving_average.yaw = sensor_moving_average.yaw + val - (sensor_moving_average.yaw / AVG_WNDW_SIZE);
 
   data->yaw = sensor_moving_average.yaw / AVG_WNDW_SIZE;
 
