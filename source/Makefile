@@ -69,8 +69,8 @@ ifeq ($(UNAME_S), Linux)
 endif
 
 ifeq ($(UNAME_S), Darwin)
-	CFLAGS += -L/usr/local/Cellar/arm-none-eabi-gcc/20140609/arm-none-eabi/lib/armv7e-m/fpu
-	LIBS += /usr/local/Cellar/arm-none-eabi-gcc/20140609/arm-none-eabi/lib/armv7e-m/fpu/libc.a /usr/local/Cellar/arm-none-eabi-gcc/20140609/arm-none-eabi/lib/armv7e-m/fpu/libm.a
+	CFLAGS += -L/usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu
+	LIBS += /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libc.a /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libm.a
 endif
 
 vpath %.c \
