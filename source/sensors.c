@@ -16,8 +16,7 @@
  */
 sensor_average sensor_moving_average = {0};
 
-void gyroscope_init(void)
-{
+void gyroscope_init(void) {
   L3GD20_InitTypeDef L3GD20_InitStructure;
   L3GD20_FilterConfigTypeDef L3GD20_FilterStructure;
 
@@ -31,32 +30,29 @@ void gyroscope_init(void)
   L3GD20_InitStructure.Full_Scale = L3GD20_FULLSCALE_500;
   L3GD20_Init(&L3GD20_InitStructure);
 
-  L3GD20_FilterStructure.HighPassFilter_Mode_Selection =L3GD20_HPM_NORMAL_MODE_RES;
+  L3GD20_FilterStructure.HighPassFilter_Mode_Selection = L3GD20_HPM_NORMAL_MODE_RES;
   L3GD20_FilterStructure.HighPassFilter_CutOff_Frequency = L3GD20_HPFCF_0;
   L3GD20_FilterConfig(&L3GD20_FilterStructure) ;
 
   L3GD20_FilterCmd(L3GD20_HIGHPASSFILTER_ENABLE);
 }
 
-void gyroscope_read(uint8_t* data)
-{
+void gyroscope_read(uint8_t* data) {
   L3GD20_Read(data, L3GD20_OUT_X_L_ADDR, 6);
 }
 
-void gyroscope_to_float(uint8_t* data, float* value)
-{
+void gyroscope_to_float(uint8_t* data, float* value) {
   uint8_t i;
   int32_t temp;
-  for(i = 0; i < 3; i++) {
-    temp = ((uint32_t) data[2*i] << 8) + data[2*i+1];
-    if(temp & 0x8000)
+  for (i = 0; i < 3; i++) {
+    temp = ((uint32_t) data[2 * i] << 8) + data[2 * i + 1];
+    if (temp & 0x8000)
       temp -= 0xFFFF;
     value[i] = (float) temp / L3G_Sensitivity_500dps;
   }
 }
 
-void compass_init(void)
-{
+void compass_init(void) {
   LSM303DLHCMag_InitTypeDef LSM303DLHC_InitStructure;
 
   LSM303DLHC_InitStructure.Temperature_Sensor = LSM303DLHC_TEMPSENSOR_DISABLE;
@@ -66,50 +62,47 @@ void compass_init(void)
   LSM303DLHC_MagInit(&LSM303DLHC_InitStructure);
 }
 
-void compass_read(uint8_t* data)
-{
+void compass_read(uint8_t* data) {
   LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_H_M, data, 1);
-  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_L_M, data+1, 1);
-  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_H_M, data+2, 1);
-  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_L_M, data+3, 1);
-  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_H_M, data+4, 1);
-  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_L_M, data+5, 1);
+  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_X_L_M, data + 1, 1);
+  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_H_M, data + 2, 1);
+  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Y_L_M, data + 3, 1);
+  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_H_M, data + 4, 1);
+  LSM303DLHC_Read(MAG_I2C_ADDRESS, LSM303DLHC_OUT_Z_L_M, data + 5, 1);
 }
 
-void compass_to_float(uint8_t* data, float* value)
-{
+void compass_to_float(uint8_t* data, float* value) {
   uint8_t i;
   int32_t temp[3];
-  for(i = 0; i < 2; i++) {
-    temp[i] = (((uint16_t)data[2*i] << 8) + data[2*i+1])*1000;
+  for (i = 0; i < 2; i++) {
+    temp[i] = (((uint16_t)data[2 * i] << 8) + data[2 * i + 1]) * 1000;
     temp[i] /= LSM303DLHC_M_SENSITIVITY_XY_8_1Ga;
   }
-  temp[2] = (((uint16_t)data[4] << 8) + data[5])*1000;
+  temp[2] = (((uint16_t)data[4] << 8) + data[5]) * 1000;
   temp[2] /= LSM303DLHC_M_SENSITIVITY_Z_8_1Ga;
 
-  for(i = 0; i < 3; i++) {
-    if(temp[i] & 0x8000)
+  for (i = 0; i < 3; i++) {
+    if (temp[i] & 0x8000)
       value[i] = (float)(temp[i] - 0xFFFF);
   }
 }
 
-void accelerometer_init(void)
-{
+void accelerometer_init(void) {
   LSM303DLHCAcc_InitTypeDef LSM303DLHCAcc_InitStructure;
   LSM303DLHCAcc_FilterConfigTypeDef LSM303DLHCFilter_InitStructure;
 
   LSM303DLHCAcc_InitStructure.Power_Mode = LSM303DLHC_NORMAL_MODE;
   LSM303DLHCAcc_InitStructure.AccOutput_DataRate = LSM303DLHC_ODR_50_HZ;
-  LSM303DLHCAcc_InitStructure.Axes_Enable= LSM303DLHC_AXES_ENABLE;
+  LSM303DLHCAcc_InitStructure.Axes_Enable = LSM303DLHC_AXES_ENABLE;
   LSM303DLHCAcc_InitStructure.AccFull_Scale = LSM303DLHC_FULLSCALE_2G;
   LSM303DLHCAcc_InitStructure.BlockData_Update = LSM303DLHC_BlockUpdate_Continous;
-  LSM303DLHCAcc_InitStructure.Endianness=LSM303DLHC_BLE_MSB;
-  LSM303DLHCAcc_InitStructure.High_Resolution=LSM303DLHC_HR_ENABLE;
+  LSM303DLHCAcc_InitStructure.Endianness = LSM303DLHC_BLE_MSB;
+  LSM303DLHCAcc_InitStructure.High_Resolution = LSM303DLHC_HR_ENABLE;
   /* Configure the accelerometer main parameters */
   LSM303DLHC_AccInit(&LSM303DLHCAcc_InitStructure);
 
   /* Fill the accelerometer LPF structure */
-  LSM303DLHCFilter_InitStructure.HighPassFilter_Mode_Selection =LSM303DLHC_HPM_NORMAL_MODE;
+  LSM303DLHCFilter_InitStructure.HighPassFilter_Mode_Selection = LSM303DLHC_HPM_NORMAL_MODE;
   LSM303DLHCFilter_InitStructure.HighPassFilter_CutOff_Frequency = LSM303DLHC_HPFCF_16;
   LSM303DLHCFilter_InitStructure.HighPassFilter_AOI1 = LSM303DLHC_HPF_AOI1_DISABLE;
   LSM303DLHCFilter_InitStructure.HighPassFilter_AOI2 = LSM303DLHC_HPF_AOI2_DISABLE;
@@ -118,24 +111,21 @@ void accelerometer_init(void)
   LSM303DLHC_AccFilterConfig(&LSM303DLHCFilter_InitStructure);
 }
 
-void accelerometer_read(uint8_t* data)
-{
+void accelerometer_read(uint8_t* data) {
   LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, data, 6);
 }
 
-void accelerometer_to_float(uint8_t* data, float* value)
-{
+void accelerometer_to_float(uint8_t* data, float* value) {
   uint8_t i;
   int16_t temp;
 
   for (i = 0; i < 3; i++) {
-    temp = (int16_t)((uint16_t)(data[2*i] << 8) + data[2*i+1]) / 16;
+    temp = (int16_t)((uint16_t)(data[2 * i] << 8) + data[2 * i + 1]) / 16;
     value[i] = (float) temp / LSM_Acc_Sensitivity_2g;
   }
 }
 
-void battery_init(void)
-{
+void battery_init(void) {
   GPIO_InitTypeDef gpio_init;
   ADC_InitTypeDef adc_init;
   ADC_CommonInitTypeDef adc_common_init;
@@ -155,7 +145,7 @@ void battery_init(void)
   /* Calibrate ADC */
   ADC_SelectCalibrationMode(ADC1, ADC_CalibrationMode_Single);
   ADC_StartCalibration(ADC1);
-  while(ADC_GetCalibrationStatus(ADC1) != RESET);
+  while (ADC_GetCalibrationStatus(ADC1) != RESET);
   /* calibration_value = ADC_GetCalibrationValue(ADC1); */
 
   adc_common_init.ADC_Mode = ADC_Mode_Independent;
@@ -178,25 +168,22 @@ void battery_init(void)
   ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_7Cycles5);
   ADC_Cmd(ADC1, ENABLE);
 
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_RDY));
+  while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_RDY));
   ADC_StartConversion(ADC1);
 }
 
-void battery_read(float* data)
-{
+void battery_read(float* data) {
   __IO uint16_t raw;
-  while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
   raw = ADC_GetConversionValue(ADC1);
-  *data = (float)((raw * 3300)/0xFFF);
+  *data = (float)((raw * 3300) / 0xFFF);
 }
 
-void battery_to_float(float* data, float* value)
-{
+void battery_to_float(float* data, float* value) {
   *value = (*data) * BAT_SCALE;
 }
 
-void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data)
-{
+void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data) {
   float parsed[3] = {0};
   float val = 0;
   float xh, yh;
@@ -208,13 +195,13 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
 
   // Rotate axes
   compass_to_float(magneto, parsed);
-  data->x_magnetic = -1*parsed[0];
-  data->y_magnetic = -1*parsed[1];
+  data->x_magnetic = -1 * parsed[0];
+  data->y_magnetic = -1 * parsed[1];
   data->z_magnetic = parsed[2];
 
   accelerometer_to_float(accelero, parsed);
-  data->x_acceleration = -1*parsed[0];
-  data->y_acceleration = -1*parsed[1];
+  data->x_acceleration = -1 * parsed[0];
+  data->y_acceleration = -1 * parsed[1];
   data->z_acceleration = parsed[2];
 
   sensor_moving_average.pitch = sensor_moving_average.pitch + atan2(data->x_acceleration, sqrt(SQ(data->y_acceleration) + SQ(data->z_acceleration))) - (sensor_moving_average.pitch / AVG_WNDW_SIZE);
@@ -232,13 +219,13 @@ void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, flo
   // p23
   if (xh < 0) {
     val = atan2(yh, xh) + PI;
-  }else if (xh > 0) {
+  } else if (xh > 0) {
     val = atan2(yh, xh);
     if (yh < 0) {
-      val += 2*PI;
+      val += 2 * PI;
     }
-  }else {
-    val = PI/2;
+  } else {
+    val = PI / 2;
     if (yh > 0) {
       val *= 3;
     }

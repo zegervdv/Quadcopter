@@ -16,8 +16,7 @@
  */
 uint8_t command_bytes[CONTROL_MSG_SIZE + 1];
 
-void init_usart3()
-{
+void init_usart3() {
   // Initialize USART3
   // Tx: PIN PC10
   // Rx: PIN PC11
@@ -51,9 +50,9 @@ void init_usart3()
 
   NVIC_init_struct.NVIC_IRQChannel = USART3_IRQn;
   NVIC_init_struct.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_init_struct.NVIC_IRQChannelSubPriority = 0;
-	NVIC_init_struct.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_init_struct);
+  NVIC_init_struct.NVIC_IRQChannelSubPriority = 0;
+  NVIC_init_struct.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_init_struct);
 
   USART_Cmd(USART3, ENABLE);
 }
@@ -62,8 +61,7 @@ void init_usart3()
  * Initialize PC12 as reset pin for RN42
  * Drive HIGH for normal operation
  */
-void init_reset()
-{
+void init_reset() {
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
@@ -83,8 +81,7 @@ void init_reset()
  * Initialize PD1 to read RN42 GPIO2
  * Pin is HIGH when bluetooth is connected to remote host
  */
-void init_connection()
-{
+void init_connection() {
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 
@@ -96,8 +93,7 @@ void init_connection()
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
 
-void bluetooth_init()
-{
+void bluetooth_init() {
   // Configure USART3
   init_usart3();
   init_reset();
@@ -109,20 +105,18 @@ void bluetooth_init()
   CRC_SetInitRegister(0);
   CRC_PolynomialSizeSelect(CRC_PolSize_8);
   CRC_SetPolynomial(0xD5);
-  
+
   if (!bluetooth_connected())
     bluetooth_reset();
 }
 
-void bluetooth_reset()
-{
+void bluetooth_reset() {
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_RESET);
   Delay(50);
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
 }
 
-void bluetooth_write(uint8_t* data, int size)
-{
+void bluetooth_write(uint8_t* data, int size) {
   int i = 0;
 
   // Send synchronization
@@ -131,7 +125,7 @@ void bluetooth_write(uint8_t* data, int size)
 
 
   for (i = 0; i < size; i++) {
-    while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
+    while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
     USART_SendData(USART3, data[i]);
     /* int j = 100000; */
     /* while(j > 0) */
@@ -139,21 +133,19 @@ void bluetooth_write(uint8_t* data, int size)
   }
 }
 
-uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum)
-{
+uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum) {
   uint8_t check = 0;
   uint8_t* end = data_bytes + size;
   CRC_ResetDR();
 
-  while(data_bytes < end) {
+  while (data_bytes < end) {
     check = CRC_CalcCRC8bits(*data_bytes++);
   }
 
   return check == checksum;
 }
 
-uint8_t bluetooth_connected(void)
-{
+uint8_t bluetooth_connected(void) {
   return GPIO_ReadInputDataBit(GPIOD, CONN_PIN) == Bit_SET;
 }
 

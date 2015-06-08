@@ -4,14 +4,13 @@
 
 #include "system.h"
 
-void TIM_init()
-{
+void TIM_init() {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
   TIM_OCInitTypeDef  TIM_OCInitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
 
   /* Compute the prescaler value */
-  uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock) / 72000000) - 1;
+  uint16_t PrescalerValue = (uint16_t)((SystemCoreClock) / 72000000) - 1;
 
   /* TIM3 clock enable */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
@@ -45,8 +44,7 @@ void TIM_init()
   TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Disable);
 }
 
-void quadcopter_init(void)
-{
+void quadcopter_init(void) {
   // Enable LEDS
   STM_EVAL_LEDInit(LED3);
   STM_EVAL_LEDInit(LED4);
@@ -82,7 +80,7 @@ void quadcopter_init(void)
   STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
 
   // Clear reset flag
-  if(RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
+  if (RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
     RCC_ClearFlag();
 
   motors_arm_escs();

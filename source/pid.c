@@ -13,10 +13,9 @@ typedef struct {
 
 pid_params_typedef pid_params[4];
 
-void pid_init(void)
-{
+void pid_init(void) {
   uint8_t i = 0;
-  float SampleTimeInSec = ((float)PID_SAMPLE_TIME)/1000.0;
+  float SampleTimeInSec = ((float)PID_SAMPLE_TIME) / 1000.0;
   for (i = 0; i < 4; i++) {
     pid_params[i].iterm = 0;
     pid_params[i].lastInput = 0;
@@ -44,21 +43,20 @@ void pid_init(void)
   pid_params[PID_YAW].max = MAX_YAW;
 }
 
-void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal)
-{
+void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal) {
   pid_params_typedef* pid = &pid_params[index];
 
   /*Compute all the working error variables*/
   float error = setpoint - input;
   pid->iterm += pid->ki * error;
-  if(pid->iterm > pid->max) pid->iterm = pid->max;
-  else if(pid->iterm < pid->min) pid->iterm = pid->min;
+  if (pid->iterm > pid->max) pid->iterm = pid->max;
+  else if (pid->iterm < pid->min) pid->iterm = pid->min;
   float dInput = (input - pid->lastInput);
 
   /*Compute PID Output*/
   *retVal = (uint16_t)(pid->kp * error + pid->iterm - pid->kd * dInput);
-  if(*retVal > pid->max) *retVal = pid->max;
-  else if(*retVal < pid->min) *retVal = pid->min;
+  if (*retVal > pid->max) *retVal = pid->max;
+  else if (*retVal < pid->min) *retVal = pid->min;
 
   /*Remember some variables for next time*/
   pid->lastInput = input;

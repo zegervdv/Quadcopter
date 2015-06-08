@@ -16,15 +16,14 @@ uint8_t pid_run_flag = 0;
 /**
  * User Button
  */
-void EXTI0_IRQHandler(void) 
-{
-  if ((EXTI_GetITStatus(USER_BUTTON_EXTI_LINE) == SET)&&(STM_EVAL_PBGetState(BUTTON_USER) != RESET)) {
+void EXTI0_IRQHandler(void) {
+  if ((EXTI_GetITStatus(USER_BUTTON_EXTI_LINE) == SET) && (STM_EVAL_PBGetState(BUTTON_USER) != RESET)) {
     /* Delay */
-    for(i=0; i<0x7FFFF; i++);
+    for (i = 0; i < 0x7FFFF; i++);
 
-    while(STM_EVAL_PBGetState(BUTTON_USER) != RESET);
+    while (STM_EVAL_PBGetState(BUTTON_USER) != RESET);
 
-    for(i=0; i<0x7FFFF; i++);
+    for (i = 0; i < 0x7FFFF; i++);
 
     if (enabled)
       enabled = 0;
@@ -39,11 +38,9 @@ void EXTI0_IRQHandler(void)
 /**
  * Set LED3 and LED10 on Hard Fault
  */
-void HardFault_Handler(void) 
-{
+void HardFault_Handler(void) {
   /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
+  while (1) {
     STM_EVAL_LEDOn(LED3);
     STM_EVAL_LEDOn(LED10);
   }
@@ -53,19 +50,16 @@ void HardFault_Handler(void)
  * Wait for amount of milliseconds
  * nTime - time to wait in milliseconds
  */
-void Delay(__IO uint32_t nTime) 
-{
+void Delay(__IO uint32_t nTime) {
   TimingDelay = nTime;
-  while(TimingDelay != 0);
+  while (TimingDelay != 0);
 }
 
 /**
  * Delay Decrementer
  */
-void TimingDelay_Decrement(void) 
-{
-  if (TimingDelay != 0x00)
-  {
+void TimingDelay_Decrement(void) {
+  if (TimingDelay != 0x00) {
     TimingDelay--;
   }
 }
@@ -73,23 +67,21 @@ void TimingDelay_Decrement(void)
 /**
  * SysTick Handler
  */
-void SysTick_Handler(void) 
-{
+void SysTick_Handler(void) {
   TimingDelay_Decrement();
 }
 
 /**
  * USART3 Interrupt handler
  */
-void USART3_IRQHandler(void) 
-{
-  if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
+void USART3_IRQHandler(void) {
+  if (USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
     static uint8_t cnt = 0;
     char t = USART_ReceiveData(USART3);
-    if ( (t!= '\n') && (cnt < CONTROL_MSG_SIZE) ) {
+    if ((t != '\n') && (cnt < CONTROL_MSG_SIZE)) {
       command_bytes[cnt] = t;
       cnt++;
-    }else {
+    } else {
       STM_EVAL_LEDOn(LED3);
       command_valid = 0x01;
       // Convert received bytes to command
@@ -101,16 +93,14 @@ void USART3_IRQHandler(void)
   }
 }
 
-void TIM3_IRQHandler(void) 
-{
-  if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)
-  {
+void TIM3_IRQHandler(void) {
+  if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
 
     if (pid_run_flag)
       STM_EVAL_LEDOn(LED10);
     pid_run_flag = 1;
-    
+
     capture = TIM_GetCapture1(TIM3);
     TIM_SetCompare1(TIM3, capture + 40961);
   }

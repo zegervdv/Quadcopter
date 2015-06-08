@@ -4,8 +4,7 @@
  */
 #include "motors.h"
 
-void motors_init(void)
-{
+void motors_init(void) {
   // Select TIM8 on pins PC6, PC7, PC8 and PC9
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   TIM_OCInitTypeDef TIM_OCInitStructure;
@@ -63,29 +62,26 @@ void motors_init(void)
   TIM_Cmd(TIM8, ENABLE);
 }
 
-void motors_arm_escs()
-{
+void motors_arm_escs() {
   Delay(3000);
   motors_set_speed(MOTOR_ALL, 2000);
   Delay(2000);
 }
 
-void motors_set_speed(uint8_t motor, uint32_t speed)
-{
+void motors_set_speed(uint8_t motor, uint32_t speed) {
   /* if(IS_VALID_SPEED(speed)) { */
-    if(MOTOR_LEFT_FRONT & motor)
-      TIM_SetCompare2(TIM8, speed);
-    if(MOTOR_RIGHT_FRONT & motor)
-      TIM_SetCompare3(TIM8, speed);
-    if(MOTOR_LEFT_BACK & motor)
-      TIM_SetCompare1(TIM8, speed);
-    if(MOTOR_RIGHT_BACK & motor)
-      TIM_SetCompare4(TIM8, speed);
+  if (MOTOR_LEFT_FRONT & motor)
+    TIM_SetCompare2(TIM8, speed);
+  if (MOTOR_RIGHT_FRONT & motor)
+    TIM_SetCompare3(TIM8, speed);
+  if (MOTOR_LEFT_BACK & motor)
+    TIM_SetCompare1(TIM8, speed);
+  if (MOTOR_RIGHT_BACK & motor)
+    TIM_SetCompare4(TIM8, speed);
   /* } */
 }
 
-void motors_pid_apply(pid_output_typedef pid_output)
-{
+void motors_pid_apply(pid_output_typedef pid_output) {
   motors_set_speed(MOTOR_RIGHT_FRONT, pid_output.throttle - pid_output.pitch - pid_output.roll - pid_output.yaw);
   motors_set_speed(MOTOR_LEFT_FRONT, pid_output.throttle - pid_output.pitch + pid_output.roll + pid_output.yaw);
   motors_set_speed(MOTOR_RIGHT_BACK, pid_output.throttle + pid_output.pitch - pid_output.roll + pid_output.yaw);

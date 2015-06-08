@@ -14,8 +14,7 @@
 
 uint8_t enabled = 0;
 
-int main(void)
-{
+int main(void) {
   // Initialize system
   quadcopter_init();
 
@@ -28,8 +27,8 @@ int main(void)
   float lastThrottle;
   sensor_data data;
   pid_output_typedef pid_output = {0};
-  
-  while(1) {
+
+  while (1) {
     /* Loop and wait for interrupts */
 
     // Read sensors
@@ -43,7 +42,7 @@ int main(void)
     memcpy(stats, &data.roll, BUFFERSIZE);
 
     if (bluetooth_connected())
-        bluetooth_write(stats, BUFFERSIZE);
+      bluetooth_write(stats, BUFFERSIZE);
 
 #ifndef DEBUG
     if (enabled) {
@@ -51,7 +50,7 @@ int main(void)
 
       if ((command_valid) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1]))) {
         STM_EVAL_LEDOn(LED10);
-      }else {
+      } else {
         memset(&command, 0, sizeof(command_typedef));
       }
       // Reset command flag
@@ -77,7 +76,7 @@ int main(void)
       motors_pid_apply(pid_output);
 
 #ifndef DEBUG
-    }else {
+    } else {
       // Animation
     }
 #endif
