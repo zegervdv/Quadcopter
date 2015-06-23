@@ -25,10 +25,12 @@ void EXTI0_IRQHandler(void) {
 
     for (i = 0; i < 0x7FFFF; i++);
 
+#ifndef DEBUG
     if (enabled)
       enabled = 0;
     else
       enabled = 1;
+#endif
 
     EXTI_ClearITPendingBit(USER_BUTTON_EXTI_LINE);
 

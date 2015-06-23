@@ -12,7 +12,12 @@
 #define ACCBUFFER     (3 * 2)
 #define BUFFERSIZE    (5 * (sizeof(float)))
 
+#ifndef DEBUG
 uint8_t enabled = 0;
+#else
+uint8_t enabled = 1;
+#endif
+
 
 int main(void) {
   // Initialize system
@@ -44,9 +49,7 @@ int main(void) {
     if (bluetooth_connected())
       bluetooth_write(stats, BUFFERSIZE);
 
-#ifndef DEBUG
     if (enabled) {
-#endif
 
       if ((command_valid) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1]))) {
         STM_EVAL_LEDOn(LED10);
@@ -75,11 +78,9 @@ int main(void) {
       // Set motor speeds
       motors_pid_apply(pid_output);
 
-#ifndef DEBUG
     } else {
       // Animation
     }
-#endif
 
     // Reset Watchdog
     IWDG_ReloadCounter();
