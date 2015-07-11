@@ -82,8 +82,31 @@ void motors_set_speed(uint8_t motor, uint32_t speed) {
 }
 
 void motors_pid_apply(pid_output_typedef pid_output) {
-  motors_set_speed(MOTOR_RIGHT_FRONT, pid_output.throttle - pid_output.pitch - pid_output.roll - pid_output.yaw);
-  motors_set_speed(MOTOR_LEFT_FRONT, pid_output.throttle - pid_output.pitch + pid_output.roll + pid_output.yaw);
-  motors_set_speed(MOTOR_RIGHT_BACK, pid_output.throttle + pid_output.pitch - pid_output.roll + pid_output.yaw);
-  motors_set_speed(MOTOR_LEFT_BACK, pid_output.throttle + pid_output.pitch + pid_output.roll - pid_output.yaw);
+  uint16_t left_front, left_back, right_front, right_back;
+  uint16_t maximum = MOTOR_SPEED_MAX;
+  uint16_t offset = 0;
+  right_front = pid_output.throttle - pid_output.pitch - pid_output.roll - pid_output.yaw;
+  left_front = pid_output.throttle - pid_output.pitch + pid_output.roll + pid_output.yaw;
+  right_back = pid_output.throttle + pid_output.pitch - pid_output.roll + pid_output.yaw;
+  left_back = pid_output.throttle + pid_output.pitch + pid_output.roll - pid_output.yaw;
+
+  if (right_back > maximum) {
+    maximum = right_back;
+  }
+  if (left_back > maximum) {
+    maximum = left_back;
+  }
+  if (right_front > maximum) {
+    maximum = right_front;
+  }
+  if (left_front > maximum) {
+    maximum = left_front;
+  }
+
+  offset = maximum - MOTOR_SPEED_MAX;
+
+  motors_set_speed(MOTOR_RIGHT_FRONT, right_front - offset);
+  motors_set_speed(MOTOR_LEFT_FRONT, left_front - offset);
+  motors_set_speed(MOTOR_RIGHT_BACK, right_back - offset);
+  motors_set_speed(MOTOR_LEFT_BACK, left_back - offset);
 }

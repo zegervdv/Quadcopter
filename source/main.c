@@ -61,7 +61,7 @@ int main(void) {
 
       // PID tuning
       if (pid_run_flag) {
-        pid_compute(PID_THROTTLE, lastThrottle, command.throttle, &pid_output.throttle);
+        /* pid_compute(PID_THROTTLE, lastThrottle, command.throttle, &pid_output.throttle); */
         pid_compute(PID_PITCH, data.pitch, command.pitch, &pid_output.pitch);
         pid_compute(PID_ROLL, data.roll, command.roll, &pid_output.roll);
         pid_compute(PID_YAW, data.yaw, command.yaw, &pid_output.yaw);
@@ -69,11 +69,13 @@ int main(void) {
         STM_EVAL_LEDOff(LED10);
       }
 
-      // Save last throttle value
-      lastThrottle = pid_output.throttle * 2 * (MAX_THROTTLE / MOTOR_SPEED_MAX) - MAX_THROTTLE;
 
-      // Add offset to throttle
-      pid_output.throttle += MOTOR_SPEED_HALF;
+      // Save last throttle value
+      /* lastThrottle = pid_output.throttle * 2 * (MAX_THROTTLE / MOTOR_SPEED_MAX) - MAX_THROTTLE; */
+
+      // Convert PID output to values in motor range
+      pid_output.throttle = 6 * command.throttle + 2200;
+
 
       // Set motor speeds
       motors_pid_apply(pid_output);
