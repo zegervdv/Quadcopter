@@ -44,7 +44,7 @@ int main(void) {
 
     sensors_format_data(gyro_data, acc_data, comp_data, alt_data, bat_data, &data);
 
-    memcpy(stats, &data.roll, BUFFERSIZE);
+    /* memcpy(stats, &data.roll, BUFFERSIZE); */
 
     if (bluetooth_connected())
       bluetooth_write(stats, BUFFERSIZE);
@@ -76,6 +76,10 @@ int main(void) {
       // Convert PID output to values in motor range
       pid_output.throttle = 6 * command.throttle + 2200;
 
+      // Output
+      data.roll = (float)pid_output.roll;
+      data.pitch = (float)pid_output.pitch;
+      memcpy(stats, &data.roll, BUFFERSIZE);
 
       // Set motor speeds
       motors_pid_apply(pid_output);
