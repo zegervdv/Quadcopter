@@ -61,7 +61,6 @@ int main(void) {
 
       // PID tuning
       if (pid_run_flag) {
-        /* pid_compute(PID_THROTTLE, lastThrottle, command.throttle, &pid_output.throttle); */
         pid_compute(PID_PITCH, data.pitch, command.pitch, &pid_output.pitch);
         pid_compute(PID_ROLL, data.roll, command.roll, &pid_output.roll);
         pid_compute(PID_YAW, data.yaw, command.yaw, &pid_output.yaw);
@@ -69,11 +68,10 @@ int main(void) {
         STM_EVAL_LEDOff(LED10);
       }
 
-
-      // Save last throttle value
-      /* lastThrottle = pid_output.throttle * 2 * (MAX_THROTTLE / MOTOR_SPEED_MAX) - MAX_THROTTLE; */
-
-      // Convert PID output to values in motor range
+      // Convert throttle input to value in motor PWM control range
+      // The throttle has a range of [-100, 100]
+      // The PWM range is [2300, 4000], below 2300 is cut-off
+      // Throttle range is [-600, 600] around an offset of 2200 = [1600, 2800]
       pid_output.throttle = 6 * command.throttle + 2200;
 
 
