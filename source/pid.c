@@ -21,11 +21,6 @@ void pid_init(void) {
     pid_params[i].lastInput = 0;
   }
   // Set PID Parameters
-  pid_params[PID_THROTTLE].kp = KP_THROTTLE;
-  pid_params[PID_THROTTLE].ki = KI_THROTTLE * SampleTimeInSec;
-  pid_params[PID_THROTTLE].kd = KD_THROTTLE / SampleTimeInSec;
-  pid_params[PID_THROTTLE].min = MIN_THROTTLE;
-  pid_params[PID_THROTTLE].max = MAX_THROTTLE;
   pid_params[PID_PITCH].kp = KP_PITCH;
   pid_params[PID_PITCH].ki = KI_PITCH * SampleTimeInSec;
   pid_params[PID_PITCH].kd = KD_PITCH / SampleTimeInSec;
@@ -48,10 +43,10 @@ void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal) {
 
   /*Compute all the working error variables*/
   float error = setpoint - input;
+  float dInput = (input - pid->lastInput);
   pid->iterm += pid->ki * error;
   if (pid->iterm > pid->max) pid->iterm = pid->max;
   else if (pid->iterm < pid->min) pid->iterm = pid->min;
-  float dInput = (input - pid->lastInput);
 
   /*Compute PID Output*/
   *retVal = (uint16_t)(pid->kp * error + pid->iterm - pid->kd * dInput);

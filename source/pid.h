@@ -7,26 +7,19 @@
 #define PID_SAMPLE_TIME 1000
 
 // PID Tuning Parameters
-#define PID_THROTTLE (0)
-#define KP_THROTTLE 0
-#define KI_THROTTLE 0
-#define KD_THROTTLE 0
-#define MIN_THROTTLE (-100)
-#define MAX_THROTTLE (100)
-
 #define PID_PITCH (1)
-#define KP_PITCH 0
+#define KP_PITCH (45000.0 / PI)
 #define KI_PITCH 0
 #define KD_PITCH 0
-#define MIN_PITCH (-PI/6)
-#define MAX_PITCH (PI/6)
+#define MIN_PITCH (-500)
+#define MAX_PITCH (500)
 
 #define PID_ROLL (2)
-#define KP_ROLL 0
+#define KP_ROLL (45000.0 / PI)
 #define KI_ROLL 0
 #define KD_ROLL 0
-#define MIN_ROLL (-PI/6)
-#define MAX_ROLL (PI/6)
+#define MIN_ROLL (-500)
+#define MAX_ROLL (500)
 
 #define PID_YAW (3)
 #define KP_YAW 0

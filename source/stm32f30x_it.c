@@ -96,14 +96,12 @@ void USART3_IRQHandler(void) {
 }
 
 void TIM3_IRQHandler(void) {
-  if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
-    TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
+  if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
+    TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 
+    STM_EVAL_LEDToggle(LED4);
     if (pid_run_flag)
       STM_EVAL_LEDOn(LED10);
     pid_run_flag = 1;
-
-    capture = TIM_GetCapture1(TIM3);
-    TIM_SetCompare1(TIM3, capture + 40961);
   }
 }
