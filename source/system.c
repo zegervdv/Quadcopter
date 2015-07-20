@@ -6,7 +6,6 @@
 
 void TIM_init() {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-  TIM_OCInitTypeDef  TIM_OCInitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
 
   /* TIM3 clock enable */
@@ -23,8 +22,8 @@ void TIM_init() {
   TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
 
   /* Time base configuration */
-  TIM_TimeBaseStructure.TIM_Period = 10000 - 1;
-  TIM_TimeBaseStructure.TIM_Prescaler = 72000 - 1; // 1 kHz
+  TIM_TimeBaseStructure.TIM_Period = 12000 - 1;
+  TIM_TimeBaseStructure.TIM_Prescaler = 6000 - 1;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 

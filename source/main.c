@@ -29,7 +29,6 @@ int main(void) {
   uint8_t acc_data[ACCBUFFER] = {0};
   float alt_data = 0;
   float bat_data = 0;
-  float lastThrottle;
   sensor_data data;
   pid_output_typedef pid_output = {0};
 

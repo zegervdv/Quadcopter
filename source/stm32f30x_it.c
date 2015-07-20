@@ -97,11 +97,9 @@ void USART3_IRQHandler(void) {
 
 void TIM3_IRQHandler(void) {
   if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
-    TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-
-    STM_EVAL_LEDToggle(LED4);
     if (pid_run_flag)
       STM_EVAL_LEDOn(LED10);
     pid_run_flag = 1;
+    TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
   }
 }
