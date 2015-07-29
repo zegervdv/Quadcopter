@@ -4,12 +4,12 @@ A DIY quadcopter with an STM32F3-Discovery
 
 ## Goals
 
-To build a self-stabilizing quadcopter controlled via bluetooth.
+To build a self-stabilizing quadcopter controlled via bluetooth or RF-module.
 
 ## Components
 
 * STM32F3-Discovery
-* RN42-I/RM Bluetooth module
+* RN42-I/RM Bluetooth module OR MRF89XAM8A
 
 ### Pin Mapping
 
@@ -24,6 +24,14 @@ To build a self-stabilizing quadcopter controlled via bluetooth.
 | PC8  | PWM - Right Front motor        |
 | PC9  | PWM - Right Back motor         |
 | PC1  | ADC1 - Battery Voltage         |
+| PB10 | GPIO OUT - RF Reset            |
+| PB11 | GPIO OUT - RF Data select      |
+| PD9  | GPIO OUT - RF Configure select |
+| PD8  | EXTI - RF IRQ0                 |
+| PB12 | EXTI - RF IRQ1                 |
+| PB13 | SPI2 SCK - RF SCK              |
+| PB14 | SPI2 MISO - RF SDO             |
+| PB15 | SPI2 MOSI - RF SDI             |
 
 ## Communication
 
