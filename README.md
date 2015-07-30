@@ -13,25 +13,25 @@ To build a self-stabilizing quadcopter controlled via bluetooth or RF-module.
 
 ### Pin Mapping
 
-| Pin  | Function                       |
-| ---  | --------                       |
-| PC10 | USART3 TX - Bluetooth comm.    |
-| PC11 | USART3 RX - Bluetooth comm.    |
-| PC12 | GPIO OUT - Reset Bluetooth     |
-| PD0  | GPIO IN - Connection Bluetooth |
-| PC6  | PWM - Left Back motor          |
-| PC7  | PWM - Left Front motor         |
-| PC8  | PWM - Right Front motor        |
-| PC9  | PWM - Right Back motor         |
-| PC1  | ADC1 - Battery Voltage         |
-| PB10 | GPIO OUT - RF Reset            |
-| PB11 | GPIO OUT - RF Data select      |
-| PD9  | GPIO OUT - RF Configure select |
-| PD8  | EXTI - RF IRQ0                 |
-| PB12 | EXTI - RF IRQ1                 |
-| PB13 | SPI2 SCK - RF SCK              |
-| PB14 | SPI2 MISO - RF SDO             |
-| PB15 | SPI2 MOSI - RF SDI             |
+| Pin  | MCU Name  | Function             |
+| ---  | --------  | --------             |
+| PC10 | USART3 TX | Bluetooth comm.      |
+| PC11 | USART3 RX | Bluetooth comm.      |
+| PC12 | GPIO OUT  | Reset Bluetooth      |
+| PD0  | GPIO IN   | Connection Bluetooth |
+| PC6  | PWM       | Left Back motor      |
+| PC7  | PWM       | Left Front motor     |
+| PC8  | PWM       | Right Front motor    |
+| PC9  | PWM       | Right Back motor     |
+| PC1  | ADC1      | Battery Voltage      |
+| PB10 | GPIO OUT  | RF Reset             |
+| PB11 | GPIO OUT  | RF Data select       |
+| PD9  | GPIO OUT  | RF Configure select  |
+| PD8  | EXTI      | RF IRQ0              |
+| PB12 | EXTI      | RF IRQ1              |
+| PB13 | SPI2 SCK  | RF SCK               |
+| PB14 | SPI2 MISO | RF SDO               |
+| PB15 | SPI2 MOSI | RF SDI               |
 
 ## Communication
 
