@@ -14,18 +14,18 @@ MIN_THROTTLE = -100
 MAX_THROTTLE = 100
 
 PID_PITCH = 1
-KP_PITCH = 0
+KP_PITCH = (450.0 / math.pi)
 KI_PITCH = 0
 KD_PITCH = 0
-MIN_PITCH = -math.pi/6
-MAX_PITCH = math.pi/6
+MIN_PITCH = (450.0 / (-math.pi/6))
+MAX_PITCH = (450.0 / (math.pi/6))
 
 PID_ROLL = 2
-KP_ROLL = 0
+KP_ROLL = (450.0 / math.pi)
 KI_ROLL = 0
 KD_ROLL = 0
-MIN_ROLL = -math.pi/6
-MAX_ROLL = math.pi/6
+MIN_ROLL = (450.0 / (-math.pi/6))
+MAX_ROLL = (450.0 / (math.pi/6))
 
 PID_YAW = 3
 KP_YAW = 0
@@ -61,13 +61,17 @@ class pid_params_typedef(object):
       self.kd = 0;
       self.min = 0;
       self.max = 0;
+    def __str__(self):
+      return str(self.iterm)+" "+str(self.lastInput)+" "+str(self.ki)+" "+str(self.kp)+" "+str(self.kd)+" "+str(self.min)+" "+str(self.max)
 
 class pid_output_typedef(object):
-    def __init__(self,**kwargs):
+    def __init__(self):
       self.throttle = 0
       self.pitch = 0
       self.roll = 0
       self.yaw = 0
+    def __str__(self):
+      return str(self.throttle)+" "+str(self.pitch)+" "+str(self.roll)+" "+str(self.yaw)
 	  
 # /*
 # * Command structure
@@ -77,16 +81,17 @@ class pid_output_typedef(object):
 # * yaw      - float between -180 and +180 (in radians)
 # */
 class command_typedef(object):
-    def __init__(self,**kwargs):
+    def __init__(self):
       self.roll = 0
       self.pitch = 0
       self.throttle = 0
       self.yaw = 0 
 
 
-pid_params = [pid_params_typedef()] * 4
+pid_params = []
 pid_output = pid_output_typedef()
 command = command_typedef()
+command.throttle = 50
 data = command_typedef()
 lastThrottle = 0
 
@@ -109,31 +114,34 @@ class BluetoothWindow(QMainWindow):
         SampleTimeInSec = (PID_SAMPLE_TIME) / 1000.0
         
         for i in range(4):
-          pid_params[i].iterm = 0
-          pid_params[i].lastInput = 0
-        
+          pid_params.append(pid_params_typedef())
         
         pid_params[PID_THROTTLE].kp = KP_THROTTLE;
         pid_params[PID_THROTTLE].ki = KI_THROTTLE * SampleTimeInSec;
         pid_params[PID_THROTTLE].kd = KD_THROTTLE / SampleTimeInSec;
         pid_params[PID_THROTTLE].min = MIN_THROTTLE;
         pid_params[PID_THROTTLE].max = MAX_THROTTLE;
+
         pid_params[PID_PITCH].kp = KP_PITCH;
-        pid_params[PID_PITCH].ki = KI_PITCH * SampleTimeInSec;
+        pid_params[PID_PITCH].ki = KI_PITCH * SampleTimeInSec; 
         pid_params[PID_PITCH].kd = KD_PITCH / SampleTimeInSec;
         pid_params[PID_PITCH].min = MIN_PITCH;
         pid_params[PID_PITCH].max = MAX_PITCH;
+
         pid_params[PID_ROLL].kp = KP_ROLL;
         pid_params[PID_ROLL].ki = KI_ROLL * SampleTimeInSec;
         pid_params[PID_ROLL].kd = KD_ROLL / SampleTimeInSec;
         pid_params[PID_ROLL].min = MIN_ROLL;
         pid_params[PID_ROLL].max = MAX_ROLL;
+        
         pid_params[PID_YAW].kp = KP_YAW;
         pid_params[PID_YAW].ki = KI_YAW * SampleTimeInSec;
         pid_params[PID_YAW].kd = KD_YAW / SampleTimeInSec;
         pid_params[PID_YAW].min = MIN_YAW;
         pid_params[PID_YAW].max = MAX_YAW;
 
+        for i in pid_params:
+           print i		
  
     def receiveText(self):
           
@@ -182,9 +190,9 @@ class BluetoothWindow(QMainWindow):
         pid_output.roll = self.pid_compute(PID_ROLL, data.roll, command.roll);
         pid_output.yaw = self.pid_compute(PID_YAW, data.yaw, command.yaw);
         
-        
         #Save last throttle value
-        lastThrottle = pid_output.throttle * 2 * (MAX_THROTTLE / MOTOR_SPEED_MAX) - MAX_THROTTLE;
+        lastThrottle = pid_output.throttle * 2 * ( MAX_THROTTLE / MOTOR_SPEED_MAX) - MIN_THROTTLE;
+    
 
         #Add offset to throttle
         pid_output.throttle += MOTOR_SPEED_HALF;
@@ -207,7 +215,7 @@ class BluetoothWindow(QMainWindow):
 		
     def pid_compute(self, index, input, setpoint):
      
-      pid = pid_params[index];
+      pid = pid_params[index]
       retVal = 0
 
       #Compute all the working error variables*/
@@ -233,8 +241,7 @@ class BluetoothWindow(QMainWindow):
       pid.lastInput = input;
       pid_params[index] = pid
       return retVal        
-  
-
+      
     def reset(self):
         self.output.clear()
         
