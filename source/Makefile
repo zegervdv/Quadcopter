@@ -12,6 +12,7 @@ SRCS += sensors.c
 SRCS += controls.c
 SRCS += motors.c
 SRCS += pid.c
+SRCS += remote.c
 
 # Drivers
 SRCS += stm32f30x_rcc.c\

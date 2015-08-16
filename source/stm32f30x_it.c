@@ -3,6 +3,7 @@
  */
 
 #include "stm32f30x_it.h"
+#include "stm32f30x_exti.h"
 #include "controls.h"
 #include <string.h>
 
@@ -101,5 +102,25 @@ void TIM3_IRQHandler(void) {
       STM_EVAL_LEDOn(LED10);
     pid_run_flag = 1;
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+  }
+}
+
+/**
+ * ISR for incoming interrupt IRQ0 from RF module
+ */
+void EXTI9_5_IRQHandler(void) {
+  if (EXTI_GetFlagStatus(EXTI_Line8) != RESET) {
+    // TODO: Process IRQ
+    EXTI_ClearITPendingBit(EXTI_Line8);
+  }
+}
+
+/**
+ * ISR for incoming interrupt IRQ1 from RF module
+ */
+void EXTI15_10_IRQHandler(void) {
+  if (EXTI_GetITStatus(EXTI_Line12) != RESET) {
+    // TODO: Process IRQ
+    EXTI_ClearITPendingBit(EXTI_Line12);
   }
 }
