@@ -1,0 +1,29 @@
+{
+  "source/*.c": {
+    "alternate": "source/{}.h",
+    "type": "source",
+    "make": "make -wC source"
+  },
+  "source/*.h": {
+    "alternate": "source/{}.c",
+    "type": "header",
+    "make": "make -wC source"
+  },
+  "STM32F3-Discovery_FW_V1.1.0/Libraries/**/src/*.c": {
+    "type": "library",
+    "alternate": "STM32F3-Discovery_FW_V1.1.0/Libraries/{dirname}/inc/{basename}.h",
+    "make": "make -wC source"
+  },
+  "STM32F3-Discovery_FW_V1.1.0/Libraries/**/inc/*.h": {
+    "type": "header",
+    "alternate": "STM32F3-Discovery_FW_V1.1.0/Libraries/{dirname}/src/{basename}.c",
+    "make": "make -wC source"
+  },
+  "source/Makefile": {
+    "type": "Makefile",
+    "make": "make -wC source"
+  },
+  "app/*.py": {
+    "type": "app"
+  }
+}
