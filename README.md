@@ -41,12 +41,13 @@ The data sent from the quadcopter has following formatting:
 
 | Byte  | Name     | Value     |
 | ---   | ---      | ---       |
-| 0-1   | Sync     | 0x5555    |
-| 2-5   | Roll     | [-π, π]   |
-| 6-9   | Pitch    | [-π, π]   |
-| 10-13 | Yaw      | [-π, π]   |
-| 14-17 | Altitude | [0, 10m]  |
-| 18-21 | Battery  | [0, 100%] |
+| n/a   | Sync     | 0x5555    |
+| 0     | Length   | 0x15      |
+| 1-4   | Roll     | [-π, π]   |
+| 5-8   | Pitch    | [-π, π]   |
+| 9-12  | Yaw      | [-π, π]   |
+| 13-16 | Altitude | [0, 10m]  |
+| 17-20 | Battery  | [0, 100%] |
 
 ### Transmitting
 
