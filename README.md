@@ -35,37 +35,7 @@ To build a self-stabilizing quadcopter controlled via bluetooth or RF-module.
 
 ## Communication
 
-### Receiving
-
-The data sent from the quadcopter has following formatting:
-
-| Byte  | Name     | Value     |
-| ---   | ---      | ---       |
-| n/a   | Sync     | 0x5555    |
-| 0     | Length   | 0x15      |
-| 1-4   | Roll     | [-π, π]   |
-| 5-8   | Pitch    | [-π, π]   |
-| 9-12  | Yaw      | [-π, π]   |
-| 13-16 | Altitude | [0, 10m]  |
-| 17-20 | Battery  | [0, 100%] |
-
-### Transmitting
-
-| Byte  | Name      | Value        |
-| ---   | ----      | ---          |
-| 0     | Indicator |              |
-| 1-4   | Roll      | [-π/6, π/6]  |
-| 5-8   | Pitch     | [-π/6, π/6]  |
-| 9-12  | Throttle  | [-100, 100]  |
-| 13-16 | Yaw       | [-π, π]      |
-| 17    | CRC       |              |
-| 18    | End       | Newline '\n' |
-
-| Indicator | Mode            |
-| ---       | ---             |
-| 00        | Normal Command  |
-| FF        | Takeoff/Land    |
-| other     | Reserved        |
+See [protocol](protocol.md)
 
 ## Getting Started
 
