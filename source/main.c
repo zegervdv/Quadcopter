@@ -45,12 +45,15 @@ int main(void) {
 
     memcpy(stats, &data.roll, BUFFERSIZE);
 
+#ifdef BTEN
     if (bluetooth_connected())
       bluetooth_write(stats, BUFFERSIZE);
+#endif
+    // TODO: Write stats to RF module
 
     if (enabled) {
 
-      if ((command_valid) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1]))) {
+      if ((command_valid)) {
         STM_EVAL_LEDOn(LED10);
       } else {
         memset(&command, 0, sizeof(command_typedef));
