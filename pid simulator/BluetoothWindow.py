@@ -72,7 +72,7 @@ class pid_output_typedef(object):
       self.yaw = 0
     def __str__(self):
       return str(self.throttle)+" "+str(self.pitch)+" "+str(self.roll)+" "+str(self.yaw)
-	  
+          
 # /*
 # * Command structure
 # * roll     - float between -30 and +30 (in radians)
@@ -141,7 +141,7 @@ class BluetoothWindow(QMainWindow):
         pid_params[PID_YAW].max = MAX_YAW;
 
         for i in pid_params:
-           print i		
+           print i              
  
     def receiveText(self):
           
@@ -182,9 +182,9 @@ class BluetoothWindow(QMainWindow):
         data.pitch = pitch[0]
         data.roll = roll[0]
         data.yaw = yaw[0]
-		
+                
         global lastThrottle
-		
+                
         pid_output.throttle = self.pid_compute(PID_THROTTLE, lastThrottle, command.throttle);
         pid_output.pitch = self.pid_compute(PID_PITCH, data.pitch, command.pitch);
         pid_output.roll = self.pid_compute(PID_ROLL, data.roll, command.roll);
@@ -198,21 +198,33 @@ class BluetoothWindow(QMainWindow):
         pid_output.throttle += MOTOR_SPEED_HALF;
         
         self.motors_pid_apply()
-		
+                
         ## update gui
         self.repaint()   
 
+    def motor_name(self, motor):
+        if (motor == MOTOR_RIGHT_BACK):
+            return "RIGHT__BACK"
+        elif (motor == MOTOR_LEFT_BACK):
+            return "LEFT___BACK"
+        elif (motor == MOTOR_RIGHT_FRONT):
+            return "RIGHT_FRONT"
+        elif (motor == MOTOR_LEFT_FRONT):
+            return "LEFT__FRONT"
+        else:
+            return "UNKNOWN"
+
     def motors_set_speed(self, motor, value):
-	  self.output.appendPlainText("motor "+str(motor)+", value "+str(value))
-	
+        self.output.appendPlainText("motor "+str(self.motor_name(motor))+", value "+str(int(value)))
+        
 
     def motors_pid_apply(self):
       self.motors_set_speed(MOTOR_RIGHT_FRONT, pid_output.throttle - pid_output.pitch - pid_output.roll - pid_output.yaw);
       self.motors_set_speed(MOTOR_LEFT_FRONT, pid_output.throttle - pid_output.pitch + pid_output.roll + pid_output.yaw);
       self.motors_set_speed(MOTOR_RIGHT_BACK, pid_output.throttle + pid_output.pitch - pid_output.roll + pid_output.yaw);
       self.motors_set_speed(MOTOR_LEFT_BACK, pid_output.throttle + pid_output.pitch + pid_output.roll - pid_output.yaw);
-		
-		
+                
+                
     def pid_compute(self, index, input, setpoint):
      
       pid = pid_params[index]
@@ -235,7 +247,7 @@ class BluetoothWindow(QMainWindow):
         retVal = pid.max;
       else:
          if (retVal < pid.min):
-     	   retVal = pid.min;
+           retVal = pid.min;
 
       #Remember some variables for next time*/
       pid.lastInput = input;
