@@ -1,43 +1,39 @@
 import PyQt4
 from PyQt4.QtCore import SIGNAL,QObject,QEvent,Qt
-from PyQt4.QtGui import QPlainTextEdit,QWidget,QInputDialog,QSplitter,QMainWindow
-import math, struct
+from PyQt4.QtGui import QPlainTextEdit,QWidget,QInputDialog,QSplitter,QMainWindow,QHBoxLayout,QVBoxLayout,QLabel,QLineEdit,QPushButton,QApplication
+import math, struct, sys
 
-
-PID_SAMPLE_TIME = 1000
-
-PID_THROTTLE = 0
-KP_THROTTLE = 0
-KI_THROTTLE = 0
-KD_THROTTLE = 0
-MIN_THROTTLE = -100
-MAX_THROTTLE = 100
-
-PID_PITCH = 1
-KP_PITCH = (450.0 / math.pi)
-KI_PITCH = 0
-KD_PITCH = 0
-MIN_PITCH = (450.0 / (-math.pi/6))
-MAX_PITCH = (450.0 / (math.pi/6))
-
-PID_ROLL = 2
-KP_ROLL = (450.0 / math.pi)
-KI_ROLL = 0
-KD_ROLL = 0
-MIN_ROLL = (450.0 / (-math.pi/6))
-MAX_ROLL = (450.0 / (math.pi/6))
-
-PID_YAW = 3
-KP_YAW = 0
-KI_YAW = 0
-KD_YAW = 0
-MIN_YAW = -math.pi
-MAX_YAW = math.pi
-
+pidvalues = {
+'PID_SAMPLE_TIME': 1000,
+'PID_THROTTLE': 0,
+'KP_THROTTLE': 0,
+'KI_THROTTLE': 0,
+'KD_THROTTLE': 0,
+'MIN_THROTTLE': -100,
+'MAX_THROTTLE': 100,
+'PID_PITCH': 1,
+'KP_PITCH': (450.0 / math.pi),
+'KI_PITCH': 0,
+'KD_PITCH': 0,
+'MIN_PITCH': (450.0 / (-math.pi/6)),
+'MAX_PITCH': (450.0 / (math.pi/6)),
+'PID_ROLL': 2,
+'KP_ROLL': (450.0 / math.pi),
+'KI_ROLL': 0,
+'KD_ROLL': 0,
+'MIN_ROLL': (450.0 / (-math.pi/6)),
+'MAX_ROLL': (450.0 / (math.pi/6)),
+'PID_YAW': 3,
+'KP_YAW': 0,
+'KI_YAW': 0,
+'KD_YAW': 0,
+'MIN_YAW': -math.pi,
+'MAX_YAW': math.pi,
+}
 
 TIM_FREQ = 2e6
 PWM_FREQ = 400
-PWM_PERIOD = (TIM_FREQ / PWM_FREQ) - 1
+PWM_PERIOD =(TIM_FREQ / PWM_FREQ) - 1
 PWM_PULSE = PWM_PERIOD / (1000.0/PWM_FREQ)
 
 MOTOR_SPEED_MIN = 1.15 * PWM_PULSE
@@ -108,37 +104,60 @@ class BluetoothWindow(QMainWindow):
 
         self.output.setReadOnly(True)
         self.output.setLineWrapMode(QPlainTextEdit.WidgetWidth)
-       
-        self.setCentralWidget(self.output)
         
-        SampleTimeInSec = (PID_SAMPLE_TIME) / 1000.0
+        self.hor = QHBoxLayout()
+        self.ver = QVBoxLayout()
+        
+        def updateValue(key, value):
+            pidvalues[key] = float(value)
+            print key, "updated to", value
+        
+        for k, v in pidvalues.iteritems():
+            label = QLabel(k)
+            edit = QLineEdit(str(v))
+            button = QPushButton("Update")
+            l = QHBoxLayout()
+            l.addWidget(label, 2)
+            l.addWidget(edit, 5)
+            l.addWidget(button, 2)
+            self.ver.addLayout(l)   
+            button.clicked.connect(lambda clicked, label=label, edit=edit: updateValue(label.text(), edit.text()))        
+        
+        self.hor.addWidget(self.output)
+        self.hor.addLayout(self.ver)
+        
+        w = QWidget()
+        w.setLayout(self.hor)
+        self.setCentralWidget(w)
+        
+        SampleTimeInSec = (pidvalues["PID_SAMPLE_TIME"]) / 1000.0
         
         for i in range(4):
           pid_params.append(pid_params_typedef())
         
-        pid_params[PID_THROTTLE].kp = KP_THROTTLE;
-        pid_params[PID_THROTTLE].ki = KI_THROTTLE * SampleTimeInSec;
-        pid_params[PID_THROTTLE].kd = KD_THROTTLE / SampleTimeInSec;
-        pid_params[PID_THROTTLE].min = MIN_THROTTLE;
-        pid_params[PID_THROTTLE].max = MAX_THROTTLE;
+        pid_params[pidvalues["PID_THROTTLE"]].kp = pidvalues["KP_THROTTLE"];
+        pid_params[pidvalues["PID_THROTTLE"]].ki = pidvalues["KI_THROTTLE"] * SampleTimeInSec;
+        pid_params[pidvalues["PID_THROTTLE"]].kd = pidvalues["KD_THROTTLE"] / SampleTimeInSec;
+        pid_params[pidvalues["PID_THROTTLE"]].min = pidvalues["MIN_THROTTLE"];
+        pid_params[pidvalues["PID_THROTTLE"]].max = pidvalues["MAX_THROTTLE"];
 
-        pid_params[PID_PITCH].kp = KP_PITCH;
-        pid_params[PID_PITCH].ki = KI_PITCH * SampleTimeInSec; 
-        pid_params[PID_PITCH].kd = KD_PITCH / SampleTimeInSec;
-        pid_params[PID_PITCH].min = MIN_PITCH;
-        pid_params[PID_PITCH].max = MAX_PITCH;
+        pid_params[pidvalues["PID_PITCH"]].kp = pidvalues["KP_PITCH"];
+        pid_params[pidvalues["PID_PITCH"]].ki = pidvalues["KI_PITCH"] * SampleTimeInSec; 
+        pid_params[pidvalues["PID_PITCH"]].kd = pidvalues["KD_PITCH"] / SampleTimeInSec;
+        pid_params[pidvalues["PID_PITCH"]].min = pidvalues["MIN_PITCH"];
+        pid_params[pidvalues["PID_PITCH"]].max = pidvalues["MAX_PITCH"];
 
-        pid_params[PID_ROLL].kp = KP_ROLL;
-        pid_params[PID_ROLL].ki = KI_ROLL * SampleTimeInSec;
-        pid_params[PID_ROLL].kd = KD_ROLL / SampleTimeInSec;
-        pid_params[PID_ROLL].min = MIN_ROLL;
-        pid_params[PID_ROLL].max = MAX_ROLL;
+        pid_params[pidvalues["PID_ROLL"]].kp = pidvalues["KP_ROLL"];
+        pid_params[pidvalues["PID_ROLL"]].ki = pidvalues["KI_ROLL"] * SampleTimeInSec;
+        pid_params[pidvalues["PID_ROLL"]].kd = pidvalues["KD_ROLL"] / SampleTimeInSec;
+        pid_params[pidvalues["PID_ROLL"]].min = pidvalues["MIN_ROLL"];
+        pid_params[pidvalues["PID_ROLL"]].max = pidvalues["MAX_ROLL"];
         
-        pid_params[PID_YAW].kp = KP_YAW;
-        pid_params[PID_YAW].ki = KI_YAW * SampleTimeInSec;
-        pid_params[PID_YAW].kd = KD_YAW / SampleTimeInSec;
-        pid_params[PID_YAW].min = MIN_YAW;
-        pid_params[PID_YAW].max = MAX_YAW;
+        pid_params[pidvalues["PID_YAW"]].kp = pidvalues["KP_YAW"];
+        pid_params[pidvalues["PID_YAW"]].ki = pidvalues["KI_YAW"] * SampleTimeInSec;
+        pid_params[pidvalues["PID_YAW"]].kd = pidvalues["KD_YAW"] / SampleTimeInSec;
+        pid_params[pidvalues["PID_YAW"]].min = pidvalues["MIN_YAW"];
+        pid_params[pidvalues["PID_YAW"]].max = pidvalues["MAX_YAW"];
 
         for i in pid_params:
            print i              
@@ -185,13 +204,13 @@ class BluetoothWindow(QMainWindow):
                 
         global lastThrottle
                 
-        pid_output.throttle = self.pid_compute(PID_THROTTLE, lastThrottle, command.throttle);
-        pid_output.pitch = self.pid_compute(PID_PITCH, data.pitch, command.pitch);
-        pid_output.roll = self.pid_compute(PID_ROLL, data.roll, command.roll);
-        pid_output.yaw = self.pid_compute(PID_YAW, data.yaw, command.yaw);
+        pid_output.throttle = self.pid_compute(pidvalues["PID_THROTTLE"], lastThrottle, command.throttle);
+        pid_output.pitch = self.pid_compute(pidvalues["PID_PITCH"], data.pitch, command.pitch);
+        pid_output.roll = self.pid_compute(pidvalues["PID_ROLL"], data.roll, command.roll);
+        pid_output.yaw = self.pid_compute(pidvalues["PID_YAW"], data.yaw, command.yaw);
         
         #Save last throttle value
-        lastThrottle = pid_output.throttle * 2 * ( MAX_THROTTLE / MOTOR_SPEED_MAX) - MIN_THROTTLE;
+        lastThrottle = pid_output.throttle * 2 * ( pidvalues["MAX_THROTTLE"] / MOTOR_SPEED_MAX) - pidvalues["MIN_THROTTLE"];
     
 
         #Add offset to throttle
