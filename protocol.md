@@ -37,6 +37,7 @@ Packets sent from the remote controller require 1 length byte and 1 header byte.
 | 4-6  | Type     | Type indicator              |
 | 7    | Return   | Set if response is expected |
 
+Type definitions
 | Type | Value | Description                                               |
 | ---  | ---   | ---                                                       |
 | RC   | 000   | Remote control message with roll, pitch, yaw and throttle |
@@ -86,7 +87,12 @@ All values are 32 bit floats
 ##### RF module configuration update (CONF)
 
 Allows reconfiguration of RF module parameters on the fly
-TODO: formatting to be determined
+Data to be formatted as address, value bytes, which will be passed to the RF module.
+
+##### Pass through mode (PASS)
+
+Send data to/from RF module from/to Serial connection.
+TODO: TBD
 
 ### Tx
 
