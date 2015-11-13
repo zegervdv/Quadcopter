@@ -53,7 +53,7 @@ void quadcopter_init(void) {
   TIM_init();
 
   // Initialize Peripherals
-  bluetooth_init();
+  serial_init();
   gyroscope_init();
   compass_init();
   accelerometer_init();

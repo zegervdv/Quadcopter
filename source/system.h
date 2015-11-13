@@ -2,7 +2,7 @@
  * system.h: initialize and configure all parts of the quadcopter
  */
 
-#include "bluetooth.h"
+#include "serial.h"
 #include "controls.h"
 #include "motors.h"
 #include "sensors.h"

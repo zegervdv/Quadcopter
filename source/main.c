@@ -45,9 +45,9 @@ int main(void) {
 
     memcpy(stats, &data.roll, BUFFERSIZE);
 
-#ifdef BTEN
-    if (bluetooth_connected())
-      bluetooth_write(stats, BUFFERSIZE);
+#ifdef SERIAL
+    if (serial_connected())
+      serial_write(stats, BUFFERSIZE);
 #endif
     // TODO: Write stats to RF module
 

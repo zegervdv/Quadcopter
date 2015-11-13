@@ -77,7 +77,7 @@ void SysTick_Handler(void) {
 /**
  * USART3 Interrupt handler
  */
-#ifdef BTEN
+#ifdef SERIAL
 void USART3_IRQHandler(void) {
   if (USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
     static uint8_t cnt = 0;

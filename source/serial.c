@@ -1,11 +1,11 @@
 /**
- * bluetooth.c
+ * serial.c
  *
- * Bluetooth communication with RN42 over UART
+ * serial communication with RN42 over UART
  * Using USART3 on PC10 and PC11
  */
 
-#include "bluetooth.h"
+#include "serial.h"
 #include "string.h"
 
 #define RST_PIN   GPIO_Pin_12
@@ -79,7 +79,7 @@ void init_reset() {
 
 /**
  * Initialize PD1 to read RN42 GPIO2
- * Pin is HIGH when bluetooth is connected to remote host
+ * Pin is HIGH when serial is connected to remote host
  */
 void init_connection() {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -93,7 +93,7 @@ void init_connection() {
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
 
-void bluetooth_init() {
+void serial_init() {
   // Configure USART3
   init_usart3();
   init_reset();
@@ -106,17 +106,17 @@ void bluetooth_init() {
   CRC_PolynomialSizeSelect(CRC_PolSize_8);
   CRC_SetPolynomial(0xD5);
 
-  if (!bluetooth_connected())
-    bluetooth_reset();
+  if (!serial_connected())
+    serial_reset();
 }
 
-void bluetooth_reset() {
+void serial_reset() {
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_RESET);
   Delay(50);
   GPIO_WriteBit(GPIOC, RST_PIN, Bit_SET);
 }
 
-void bluetooth_write(uint8_t* data, int size) {
+void serial_write(uint8_t* data, int size) {
   int i = 0;
 
   // Send synchronization
@@ -133,7 +133,7 @@ void bluetooth_write(uint8_t* data, int size) {
   }
 }
 
-uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum) {
+uint8_t serial_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t checksum) {
   uint8_t check = 0;
   uint8_t* end = data_bytes + size;
   CRC_ResetDR();
@@ -145,7 +145,7 @@ uint8_t bluetooth_check_integrity(uint8_t* data_bytes, uint8_t size, uint8_t che
   return check == checksum;
 }
 
-uint8_t bluetooth_connected(void) {
+uint8_t serial_connected(void) {
   return GPIO_ReadInputDataBit(GPIOD, CONN_PIN) == Bit_SET;
 }
 
