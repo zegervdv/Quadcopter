@@ -3,7 +3,7 @@
 ## Reception
 
 The quadcopter is by default in Rx mode, accepting all incoming data.
-RF module asserts an interrupt to signal the controller a packet has arrived.
+RF module asserts an interrupt to signal the controller a new packet is available.
 
 An option is available in the header to indicate if a response is expected from the
 drone.
@@ -41,8 +41,10 @@ Packets sent from the remote controller require 1 length byte and 1 header byte.
 | ---  | ---   | ---                                                       |
 | RC   | 000   | Remote control message with roll, pitch, yaw and throttle |
 | TO   | 001   | Automated take off/land                                   |
+| PID  | 100   | PID parameter update                                      |
+| CONF | 111   | RF module reconfigure                                     |
 
-#### Remote Control
+##### Remote Control (RC)
 
 | Byte  | Name     | Value       |
 | ---   | ----     | ---         |
@@ -52,6 +54,39 @@ Packets sent from the remote controller require 1 length byte and 1 header byte.
 | 6-7   | Pitch    | [-π/6, π/6] |
 | 10-13 | Throttle | [-100, 100] |
 | 14-17 | Yaw      | [-π, π]     |
+
+##### Take-off/landing (TO)
+
+TODO: TBD
+
+
+##### PID
+
+Allows to update PID controller values (non-persistent).
+Valid values are indicated with corresponding bit in VALID bytes.
+All values are 32 bit floats
+
+| Byte  | Name        |
+| ---   | ---         |
+| 0-1   | VALID       |
+| 2-5   | KP THROTTLE |
+| 6-9   | KI THROTTLE |
+| 10-13 | KD THROTTLE |
+| 14-17 | KP PITCH    |
+| 18-21 | KI PITCH    |
+| 22-25 | KD PITCH    |
+| 26-29 | KP ROLL     |
+| 30-33 | KI ROLL     |
+| 34-37 | KD ROLL     |
+| 38-41 | KP YAW      |
+| 42-45 | KI YAW      |
+| 46-49 | KD YAW      |
+
+
+##### RF module configuration update (CONF)
+
+Allows reconfiguration of RF module parameters on the fly
+TODO: formatting to be determined
 
 ### Tx
 
@@ -67,3 +102,5 @@ Status update sent from the quadcopter contains:
 | 13-16 | Altitude | [0, 10m]  | 32 bit | float                            |
 | 17-20 | Battery  | [0, 100%] | 32 bit | float                            |
 
+
+*) If other Tx messages are required, a type indicator must be included in every Tx packet
