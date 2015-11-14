@@ -5,6 +5,7 @@
 #include "stm32f30x_it.h"
 #include "stm32f30x_exti.h"
 #include "controls.h"
+#include "remote.h"
 #include <string.h>
 
 int i;
@@ -77,7 +78,7 @@ void SysTick_Handler(void) {
 /**
  * USART3 Interrupt handler
  */
-#ifdef SERIAL
+#ifdef BTEN
 void USART3_IRQHandler(void) {
   if (USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
     static uint8_t cnt = 0;
@@ -112,7 +113,13 @@ void TIM3_IRQHandler(void) {
  */
 void EXTI9_5_IRQHandler(void) {
   if (EXTI_GetFlagStatus(EXTI_Line8) != RESET) {
-    // TODO: Process IRQ
+    uint8_t type;
+    command.valid = 0;
+    command.length = remote_send_byte(SPI_DUMMY_BYTE);
+    type = remote_send_byte(SPI_DUMMY_BYTE);
+    command.type = (type >> REMOTE_HEADER_RSVD_SIZE) & 0x7;
+    remote_read(command.data, (command.length - 2));
+    command.valid = 1;
     EXTI_ClearITPendingBit(EXTI_Line8);
   }
 }

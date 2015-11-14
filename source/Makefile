@@ -51,6 +51,7 @@ OBJDUMP=arm-none-eabi-objdump
 CFLAGS  =  -Wall -Tstm32_flash.ld
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant
+CFLAGS += --short-enums
 
 CFLAGS += -fno-strict-aliasing
 CFLAGS += -DUSE_STDPERIPH_DRIVER

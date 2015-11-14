@@ -7,31 +7,41 @@
 #include "string.h"
 
 /**
- * Formatted commands
+ * Command data structure
  */
-command_typedef command = {0};
+command_t command = {0};
 
-/**
- * Set to 1 if command is valid
- */
-uint8_t command_valid = 0;
-
-void controls_format(uint8_t* data, command_typedef* command) {
-  union unsigned_to_signed uts;
-  switch (data[0]) {
-  case COMMAND_MODE:
-    memcpy(uts.input, &data[1], CONTROL_MSG_SIZE - 2);
-
-    command->roll = (float)uts.formatted[0];
-    command->pitch = (float)uts.formatted[1];
-    command->throttle = (float)uts.formatted[2];
-    command->yaw = (float)uts.formatted[3];
-    break;
-  case TAKEOFF_MODE:
-    // TODO: Set takeoff command
-    break;
-  default:
-    // Unknown mode, reset command
-    memset(command, 0, CONTROL_MSG_SIZE);
+uint8_t process_commands(control_t* control) {
+  if (command.valid) {
+    switch(command.type) {
+      case REMOTE_CONTROL :
+        controls_format(command.data, control);
+        break;
+      case TAKE_OFF :
+        // TODO: Set take-off
+        break;
+      case PID_CONF :
+        // TODO: Configure PID values
+        break;
+      case RF_CONF : 
+        // TODO: Configure RF settings
+        break;
+      case PASS_THROUGH :
+        // TODO: Pass data to serial
+        break;
+      default :
+        memset(control, 0, CONTROL_MSG_SIZE);
+    }
   }
+  return 0;
+}
+
+void controls_format(uint8_t* data, control_t* control) {
+  union unsigned_to_signed uts;
+  memcpy(uts.input, &data, CONTROL_MSG_SIZE);
+
+  control->roll = (float)uts.formatted[0];
+  control->pitch = (float)uts.formatted[1];
+  control->throttle = (float)uts.formatted[2];
+  control->yaw = (float)uts.formatted[3];
 }

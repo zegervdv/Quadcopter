@@ -113,7 +113,7 @@ void remote_write(uint8_t* data, int size) {
 void remote_read(uint8_t* data, int size) {
   while(size > 0) {
     remote_enable_data_mode();
-    *data = remote_send_byte(DUMMY_BYTE);
+    *data = remote_send_byte(SPI_DUMMY_BYTE);
     remote_disable_data_mode();
     data++;
     size--;

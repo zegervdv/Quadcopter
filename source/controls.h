@@ -7,17 +7,23 @@
 #define CONTROLS_H
 
 #include "stm32f30x_conf.h"
-
-#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 2)
+#include "remote.h"
 
 /**
- * Indicator modes
+ * Control message sizes
  */
-#define COMMAND_MODE   (0x00)
-#define TAKEOFF_MODE   (0xFF)
+#define CONTROL_MSG_SIZE  ((uint8_t)(4 * sizeof(float)))
+
+enum type {
+  REMOTE_CONTROL = 0,
+  TAKE_OFF       = 1,
+  PID_CONF       = 4,
+  RF_CONF        = 5,
+  PASS_THROUGH   = 6
+};
 
 /**
- * Command structure
+ * Control structure: movement controls
  * roll     - float between -30° and +30° (in radians)
  * pitch    - float between -30° and +30° (in radians)
  * throttle - float between -100 and 100
@@ -28,22 +34,41 @@ typedef struct {
   float pitch;
   float throttle;
   float yaw;
-} command_typedef;
+} control_t;
 
-extern command_typedef command;
-extern uint8_t command_valid;
+/**
+ * Command structure
+ */
+typedef struct {
+  uint8_t valid : 1;
+  enum type type : REMOTE_HEADER_TYPE_SIZE;
+  uint8_t length;
+  uint8_t data[RF_MAX_PACKET_SIZE];
+} command_t;
+
+/**
+ * Global command data variable
+ */
+extern command_t command;
 
 union unsigned_to_signed {
-  uint8_t input[CONTROL_MSG_SIZE - 1];
+  uint8_t input[CONTROL_MSG_SIZE];
   float formatted[4];
 };
+
+/**
+ * Parse and process commands from remote module
+ * control - control formatting
+ * returns 1 if succesfull
+ */
+uint8_t process_commands(control_t* control);
 
 
 /**
  * Convert raw input data to command_typedef
  * data    - uint8_t array
- * command - command_typedef pointer
+ * control - control_t pointer
  */
-void controls_format(uint8_t* data, command_typedef* command);
+void controls_format(uint8_t* data, control_t* control);
 
 #endif

@@ -29,6 +29,7 @@ int main(void) {
   uint8_t acc_data[ACCBUFFER] = {0};
   float alt_data = 0;
   float bat_data = 0;
+  control_t control = {0};
   sensor_data data;
   pid_output_typedef pid_output = {0};
 
@@ -53,19 +54,14 @@ int main(void) {
 
     if (enabled) {
 
-      if ((command_valid)) {
-        STM_EVAL_LEDOn(LED10);
-      } else {
-        memset(&command, 0, sizeof(command_typedef));
-      }
-      // Reset command flag
-      command_valid = 0x0;
+      process_commands(&control);
+
 
       // PID tuning
       if (pid_run_flag) {
-        pid_compute(PID_PITCH, data.pitch, command.pitch, &pid_output.pitch);
-        pid_compute(PID_ROLL, data.roll, command.roll, &pid_output.roll);
-        pid_compute(PID_YAW, data.yaw, command.yaw, &pid_output.yaw);
+        pid_compute(PID_PITCH, data.pitch, control.pitch, &pid_output.pitch);
+        pid_compute(PID_ROLL, data.roll, control.roll, &pid_output.roll);
+        pid_compute(PID_YAW, data.yaw, control.yaw, &pid_output.yaw);
         pid_run_flag = 0;
         STM_EVAL_LEDOff(LED10);
       }
@@ -74,7 +70,7 @@ int main(void) {
       // The throttle has a range of [-100, 100]
       // The PWM range is [2300, 4000], below 2300 is cut-off
       // Throttle range is [-600, 600] around an offset of 2200 = [1600, 2800]
-      pid_output.throttle = 6 * command.throttle + 2200;
+      pid_output.throttle = 6 * control.throttle + 2200;
 
 
       // Set motor speeds

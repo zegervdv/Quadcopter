@@ -11,11 +11,6 @@
 #define RST_PIN   GPIO_Pin_12
 #define CONN_PIN  GPIO_Pin_0
 
-/**
- * Store received command bytes plus 8 bit CRC
- */
-uint8_t command_bytes[CONTROL_MSG_SIZE + 1];
-
 void init_usart3() {
   // Initialize USART3
   // Tx: PIN PC10

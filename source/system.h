@@ -2,6 +2,9 @@
  * system.h: initialize and configure all parts of the quadcopter
  */
 
+#ifndef SYSTEM_H
+#define SYSTEM_H
+
 #include "serial.h"
 #include "controls.h"
 #include "motors.h"
@@ -19,3 +22,5 @@
  * initialize all components
  */
 void quadcopter_init(void);
+
+#endif

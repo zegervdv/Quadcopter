@@ -5,6 +5,9 @@
  * of the STM32F3 Discovery
  */
 
+#ifndef SENSORS_H
+#define SENSORS_H
+
 #include "stm32f30x_conf.h"
 #include "stm32f3_discovery_l3gd20.h"
 #include "stm32f3_discovery_lsm303dlhc.h"
@@ -153,3 +156,5 @@ void battery_to_float(float* data, float* value);
  * data     - pointer to sensor_data struct to hold data
  */
 void sensors_format_data(uint8_t* gyro, uint8_t* accelero, uint8_t* magneto, float altitude, float battery, sensor_data* data);
+
+#endif

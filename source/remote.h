@@ -6,7 +6,7 @@
 #ifndef REMOTE_H
 #define REMOTE_H
 
-#include "controls.h"
+#include "stm32f30x_conf.h"
 #include "MRF89XA.h"
 
 /**
@@ -21,13 +21,19 @@
 /**
  * SPI Constants
  */
-#define DUMMY_BYTE                (uint8_t)(0x00)
+#define SPI_DUMMY_BYTE            (uint8_t)(0x00)
 
 /**
  * RF Mode
  */
 #define RF_TXMODE                 (uint8_t)(0x01)
 #define RF_RXMODE                 (uint8_t)(0x02)
+
+/**
+ * HEADER SIZE DEFINITIONS
+ */
+#define REMOTE_HEADER_RSVD_SIZE   (uint8_t)(4)
+#define REMOTE_HEADER_TYPE_SIZE   (uint8_t)(3)
 
 extern uint8_t rf_mode;
 
@@ -60,7 +66,7 @@ void remote_config(uint8_t address, uint8_t data);
 
 /**
  * Send a single byte over SPI
- * Use DUMMY_BYTE to read
+ * Use SPI_DUMMY_BYTE to read
  * data - data byte
  * returns the read byte
  */

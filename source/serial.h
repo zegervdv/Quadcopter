@@ -14,8 +14,6 @@
 #include "controls.h"
 
 
-extern uint8_t command_bytes[CONTROL_MSG_SIZE + 1];
-
 /**
  * Initialize serial communication
  *
