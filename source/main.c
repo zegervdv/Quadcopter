@@ -54,8 +54,9 @@ int main(void) {
 
     if (enabled) {
 
+      // Process commands into controls
+      // and optional other configurations
       process_commands(&control);
-
 
       // PID tuning
       if (pid_run_flag) {
