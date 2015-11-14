@@ -29,6 +29,10 @@ Packets sent from the remote controller require 1 length byte and 1 header byte.
 | 1    | Header |         | 8 bit          | See Header                             |
 | 2-63 | Data   |         | up to 62 bytes | n/a                                    |
 
+Upon receiving an interrupt on IRQ0 the handler will deassert the valid bit of the command, copy the length byte to the length field, copy type to type field and data bytes to
+the data array.
+After completing the transfer, the valid bit will be asserted.
+
 #### Header
 
 | Bits | Name     | Remarks                     |
@@ -43,7 +47,8 @@ Type definitions
 | RC   | 000   | Remote control message with roll, pitch, yaw and throttle |
 | TO   | 001   | Automated take off/land                                   |
 | PID  | 100   | PID parameter update                                      |
-| CONF | 111   | RF module reconfigure                                     |
+| CONF | 101   | RF module reconfigure                                     |
+| PASS | 110   | Pass through mode to/from serial                          |
 
 ##### Remote Control (RC)
 
