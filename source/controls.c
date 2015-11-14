@@ -12,11 +12,13 @@
 command_t command = {0};
 
 uint8_t process_commands(control_t* control) {
+  // Always reset controls
+  memset(control, 0, CONTROL_MSG_SIZE);
   if (command.valid) {
     switch(command.type) {
       case REMOTE_CONTROL :
         controls_format(command.data, control);
-        break;
+        return 1;
       case TAKE_OFF :
         // TODO: Set take-off
         break;
