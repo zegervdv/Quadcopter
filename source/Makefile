@@ -44,11 +44,11 @@ STM_COMMON=../STM32F3-Discovery_FW_V1.1.0
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 SIZE=arm-none-eabi-size
+OBJDUMP=arm-none-eabi-objdump
 
-CFLAGS  =  -Wall -Tstm32_flash.ld -Wl,--gc-sections
+CFLAGS  =  -Wall -Tstm32_flash.ld
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant
-CFLAGS += -I.
 
 CFLAGS += -fno-strict-aliasing
 CFLAGS += -DUSE_STDPERIPH_DRIVER
@@ -61,6 +61,8 @@ CFLAGS += -DARM_MATH_MATRIX_CHECK
 CFLAGS += -DDELAY_TIME=100
 CFLAGS += -DUSE_DEFAULT_TIMEOUT_CALLBACK
 CFLAGS += --specs=nosys.specs
+
+LDFLAGS += -Wl,--gc-sections
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -78,11 +80,14 @@ vpath %.c \
 			$(STM_COMMON)/Libraries/STM32_USB-FS-Device_Driver/src \
 			$(STM_COMMON)/Utilities/STM32F3_Discovery
 
+INCLUDES += -I.
 # Include files from STM libraries
-CFLAGS += -I$(STM_COMMON)/Utilities/STM32F3_Discovery
-CFLAGS += -I$(STM_COMMON)/Libraries/CMSIS/Include -I$(STM_COMMON)/Libraries/CMSIS/Device/ST/STM32F30x/Include
-CFLAGS += -I$(STM_COMMON)/Libraries/STM32F30x_StdPeriph_Driver/inc
-CFLAGS += -I$(STM_COMMON)/Libraries/STM32_USB-FS-Device_Driver/inc
+INCLUDES += -I$(STM_COMMON)/Utilities/STM32F3_Discovery
+INCLUDES += -I$(STM_COMMON)/Libraries/CMSIS/Include -I$(STM_COMMON)/Libraries/CMSIS/Device/ST/STM32F30x/Include
+INCLUDES += -I$(STM_COMMON)/Libraries/STM32F30x_StdPeriph_Driver/inc
+INCLUDES += -I$(STM_COMMON)/Libraries/STM32_USB-FS-Device_Driver/inc
+
+CFLAGS += $(INCLUDES)
 
 # add startup file to build
 SRCS += $(STM_COMMON)/Libraries/CMSIS/Device/ST/STM32F30x/Source/Templates/TrueSTUDIO/startup_stm32f30x.s
@@ -102,7 +107,7 @@ release: CFLAGS += -O2
 release: $(PROJ_NAME).elf
 
 $(PROJ_NAME).elf: $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIBPATHS) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ $(LIBPATHS) $(LIBS)
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 
@@ -114,6 +119,9 @@ clean:
 	rm -f $(PROJ_NAME).hex
 
 remake: clean all
+
+assembly: all
+	$(OBJDUMP) -S -l $(INCLUDES) $(PROJ_NAME).elf > $(PROJ_NAME).s
 
 # Flash the STM32F4
 burn: all
