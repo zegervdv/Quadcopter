@@ -65,6 +65,8 @@ CFLAGS += -DDELAY_TIME=100
 CFLAGS += -DUSE_DEFAULT_TIMEOUT_CALLBACK
 CFLAGS += --specs=nosys.specs
 
+CFLAGS += $(OPTIONS)
+
 LDFLAGS += -Wl,--gc-sections
 
 UNAME_S := $(shell uname -s)

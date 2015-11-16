@@ -11,6 +11,7 @@
 int i;
 extern uint8_t enabled;
 static __IO uint32_t TimingDelay;
+static uint8_t cnt = 0;
 uint16_t capture = 0;
 
 uint8_t pid_run_flag = 0;
@@ -78,23 +79,20 @@ void SysTick_Handler(void) {
 /**
  * USART3 Interrupt handler
  */
-#ifdef BTEN
+#ifdef SERIAL
 void USART3_IRQHandler(void) {
   if (USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
-    static uint8_t cnt = 0;
     char t = USART_ReceiveData(USART3);
-    if ((t != '\n') && (cnt < CONTROL_MSG_SIZE)) {
-      command_bytes[cnt] = t;
-      cnt++;
-    } else {
-      STM_EVAL_LEDOn(LED3);
-      command_valid = 0x01;
-      // Convert received bytes to command
-      controls_format(command_bytes, &command);
-      // Reset command bytes
-      memset(command_bytes, 0, CONTROL_MSG_SIZE);
-      cnt = 0;
+    cnt = t - 2;
+    command.valid = 0;
+    command.length = t;
+    t = USART_ReceiveData(USART3);
+    command.type = (t >> REMOTE_HEADER_RSVD_SIZE) & 0x7;
+    while (cnt > 0) {
+      *(command.data + (command.length - cnt)) = USART_ReceiveData(USART3);
+      cnt--;
     }
+    command.valid = 1;
   }
 }
 #endif

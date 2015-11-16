@@ -14,5 +14,8 @@ release:
 clean:
 	$(MAKE) -C $(CODEDIR) clean
 
+assembly:
+	$(MAKE) -C $(CODEDIR) assembly
+
 burn:
 	$(MAKE) -C $(CODEDIR) burn

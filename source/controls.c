@@ -32,7 +32,7 @@ uint8_t process_commands(control_t* control) {
         // TODO: Pass data to serial
         break;
       default :
-        memset(control, 0, CONTROL_MSG_SIZE);
+        return 0;
     }
   }
   return 0;
