@@ -41,7 +41,8 @@ After completing the transfer, the valid bit will be asserted.
 | 4-6  | Type     | Type indicator              |
 | 7    | Return   | Set if response is expected |
 
-Type definitions
+Type definitions:
+
 | Type | Value | Description                                               |
 | ---  | ---   | ---                                                       |
 | RC   | 000   | Remote control message with roll, pitch, yaw and throttle |
