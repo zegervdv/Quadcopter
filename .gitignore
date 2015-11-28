@@ -12,3 +12,4 @@ debug/read_sensors
 *.pyc
 
 ftdi-test/com
+spi_debug/spi
