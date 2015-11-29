@@ -65,6 +65,14 @@ void remote_read(uint8_t* data, int size);
 void remote_config(uint8_t address, uint8_t data);
 
 /**
+ * Write configuration options to RF module
+ * Must be configured in configuration mode
+ * address - address byte
+ * data    - configuration byte
+ */
+void remote_config_raw(uint8_t address, uint8_t data);
+
+/**
  * Send a single byte over SPI
  * Use SPI_DUMMY_BYTE to read
  * data - data byte

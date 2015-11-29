@@ -98,6 +98,9 @@ void remote_init(void) {
   nvic_init.NVIC_IRQChannelSubPriority = 0x0F;
   nvic_init.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic_init);
+
+  // Configure the device
+  remote_setup();
 }
 
 void remote_write(uint8_t* data, int size) {
@@ -122,9 +125,13 @@ void remote_read(uint8_t* data, int size) {
 
 void remote_config(uint8_t address, uint8_t data) {
   remote_enable_configuration_mode();
-  remote_send_byte(address & SPI_START_MASK & SPI_STOP_MASK & SPI_READ_MASK);
-  remote_send_byte(data);
+  remote_config_raw(address, data);
   remote_disable_configuration_mode();
+}
+
+void remote_config_raw(uint8_t address, uint8_t data) {
+  remote_send_byte((address << 1) & SPI_WRITE_MASK);
+  remote_send_byte(data);
 }
 
 uint8_t remote_send_byte(uint8_t data) {

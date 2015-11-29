@@ -54,6 +54,7 @@ void quadcopter_init(void) {
 
   // Initialize Peripherals
   serial_init();
+  remote_init();
   gyroscope_init();
   compass_init();
   accelerometer_init();
