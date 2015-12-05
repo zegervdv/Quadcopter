@@ -51,6 +51,7 @@ int main(void) {
       serial_write(stats, BUFFERSIZE);
 #endif
     // TODO: Write stats to RF module
+    remote_write(stats, BUFFERSIZE);
 
     if (enabled) {
 

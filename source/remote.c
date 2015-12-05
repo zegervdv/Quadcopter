@@ -114,6 +114,9 @@ void remote_init(void) {
 }
 
 void remote_write(uint8_t* data, int size) {
+  remote_enable_data_mode();
+  remote_send_byte((uint8_t) (size + 1));
+  remote_disable_data_mode();
   while(size > 0) {
     remote_enable_data_mode();
     remote_send_byte(*data);
