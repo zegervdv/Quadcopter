@@ -16,6 +16,7 @@ void remote_init(void) {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOD, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
   // Setup SPI on SPI2 using:
   // - PB13: SCK
@@ -71,17 +72,32 @@ void remote_init(void) {
   gpio_init.GPIO_Pin = GPIO_Pin_8;
   gpio_init.GPIO_PuPd = GPIO_PuPd_NOPULL;
   gpio_init.GPIO_Mode = GPIO_Mode_IN;
+  gpio_init.GPIO_OType = GPIO_OType_PP;
   GPIO_Init(GPIOD, &gpio_init);
 
   gpio_init.GPIO_Pin = GPIO_Pin_12;
   gpio_init.GPIO_PuPd = GPIO_PuPd_NOPULL;
   gpio_init.GPIO_Mode = GPIO_Mode_IN;
+  gpio_init.GPIO_OType = GPIO_OType_PP;
   GPIO_Init(GPIOB, &gpio_init);
 
   SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource8);
   SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource12);
 
-  exti_init.EXTI_Line = EXTI_Line8 | EXTI_Line12;
+  exti_init.EXTI_Line = EXTI_Line12;
+  exti_init.EXTI_Mode = EXTI_Mode_Interrupt;
+  exti_init.EXTI_Trigger = EXTI_Trigger_Rising;
+  exti_init.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&exti_init);
+
+  // TODO: Configure correct priorities
+  nvic_init.NVIC_IRQChannel = EXTI15_10_IRQn;
+  nvic_init.NVIC_IRQChannelPreemptionPriority = 0x0F;
+  nvic_init.NVIC_IRQChannelSubPriority = 0x00;
+  nvic_init.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&nvic_init);
+
+  exti_init.EXTI_Line = EXTI_Line8;
   exti_init.EXTI_Mode = EXTI_Mode_Interrupt;
   exti_init.EXTI_Trigger = EXTI_Trigger_Rising;
   exti_init.EXTI_LineCmd = ENABLE;
@@ -89,13 +105,7 @@ void remote_init(void) {
 
   nvic_init.NVIC_IRQChannel = EXTI9_5_IRQn;
   nvic_init.NVIC_IRQChannelPreemptionPriority = 0x0F;
-  nvic_init.NVIC_IRQChannelSubPriority = 0x0F;
-  nvic_init.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&nvic_init);
-
-  nvic_init.NVIC_IRQChannel = EXTI15_10_IRQn;
-  nvic_init.NVIC_IRQChannelPreemptionPriority = 0x0F;
-  nvic_init.NVIC_IRQChannelSubPriority = 0x0F;
+  nvic_init.NVIC_IRQChannelSubPriority = 0x01;
   nvic_init.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic_init);
 

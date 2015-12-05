@@ -53,7 +53,9 @@ void quadcopter_init(void) {
   TIM_init();
 
   // Initialize Peripherals
+#ifdef SERIAL
   serial_init();
+#endif
   remote_init();
   gyroscope_init();
   compass_init();
