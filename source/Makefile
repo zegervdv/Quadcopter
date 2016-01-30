@@ -60,7 +60,7 @@ CFLAGS += -D__FPU_PRESENT
 CFLAGS += -DARM_MATH_MATRIX_CHECK
 CFLAGS += -DDELAY_TIME=100
 CFLAGS += -DUSE_DEFAULT_TIMEOUT_CALLBACK
-CFLAGS += --specs=nosys.specs
+CFLAGS += --specs=rdimon.specs
 
 LDFLAGS += -Wl,--gc-sections
 
@@ -71,8 +71,9 @@ ifeq ($(UNAME_S), Linux)
 endif
 
 ifeq ($(UNAME_S), Darwin)
-	CFLAGS += -L/usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu
-	LIBS += /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libc.a /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libm.a
+	# CFLAGS += -L/usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu
+	# LIBS += /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libc.a /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libm.a
+	CFLAGS += -lm -lc
 endif
 
 vpath %.c \
