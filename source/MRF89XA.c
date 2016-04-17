@@ -24,7 +24,7 @@ void remote_setup(void) {
   /* Floor threshold OOK: n/a */
   /* Fifo configuration
    * Size: 64 bytes */
-  remote_config_raw(RF_FIFOCREG, RF_FSIZE_64);
+  remote_config_raw(RF_FIFOCREG, RF_FSIZE_64 | (uint8_t)(20));
   /* PLL configuration:
    * Frf = 9/8 * Fxtal / (R + 1) * (75 * (P + 1) + S)
    * with Frf = 868MHz & Fxtal = 12.8MHz

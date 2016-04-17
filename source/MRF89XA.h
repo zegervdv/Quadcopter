@@ -9,7 +9,7 @@
 #define RF_SYNCWRD_2              (uint8_t)(0x55)
 #define RF_SYNCWRD_1              (uint8_t)(0x00)
 #define RF_SYNCWRD_0              (uint8_t)(0x00)
-#define RF_MAX_PLLEN              (uint8_t)(32)
+#define RF_MAX_PLLEN              (uint8_t)(64)
 
 /**
  * Config register addresses

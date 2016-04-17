@@ -51,7 +51,35 @@ int main(void) {
       serial_write(stats, BUFFERSIZE);
 #endif
     // TODO: Write stats to RF module
-    remote_write(stats, BUFFERSIZE);
+    int j = 0;
+    for(j = 0; j < 2e5; j++);
+    uint8_t dummy[BUFFERSIZE] = {0};
+    dummy[0] = 0xDE;
+    dummy[1] = 0xAD;
+    dummy[2] = 0xBE;
+    dummy[3] = 0xEF;
+
+    dummy[4] = 0xCA;
+    dummy[5] = 0xFE;
+    dummy[6] = 0xBA;
+    dummy[7] = 0xBE;
+
+    dummy[8] = 0x26;
+    dummy[9] = 0x02;
+    dummy[10] = 0x19;
+    dummy[11] = 0x92;
+
+    dummy[12] = 0xAA;
+    dummy[13] = 0xBB;
+    dummy[14] = 0xCC;
+    dummy[15] = 0xDD;
+
+    dummy[16] = 0x11;
+    dummy[17] = 0x22;
+    dummy[18] = 0x33;
+    dummy[19] = 0x44;
+
+    remote_write(dummy, BUFFERSIZE);
 
     if (enabled) {
 

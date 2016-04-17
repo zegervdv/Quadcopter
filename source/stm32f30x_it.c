@@ -112,6 +112,7 @@ void TIM3_IRQHandler(void) {
 void EXTI9_5_IRQHandler(void) {
   if (EXTI_GetFlagStatus(EXTI_Line8) != RESET) {
     STM_EVAL_LEDToggle(LED8);
+#if PROCESSCMDS==1
     uint8_t type;
     command.valid = 0;
     command.length = remote_send_byte(SPI_DUMMY_BYTE);
@@ -119,6 +120,7 @@ void EXTI9_5_IRQHandler(void) {
     command.type = (type >> REMOTE_HEADER_RSVD_SIZE) & 0x7;
     remote_read(command.data, (command.length - 2));
     command.valid = 1;
+#endif
     EXTI_ClearITPendingBit(EXTI_Line8);
   }
 }

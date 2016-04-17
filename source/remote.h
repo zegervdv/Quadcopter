@@ -100,4 +100,9 @@ void remote_enable_data_mode(void);
  */
 void remote_disable_data_mode(void);
 
+/**
+ * Enable TX mode in RF module
+ */
+void remote_switch_mode(uint8_t mode);
+
 #endif
