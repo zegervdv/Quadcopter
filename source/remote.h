@@ -28,6 +28,8 @@
  */
 #define RF_TXMODE                 (uint8_t)(0x01)
 #define RF_RXMODE                 (uint8_t)(0x02)
+#define RF_STDBYMODE              (uint8_t)(0x04)
+#define RF_FRSYNTH                (uint8_t)(0x08)
 
 /**
  * HEADER SIZE DEFINITIONS
@@ -71,6 +73,14 @@ void remote_config(uint8_t address, uint8_t data);
  * data    - configuration byte
  */
 void remote_config_raw(uint8_t address, uint8_t data);
+
+/**
+ * Read configuration from address
+ * Must be configured in configuration mode
+ * address  - address byte
+ * data     - pointer to receive data byte
+ */
+void remote_config_read(uint8_t address, uint8_t* data);
 
 /**
  * Send a single byte over SPI

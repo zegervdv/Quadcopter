@@ -5,8 +5,8 @@ void remote_setup(void) {
   /* Start in RX mode by default, 
    * Enable 868MHz band */
   remote_enable_configuration_mode();
-  remote_config_raw(RF_GCONREG, RF_CMOD_RX | RF_FBS_868MHZ);
-  rf_mode = RF_RXMODE;
+  remote_config_raw(RF_GCONREG, RF_CMOD_STDBY | RF_FBS_868MHZ);
+  rf_mode = RF_STDBYMODE;
   /* Use FSK modulation
    * Enable packet mode
    * Set gain to 0 dB */
@@ -77,7 +77,25 @@ void remote_setup(void) {
    * Enable whitening
    * Enable CRC */
   remote_config_raw(RF_PKTCREG, RF_PKTLENF_VAR | RF_PRESIZE_4 | RF_WHITEON_ON | RF_CHKCRCEN_ON | RF_ADDFIL_OFF);
-  /* Clear fifo on bad CRC */
-  remote_config_raw(RF_FCRCREG, RF_ACFCRC_ON);
+  /* Clear fifo on bad CRC 
+   * Enable fifo write in standby mode */
+  remote_config_raw(RF_FCRCREG, RF_ACFCRC_ON | RF_FRAWXS_WR);
+  remote_disable_configuration_mode();
+}
+
+void remote_sync_pll(void) {
+  uint8_t data = 0;
+  remote_enable_configuration_mode();
+  remote_config_read(RF_FTPRIREG, &data);
+  /* Set PLL lock bit */
+  remote_config_raw(RF_FTPRIREG, data | RF_LSTSPLL);
+  remote_switch_mode(RF_FRSYNTH);
+  /* Wait for PLL lock to be set */
+  // TODO: Is this correct? set and wait for set?
+  data = 0;
+  while ((data & RF_LSTSPLL) == 0) {
+    remote_config_read(RF_FTPRIREG, &data);
+  }
+  remote_switch_mode(RF_STDBYMODE);
   remote_disable_configuration_mode();
 }

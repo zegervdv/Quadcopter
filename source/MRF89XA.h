@@ -4,12 +4,12 @@
 /**
  * RF packet specifications
  */
-#define RF_MAX_PACKET_SIZE        (uint8_t)(63)
 #define RF_SYNCWRD_3              (uint8_t)(0x55)
 #define RF_SYNCWRD_2              (uint8_t)(0x55)
 #define RF_SYNCWRD_1              (uint8_t)(0x00)
 #define RF_SYNCWRD_0              (uint8_t)(0x00)
 #define RF_MAX_PLLEN              (uint8_t)(64)
+#define RF_MAX_PACKET_SIZE        (uint8_t)((RF_MAX_PLLEN) - 1)
 
 /**
  * Config register addresses
@@ -116,6 +116,8 @@
 #define RF_ADDFIL_OFF             (uint8_t)(0x00)
 #define RF_ACFCRC_OFF             (uint8_t)(0x80)
 #define RF_ACFCRC_ON              (uint8_t)(0x00)
+#define RF_FRAWXS_WR              (uint8_t)(0x00)
+#define RF_FRAWXS_RD              (uint8_t)(0x40)
 
 /**
  * Control register masks
@@ -135,6 +137,11 @@
  * Send default configuration
  */
 void remote_setup(void);
+
+/**
+ * Let the PLL lock to the configured frequency
+ */
+void remote_sync_pll(void);
 
 #endif
 

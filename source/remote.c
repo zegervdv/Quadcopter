@@ -111,6 +111,8 @@ void remote_init(void) {
 
   // Configure the device
   remote_setup();
+  // Lock PLL
+  remote_sync_pll();
 }
 
 void remote_write(uint8_t* data, int size) {
@@ -152,6 +154,13 @@ void remote_config_raw(uint8_t address, uint8_t data) {
   remote_send_byte(data);
 }
 
+void remote_config_read(uint8_t address, uint8_t* data) {
+  remote_enable_configuration_mode();
+  remote_send_byte((address << 1) & SPI_READ_MASK);
+  *data = remote_send_byte(SPI_DUMMY_BYTE);
+  remote_disable_configuration_mode();
+}
+
 uint8_t remote_send_byte(uint8_t data) {
   while(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
   SPI_SendData8(SPI2, data);
@@ -182,5 +191,11 @@ void remote_switch_mode(uint8_t mode) {
   } else if (mode == RF_TXMODE) {
     remote_config(RF_GCONREG, RF_CMOD_TX | RF_FBS_868MHZ);
     rf_mode = RF_TXMODE;
+  } else if (mode == RF_STDBYMODE) {
+    remote_config(RF_GCONREG, RF_CMOD_STDBY | RF_FBS_868MHZ);
+    rf_mode = RF_STDBYMODE;
+  } else if (mode == RF_FRSYNTH) {
+    remote_config(RF_GCONREG, RF_CMOD_FREQSYNTH | RF_FBS_868MHZ);
+    rf_mode = RF_FRSYNTH;
   }
 }
