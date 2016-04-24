@@ -1,5 +1,6 @@
 #include "MRF89XA.h"
 #include "remote.h"
+#include "system.h"
 
 void remote_setup(void) {
   /* Start in RX mode by default, 
@@ -89,6 +90,11 @@ void remote_sync_pll(void) {
   remote_config_read(RF_FTPRIREG, &data);
   /* Set PLL lock bit */
   remote_config_raw(RF_FTPRIREG, data | RF_LSTSPLL);
+  data = 0xFF;
+  while ((data & RF_LSTSPLL) == 1) {
+    remote_config_read(RF_FTPRIREG, &data);
+  }
+  STM_EVAL_LEDOn(LED9);
   remote_switch_mode(RF_FRSYNTH);
   /* Wait for PLL lock to be set */
   // TODO: Is this correct? set and wait for set?
@@ -96,6 +102,7 @@ void remote_sync_pll(void) {
   while ((data & RF_LSTSPLL) == 0) {
     remote_config_read(RF_FTPRIREG, &data);
   }
+  STM_EVAL_LEDOff(LED9);
   remote_switch_mode(RF_STDBYMODE);
   remote_disable_configuration_mode();
 }

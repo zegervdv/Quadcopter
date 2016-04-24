@@ -156,7 +156,7 @@ void remote_config_raw(uint8_t address, uint8_t data) {
 
 void remote_config_read(uint8_t address, uint8_t* data) {
   remote_enable_configuration_mode();
-  remote_send_byte((address << 1) & SPI_READ_MASK);
+  remote_send_byte((address << 1) | SPI_READ_MASK);
   *data = remote_send_byte(SPI_DUMMY_BYTE);
   remote_disable_configuration_mode();
 }
