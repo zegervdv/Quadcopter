@@ -15,7 +15,7 @@
  */
 #define SPI_START_MASK            (uint8_t)(0x7F)
 #define SPI_STOP_MASK             (uint8_t)(0xFE)
-#define SPI_WRITE_MASK            (uint8_t)(0xBF)
+#define SPI_WRITE_MASK            (uint8_t)(0x3E)
 #define SPI_READ_MASK             (uint8_t)(0x40)
 
 /**

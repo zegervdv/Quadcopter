@@ -67,6 +67,11 @@ void remote_init(void) {
   gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOD, &gpio_init);
 
+  // Configure the device
+  remote_setup();
+  // Lock PLL
+  remote_sync_pll();
+
   // Initialize EXTI for:
   // - PD8 : IRQ0
   // - PB12: IRQ1
@@ -110,10 +115,6 @@ void remote_init(void) {
   nvic_init.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic_init);
 
-  // Configure the device
-  remote_setup();
-  // Lock PLL
-  remote_sync_pll();
 }
 
 void remote_write(uint8_t* data, int size) {
@@ -145,15 +146,21 @@ void remote_read(uint8_t* data, int size) {
 }
 
 void remote_config(uint8_t address, uint8_t data) {
+  uint8_t read_data = 0;
   remote_enable_configuration_mode();
   remote_config_raw(address, data);
   remote_disable_configuration_mode();
+  remote_config_read(address, &read_data);
+  if (read_data == data) return;
+  STM_EVAL_LEDOn(LED4);
 }
 
 void remote_config_raw(uint8_t address, uint8_t data) {
 #ifdef SERIAL
   uint8_t debug[3] = {0};
 #endif
+  int i = 0;
+  for(i = 0; i < 0x7FFFF; i++);
   remote_send_byte((address << 1) & SPI_WRITE_MASK);
   remote_send_byte(data);
 #ifdef SERIAL
@@ -168,13 +175,15 @@ void remote_config_read(uint8_t address, uint8_t* data) {
 #ifdef SERIAL
   uint8_t debug[3] = {0};
 #endif
+  int i = 0;
   remote_enable_configuration_mode();
-  remote_send_byte((address << 1) | SPI_READ_MASK);
+  for(i = 0; i < 0x7FFFF; i++);
+  remote_send_byte(((address << 1) & SPI_WRITE_MASK) | SPI_READ_MASK);
   *data = remote_send_byte(SPI_DUMMY_BYTE);
   remote_disable_configuration_mode();
 #ifdef SERIAL
   debug[0] = 'r';
-  debug[1] = (address << 1) | SPI_READ_MASK;
+  debug[1] = (((address << 1) & SPI_WRITE_MASK) | SPI_READ_MASK);
   debug[2] = *data;
   serial_write(debug, 3);
 #endif
