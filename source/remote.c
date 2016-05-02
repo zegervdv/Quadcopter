@@ -4,6 +4,7 @@
 #include "stm32f30x_rcc.h"
 #include "stm32f30x_exti.h"
 #include "stm32f30x_misc.h"
+#include "system.h"
 
 uint8_t rf_mode = 0;
 
@@ -150,15 +151,33 @@ void remote_config(uint8_t address, uint8_t data) {
 }
 
 void remote_config_raw(uint8_t address, uint8_t data) {
+#ifdef SERIAL
+  uint8_t debug[3] = {0};
+#endif
   remote_send_byte((address << 1) & SPI_WRITE_MASK);
   remote_send_byte(data);
+#ifdef SERIAL
+  debug[0] = 'w';
+  debug[1] = (address << 1) & SPI_WRITE_MASK;
+  debug[2] = data;
+  serial_write(debug, 3);
+#endif
 }
 
 void remote_config_read(uint8_t address, uint8_t* data) {
+#ifdef SERIAL
+  uint8_t debug[3] = {0};
+#endif
   remote_enable_configuration_mode();
   remote_send_byte((address << 1) | SPI_READ_MASK);
   *data = remote_send_byte(SPI_DUMMY_BYTE);
   remote_disable_configuration_mode();
+#ifdef SERIAL
+  debug[0] = 'r';
+  debug[1] = (address << 1) | SPI_READ_MASK;
+  debug[2] = *data;
+  serial_write(debug, 3);
+#endif
 }
 
 uint8_t remote_send_byte(uint8_t data) {
