@@ -41,7 +41,7 @@ void remote_setup(void) {
   remote_config(RF_FTXRXIREG, RF_IRQ0RXS_PLREADY | RF_IRQ1RXS_FIFOFULL | RF_IRQ1TX_TXDONE);
   /* Fifo configuration:
    * Send when first byte is in fifo, IRQ0 when fifo is not empty */
-  remote_config(RF_FTPRIREG, RF_IRQ0TXST_EMPTY | RF_FRPRI_RESERVED);
+  remote_config(RF_FTPRIREG, RF_IRQ0TXST_EMPTY | RF_FRPRI_RESERVED | 1);
   /* TODO: Filter configuration */
   /* Single sideband bandwidth of low pass filter
    * Set to 378 kHz
@@ -90,17 +90,15 @@ void remote_sync_pll(void) {
   data |= RF_LSTSPLL;
   remote_config_raw(RF_FTPRIREG, data);
   remote_switch_mode(RF_FRSYNTH);
-  while ((data & RF_LSTSPLL) != 0) {
-    remote_config_read(RF_FTPRIREG, &data);
-  }
-  STM_EVAL_LEDOn(LED9);
+  /* while ((data & RF_LSTSPLL) != 0) { */
+  /*   remote_config_read(RF_FTPRIREG, &data); */
+  /* } */
   /* Wait for PLL lock to be set */
   // TODO: Is this correct? set and wait for set?
   data = 0;
   while ((data & RF_LSTSPLL) == 0) {
     remote_config_read(RF_FTPRIREG, &data);
   }
-  STM_EVAL_LEDOff(LED9);
   remote_switch_mode(RF_STDBYMODE);
   remote_disable_configuration_mode();
 }

@@ -52,7 +52,7 @@ int main(void) {
 #endif
     // TODO: Write stats to RF module
     int j = 0;
-    for(j = 0; j < 1e5; j++);
+    for(j = 0; j < 2e5; j++);
     uint8_t dummy[BUFFERSIZE] = {0};
     dummy[0] = 0xDE;
     dummy[1] = 0xAD;
@@ -88,13 +88,13 @@ int main(void) {
       process_commands(&control);
 
       // PID tuning
-      if (pid_run_flag) {
-        pid_compute(PID_PITCH, data.pitch, control.pitch, &pid_output.pitch);
-        pid_compute(PID_ROLL, data.roll, control.roll, &pid_output.roll);
-        pid_compute(PID_YAW, data.yaw, control.yaw, &pid_output.yaw);
-        pid_run_flag = 0;
-        STM_EVAL_LEDOff(LED10);
-      }
+      /* if (pid_run_flag) { */
+      /*   pid_compute(PID_PITCH, data.pitch, control.pitch, &pid_output.pitch); */
+      /*   pid_compute(PID_ROLL, data.roll, control.roll, &pid_output.roll); */
+      /*   pid_compute(PID_YAW, data.yaw, control.yaw, &pid_output.yaw); */
+      /*   pid_run_flag = 0; */
+      /*   STM_EVAL_LEDOff(LED10); */
+      /* } */
 
       // Convert throttle input to value in motor PWM control range
       // The throttle has a range of [-100, 100]

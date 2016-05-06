@@ -54,7 +54,9 @@ void quadcopter_init(void) {
 
   // Initialize Peripherals
 #ifdef SERIAL
+  uint8_t msg[6] = "HELLO";
   serial_init();
+  serial_write(msg, 6);
 #endif
   remote_init();
   gyroscope_init();
@@ -76,12 +78,12 @@ void quadcopter_init(void) {
   motors_arm_escs();
 
   // Setup Independent Watchdog
-  IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
-  IWDG_SetPrescaler(IWDG_Prescaler_32);
-  IWDG_SetReload(WDG_RLD_TIME(250));
+  /* IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); */
+  /* IWDG_SetPrescaler(IWDG_Prescaler_32); */
+  /* IWDG_SetReload(WDG_RLD_TIME(250)); */
 
-  IWDG_ReloadCounter();
-  IWDG_Enable();
+  /* IWDG_ReloadCounter(); */
+  /* IWDG_Enable(); */
   STM_EVAL_LEDOff(LED6);
   STM_EVAL_LEDOff(LED7);
 }

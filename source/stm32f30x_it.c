@@ -112,7 +112,7 @@ void TIM3_IRQHandler(void) {
 void EXTI9_5_IRQHandler(void) {
   if (EXTI_GetFlagStatus(EXTI_Line8) != RESET) {
     STM_EVAL_LEDToggle(LED8);
-#if PROCESSCMDS==1
+#ifdef PROCESSCMDS
     uint8_t type;
     command.valid = 0;
     command.length = remote_send_byte(SPI_DUMMY_BYTE);

@@ -130,8 +130,6 @@ void remote_write(uint8_t* data, int size) {
     size--;
   }
   // Hold TX mode
-  int j = 0;
-  for (j = 0; j < 100; j++);
   remote_switch_mode(RF_RXMODE);
 }
 
@@ -150,17 +148,12 @@ void remote_config(uint8_t address, uint8_t data) {
   remote_enable_configuration_mode();
   remote_config_raw(address, data);
   remote_disable_configuration_mode();
-  remote_config_read(address, &read_data);
-  if (read_data == data) return;
-  STM_EVAL_LEDOn(LED4);
 }
 
 void remote_config_raw(uint8_t address, uint8_t data) {
 #ifdef SERIAL
   uint8_t debug[3] = {0};
 #endif
-  int i = 0;
-  for(i = 0; i < 0x7FFFF; i++);
   remote_send_byte((address << 1) & SPI_WRITE_MASK);
   remote_send_byte(data);
 #ifdef SERIAL
@@ -175,9 +168,7 @@ void remote_config_read(uint8_t address, uint8_t* data) {
 #ifdef SERIAL
   uint8_t debug[3] = {0};
 #endif
-  int i = 0;
   remote_enable_configuration_mode();
-  for(i = 0; i < 0x7FFFF; i++);
   remote_send_byte(((address << 1) & SPI_WRITE_MASK) | SPI_READ_MASK);
   *data = remote_send_byte(SPI_DUMMY_BYTE);
   remote_disable_configuration_mode();

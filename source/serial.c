@@ -91,18 +91,18 @@ void init_connection() {
 void serial_init() {
   // Configure USART3
   init_usart3();
-  init_reset();
-  init_connection();
+  /* init_reset(); */
+  /* init_connection(); */
 
   // Configure the clock for CRC
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
-  CRC_DeInit();
-  CRC_SetInitRegister(0);
-  CRC_PolynomialSizeSelect(CRC_PolSize_8);
-  CRC_SetPolynomial(0xD5);
+  /* RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE); */
+  /* CRC_DeInit(); */
+  /* CRC_SetInitRegister(0); */
+  /* CRC_PolynomialSizeSelect(CRC_PolSize_8); */
+  /* CRC_SetPolynomial(0xD5); */
 
-  if (!serial_connected())
-    serial_reset();
+  /* if (!serial_connected()) */
+  /*   serial_reset(); */
 }
 
 void serial_reset() {
@@ -115,16 +115,13 @@ void serial_write(uint8_t* data, int size) {
   int i = 0;
 
   // Send synchronization
-  for (i = 0; i < 2; i++)
-    USART_SendData(USART3, 0x55);
+  /* for (i = 0; i < 2; i++) */
+  /*   USART_SendData(USART3, 0x55); */
 
 
   for (i = 0; i < size; i++) {
     while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
     USART_SendData(USART3, data[i]);
-    /* int j = 100000; */
-    /* while(j > 0) */
-    /*   j--; */
   }
 }
 
