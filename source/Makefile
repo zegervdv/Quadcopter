@@ -60,21 +60,12 @@ CFLAGS += -D__FPU_PRESENT
 CFLAGS += -DARM_MATH_MATRIX_CHECK
 CFLAGS += -DDELAY_TIME=100
 CFLAGS += -DUSE_DEFAULT_TIMEOUT_CALLBACK
-CFLAGS += --specs=rdimon.specs
+CLFAGS += -c99
+
+CFLAGS += $(OPTIONS)
 
 LDFLAGS += -Wl,--gc-sections
-
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), Linux)
-	CFLAGS += -L/usr/arm-none-eabi/lib/thumb/cortex-m4/float-abi-hard/fpuv4-sp-d16
-	LIBS += /usr/arm-none-eabi/lib/thumb/cortex-m4/float-abi-hard/fpuv4-sp-d16/libc.a /usr/arm-none-eabi/lib/thumb/cortex-m4/float-abi-hard/fpuv4-sp-d16/libm.a
-endif
-
-ifeq ($(UNAME_S), Darwin)
-	# CFLAGS += -L/usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu
-	# LIBS += /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libc.a /usr/local/Cellar/arm-none-eabi-gcc/20150306/arm-none-eabi/lib/armv7e-m/fpu/libm.a
-	CFLAGS += -lm -lc
-endif
+LIBS += -lc -lm
 
 vpath %.c \
 			$(STM_COMMON)/Libraries/STM32F30x_StdPeriph_Driver/src \
