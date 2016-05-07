@@ -16,6 +16,55 @@ uint16_t capture = 0;
 
 uint8_t pid_run_flag = 0;
 
+////////////////////////////////////////////////////////////////////////////////
+//    Error Handlers
+////////////////////////////////////////////////////////////////////////////////
+
+void ErrorLoop(Led_TypeDef led) {
+  int i = 0;
+  STM_EVAL_LEDOn(LED3);
+  STM_EVAL_LEDOn(led);
+
+  while (1) {
+    for(i = 0; i < 0x7FFFF; i++);
+    STM_EVAL_LEDToggle(LED3);
+    STM_EVAL_LEDToggle(led);
+  }
+}
+
+/**
+ * Set LED3 and LED10 on Hard Fault
+ */
+void HardFault_Handler(void) {
+  /* Go to infinite loop when Hard Fault exception occurs */
+  ErrorLoop(LED10);
+}
+
+/**
+ * Set LED3 and LED9
+ */
+void UsageFault_Handler(void) {
+  ErrorLoop(LED9);
+}
+
+/**
+ * Set LED3 and LED8
+ */
+void BusFault_Handler(void) {
+  ErrorLoop(LED8);
+}
+
+/**
+ * Set LED3 and LED7
+ */
+void MemMang_Hander(void) {
+  ErrorLoop(LED7);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//    User Handlers
+////////////////////////////////////////////////////////////////////////////////
+
 /**
  * User Button
  */
@@ -37,17 +86,6 @@ void EXTI0_IRQHandler(void) {
 
     EXTI_ClearITPendingBit(USER_BUTTON_EXTI_LINE);
 
-  }
-}
-
-/**
- * Set LED3 and LED10 on Hard Fault
- */
-void HardFault_Handler(void) {
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1) {
-    STM_EVAL_LEDOn(LED3);
-    STM_EVAL_LEDOn(LED10);
   }
 }
 

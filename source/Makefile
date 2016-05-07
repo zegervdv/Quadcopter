@@ -63,14 +63,12 @@ CFLAGS += -D__FPU_PRESENT
 CFLAGS += -DARM_MATH_MATRIX_CHECK
 CFLAGS += -DDELAY_TIME=100
 CFLAGS += -DUSE_DEFAULT_TIMEOUT_CALLBACK
-CFLAGS += --specs=rdimon.specs
 CLFAGS += -c99
 
 CFLAGS += $(OPTIONS)
 
 LDFLAGS += -Wl,--gc-sections
-
-CFLAGS += -lm -lc
+LIBS += -lc -lm
 
 vpath %.c \
 			$(STM_COMMON)/Libraries/STM32F30x_StdPeriph_Driver/src \
