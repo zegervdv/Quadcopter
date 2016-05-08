@@ -114,23 +114,26 @@ void remote_init(void) {
   nvic_init.NVIC_IRQChannelSubPriority = 0x01;
   nvic_init.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic_init);
-
 }
 
 void remote_write(uint8_t* data, int size) {
-  remote_switch_mode(RF_TXMODE);
-  remote_enable_data_mode();
-  remote_send_byte((uint8_t) (size));
-  remote_disable_data_mode();
-  while(size > 0) {
+  // TODO: Determine correct read/write priority: now read over write
+  // Maybe make this blocking?
+  if (rf_mode == RF_STDBYMODE) {
     remote_enable_data_mode();
-    remote_send_byte(*data);
+    remote_send_byte((uint8_t) (size));
     remote_disable_data_mode();
-    data++;
-    size--;
+    while(size > 0) {
+      remote_enable_data_mode();
+      remote_send_byte(*data);
+      remote_disable_data_mode();
+      data++;
+      size--;
+    }
+    remote_enable_configuration_mode();
+    remote_switch_mode(RF_TXMODE);
+    remote_disable_configuration_mode();
   }
-  // Hold TX mode
-  remote_switch_mode(RF_RXMODE);
 }
 
 void remote_read(uint8_t* data, int size) {
@@ -144,7 +147,6 @@ void remote_read(uint8_t* data, int size) {
 }
 
 void remote_config(uint8_t address, uint8_t data) {
-  uint8_t read_data = 0;
   remote_enable_configuration_mode();
   remote_config_raw(address, data);
   remote_disable_configuration_mode();

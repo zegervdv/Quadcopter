@@ -11,7 +11,6 @@
 int i;
 extern uint8_t enabled;
 static __IO uint32_t TimingDelay;
-static uint8_t cnt = 0;
 uint16_t capture = 0;
 
 uint8_t pid_run_flag = 0;
@@ -150,7 +149,9 @@ void TIM3_IRQHandler(void) {
 void EXTI9_5_IRQHandler(void) {
   if (EXTI_GetFlagStatus(EXTI_Line8) != RESET) {
     STM_EVAL_LEDToggle(LED8);
-#ifdef PROCESSCMDS
+    remote_enable_configuration_mode();
+    remote_switch_mode(RF_RXMODE);
+    remote_disable_configuration_mode();
     uint8_t type;
     command.valid = 0;
     command.length = remote_send_byte(SPI_DUMMY_BYTE);
@@ -158,7 +159,9 @@ void EXTI9_5_IRQHandler(void) {
     command.type = (type >> REMOTE_HEADER_RSVD_SIZE) & 0x7;
     remote_read(command.data, (command.length - 2));
     command.valid = 1;
-#endif
+    remote_enable_configuration_mode();
+    remote_switch_mode(RF_STDBYMODE);
+    remote_disable_configuration_mode();
     EXTI_ClearITPendingBit(EXTI_Line8);
   }
 }
@@ -169,6 +172,11 @@ void EXTI9_5_IRQHandler(void) {
 void EXTI15_10_IRQHandler(void) {
   if (EXTI_GetITStatus(EXTI_Line12) != RESET) {
     // TODO: Process IRQ
+    if (rf_mode == RF_TXMODE) {
+      remote_enable_configuration_mode();
+      remote_switch_mode(RF_STDBYMODE);
+      remote_disable_configuration_mode();
+    }
     STM_EVAL_LEDToggle(LED5);
     EXTI_ClearITPendingBit(EXTI_Line12);
   }
