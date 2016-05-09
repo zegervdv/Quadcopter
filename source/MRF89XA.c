@@ -6,7 +6,7 @@ void remote_setup(void) {
   /* Start in RX mode by default, 
    * Enable 868MHz band */
   remote_config(RF_GCONREG, RF_CMOD_STDBY | RF_FBS_868MHZ);
-  rf_mode = RF_STDBYMODE;
+  rf_mode = STDBY;
   /* Use FSK modulation
    * Enable packet mode
    * Set gain to 0 dB */
@@ -90,7 +90,7 @@ void remote_sync_pll(void) {
   /* Set PLL lock bit */
   data |= RF_LSTSPLL;
   remote_config_raw(RF_FTPRIREG, data);
-  remote_switch_mode(RF_FRSYNTH);
+  remote_switch_mode(FRSYNTH);
   /* while ((data & RF_LSTSPLL) != 0) { */
   /*   remote_config_read(RF_FTPRIREG, &data); */
   /* } */
@@ -100,6 +100,6 @@ void remote_sync_pll(void) {
   while ((data & RF_LSTSPLL) == 0) {
     remote_config_read(RF_FTPRIREG, &data);
   }
-  remote_switch_mode(RF_STDBYMODE);
+  remote_switch_mode(STDBY);
   remote_disable_configuration_mode();
 }

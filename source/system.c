@@ -85,7 +85,7 @@ void quadcopter_init(void) {
   /* IWDG_ReloadCounter(); */
   /* IWDG_Enable(); */
 
-  remote_switch_mode(RF_SLEEP);
+  remote_switch_mode(SLEEP);
   STM_EVAL_LEDOff(LED6);
   STM_EVAL_LEDOff(LED7);
 }

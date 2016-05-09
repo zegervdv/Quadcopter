@@ -26,11 +26,7 @@
 /**
  * RF Mode
  */
-#define RF_TXMODE                 (uint8_t)(0x01)
-#define RF_RXMODE                 (uint8_t)(0x02)
-#define RF_STDBYMODE              (uint8_t)(0x04)
-#define RF_FRSYNTH                (uint8_t)(0x08)
-#define RF_SLEEP                  (uint8_t)(0x10)
+enum rf_mode_id {SLEEP, TX, RX, FRSYNTH, STDBY};
 
 /**
  * RF Read/Write access
@@ -44,7 +40,7 @@
 #define REMOTE_HEADER_RSVD_SIZE   (uint8_t)(4)
 #define REMOTE_HEADER_TYPE_SIZE   (uint8_t)(3)
 
-extern uint8_t rf_mode;
+extern enum rf_mode_id rf_mode;
 
 /**
  * Initialize RF communication protocols

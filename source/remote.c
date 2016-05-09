@@ -6,7 +6,7 @@
 #include "stm32f30x_misc.h"
 #include "system.h"
 
-uint8_t rf_mode = 0;
+uint8_t rf_mode = STDBY;
 uint8_t rf_rxthreshold = 0;
 
 void remote_init(void) {
@@ -124,8 +124,8 @@ void remote_write(uint8_t* data, int size) {
   int i = 0;
   // TODO: Determine correct read/write priority: now read over write
   // Maybe make this blocking?
-  if (rf_mode == RF_SLEEP) {
-    remote_switch_mode(RF_STDBYMODE);
+  if (rf_mode == SLEEP) {
+    remote_switch_mode(STDBY);
     STM_EVAL_LEDOn(LED3);
     while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_8) == 1);
     STM_EVAL_LEDOn(LED6);
@@ -143,14 +143,14 @@ void remote_write(uint8_t* data, int size) {
       data++;
       size--;
     }
-    remote_switch_mode(RF_TXMODE);
+    remote_switch_mode(TX);
     STM_EVAL_LEDOn(LED5);
     while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_8) == 0);
     STM_EVAL_LEDOn(LED8);
     while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_11) == 0);
     STM_EVAL_LEDOff(LED5);
     STM_EVAL_LEDOff(LED8);
-    remote_switch_mode(RF_SLEEP);
+    remote_switch_mode(SLEEP);
   }
 }
 
@@ -223,25 +223,6 @@ void remote_disable_data_mode(void) {
   GPIO_WriteBit(GPIOB, GPIO_Pin_11, SET);
 }
 
-void remote_switch_mode(uint8_t mode) {
-  if (mode == RF_RXMODE) {
-    remote_config(RF_GCONREG, RF_CMOD_RX | RF_FBS_868MHZ);
-    rf_mode = RF_RXMODE;
-  } else if (mode == RF_TXMODE) {
-    remote_config(RF_GCONREG, RF_CMOD_TX | RF_FBS_868MHZ);
-    rf_mode = RF_TXMODE;
-  } else if (mode == RF_STDBYMODE) {
-    remote_config(RF_GCONREG, RF_CMOD_STDBY | RF_FBS_868MHZ);
-    rf_mode = RF_STDBYMODE;
-  } else if (mode == RF_FRSYNTH) {
-    remote_config(RF_GCONREG, RF_CMOD_FREQSYNTH | RF_FBS_868MHZ);
-    rf_mode = RF_FRSYNTH;
-  } else if (mode == RF_SLEEP) {
-    remote_config(RF_GCONREG, RF_CMOD_SLEEP | RF_FBS_868MHZ);
-    rf_mode = RF_SLEEP;
-  }
-}
-
 void remote_enable_access(uint8_t mode) {
   uint8_t config = 0;
   remote_config_read(RF_FCRCREG, &config);
@@ -253,23 +234,45 @@ void remote_enable_access(uint8_t mode) {
 }
 
 void remote_handle_IRQ0(void) {
-  if (rf_mode == RF_RXMODE) {
+  if (rf_mode == RX) {
     // PLREADY
-    remote_switch_mode(RF_STDBYMODE);
+    remote_switch_mode(STDBY);
     remote_enable_access(RF_READ);
     // TODO: read here
   }
 }
 
 void remote_handle_IRQ1(void) {
-  if (rf_mode == RF_TXMODE) {
+  if (rf_mode == TX) {
     // TXDONE
-    remote_switch_mode(RF_STDBYMODE);
-  } else if (rf_mode == RF_STDBYMODE) {
+    remote_switch_mode(STDBY);
+  } else if (rf_mode == STDBY) {
     // Threshold IRQ: data is available
-    remote_switch_mode(RF_RXMODE);
+    remote_switch_mode(RX);
   } else {
     // Something is wrong here
     STM_EVAL_LEDOn(LED4);
   }
+}
+
+void remote_switch_mode(enum rf_mode_id mode) {
+  uint8_t mode_reg = 0;
+  switch (mode) {
+    case RX:
+      mode_reg = RF_CMOD_RX;
+      break;
+    case TX:
+      mode_reg = RF_CMOD_TX;
+      break;
+    case FRSYNTH:
+      mode_reg = RF_CMOD_FREQSYNTH;
+      break;
+    case SLEEP:
+      mode_reg = RF_CMOD_SLEEP;
+      break;
+    default:
+      mode_reg = RF_CMOD_FREQSYNTH;
+  }
+  remote_config(RF_GCONREG, mode_reg | RF_FBS_868MHZ);
+  rf_mode = mode;
 }
