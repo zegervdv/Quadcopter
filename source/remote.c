@@ -7,6 +7,7 @@
 #include "system.h"
 
 uint8_t rf_mode = 0;
+uint8_t rf_rxthreshold = 0;
 
 void remote_init(void) {
   GPIO_InitTypeDef gpio_init;
@@ -117,9 +118,12 @@ void remote_init(void) {
 }
 
 void remote_write(uint8_t* data, int size) {
+  int i = 0;
   // TODO: Determine correct read/write priority: now read over write
   // Maybe make this blocking?
   if (rf_mode == RF_STDBYMODE) {
+    STM_EVAL_LEDOff(LED3);
+    remote_enable_access(RF_WRITE);
     remote_enable_data_mode();
     remote_send_byte((uint8_t) (size));
     remote_disable_data_mode();
@@ -133,6 +137,10 @@ void remote_write(uint8_t* data, int size) {
     remote_enable_configuration_mode();
     remote_switch_mode(RF_TXMODE);
     remote_disable_configuration_mode();
+    // TODO: remove/reduce wait
+    for (i = 0; i < 0x7FFFF; i++);
+  } else {
+    STM_EVAL_LEDOn(LED3);
   }
 }
 
@@ -218,5 +226,37 @@ void remote_switch_mode(uint8_t mode) {
   } else if (mode == RF_FRSYNTH) {
     remote_config(RF_GCONREG, RF_CMOD_FREQSYNTH | RF_FBS_868MHZ);
     rf_mode = RF_FRSYNTH;
+  }
+}
+
+void remote_enable_access(uint8_t mode) {
+  uint8_t config = 0;
+  remote_config_read(RF_FCRCREG, &config);
+  if (mode == RF_READ) {
+    remote_config(RF_FCRCREG, config | 0x40);
+  } else if (mode == RF_WRITE) {
+    remote_config(RF_FCRCREG, config & 0xBF);
+  }
+}
+
+void remote_handle_IRQ0(void) {
+  if (rf_mode == RF_RXMODE) {
+    // PLREADY
+    remote_switch_mode(RF_STDBYMODE);
+    remote_enable_access(RF_READ);
+    // TODO: read here
+  }
+}
+
+void remote_handle_IRQ1(void) {
+  if (rf_mode == RF_TXMODE) {
+    // TXDONE
+    remote_switch_mode(RF_STDBYMODE);
+  } else if (rf_mode == RF_STDBYMODE) {
+    // Threshold IRQ: data is available
+    remote_switch_mode(RF_RXMODE);
+  } else {
+    // Something is wrong here
+    STM_EVAL_LEDOn(LED4);
   }
 }

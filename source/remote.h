@@ -32,6 +32,12 @@
 #define RF_FRSYNTH                (uint8_t)(0x08)
 
 /**
+ * RF Read/Write access
+ */
+#define RF_READ                   (uint8_t)(0x00)
+#define RF_WRITE                  (uint8_t)(0x01)
+
+/**
  * HEADER SIZE DEFINITIONS
  */
 #define REMOTE_HEADER_RSVD_SIZE   (uint8_t)(4)
@@ -114,5 +120,24 @@ void remote_disable_data_mode(void);
  * Enable TX mode in RF module
  */
 void remote_switch_mode(uint8_t mode);
+
+/**
+ * Enable read/write access to FIFO in standby mode
+ * mode - RF_READ or RF_WRITE
+ */
+void remote_enable_access(uint8_t mode);
+
+/**
+ * Handle IRQ0 interrupts
+ * TODO: Elaborate
+ */
+void remote_handle_IRQ0(void);
+
+
+/**
+ * Handle IRQ1 interrupts
+ * TODO: Elaborate
+ */
+void remote_handle_IRQ1(void);
 
 #endif

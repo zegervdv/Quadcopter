@@ -23,8 +23,9 @@ void remote_setup(void) {
   remote_config(RF_BRSREG, 0x07);
   /* Floor threshold OOK: n/a */
   /* Fifo configuration
-   * Size: 64 bytes */
-  remote_config(RF_FIFOCREG, RF_FSIZE_64 | (uint8_t)(20));
+   * Size: 64 bytes 
+   * 10 bytes threshold (effective min. packet size) */
+  remote_config(RF_FIFOCREG, RF_FSIZE_64 | (uint8_t)(2));
   /* PLL configuration:
    * Frf = 9/8 * Fxtal / (R + 1) * (75 * (P + 1) + S)
    * with Frf = 868MHz & Fxtal = 12.8MHz
@@ -36,9 +37,9 @@ void remote_setup(void) {
   remote_config(RF_S1CREG, (uint8_t)(28));
   /* Interrupt configuration
    * IRQ0 - RX: Payload Ready, i.e. packet has arrived
-   * IRQ1 - RX: Fifo overload
+   * IRQ1 - RX: Threshold hit: go to rx mode
    * IRQ1 - TX: Tx done */
-  remote_config(RF_FTXRXIREG, RF_IRQ0RXS_PLREADY | RF_IRQ1RXS_FIFOFULL | RF_IRQ1TX_TXDONE);
+  remote_config(RF_FTXRXIREG, RF_IRQ0RXS_PLREADY | RF_IRQ1RXS_FIFO_THRESHOLD | RF_IRQ1TX_TXDONE);
   /* Fifo configuration:
    * Send when first byte is in fifo, IRQ0 when fifo is not empty */
   remote_config(RF_FTPRIREG, RF_IRQ0TXST_EMPTY | RF_FRPRI_RESERVED | 1);
