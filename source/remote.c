@@ -10,6 +10,7 @@ uint8_t rf_mode = 0;
 uint8_t rf_rxthreshold = 0;
 
 void remote_init(void) {
+  int i = 0;
   GPIO_InitTypeDef gpio_init;
   SPI_InitTypeDef spi_init;
   EXTI_InitTypeDef exti_init;
@@ -68,6 +69,12 @@ void remote_init(void) {
   gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOD, &gpio_init);
 
+  // Reset device
+  GPIO_WriteBit(GPIOB, GPIO_Pin_10, SET);
+  for(i = 0; i < 1e4; i++);
+  GPIO_WriteBit(GPIOB, GPIO_Pin_10, RESET);
+  for(i = 0; i < 1e4; i++);
+
   // Configure the device
   remote_setup();
   // Lock PLL
@@ -75,23 +82,18 @@ void remote_init(void) {
 
   // Initialize EXTI for:
   // - PD8 : IRQ0
-  // - PB12: IRQ1
-  gpio_init.GPIO_Pin = GPIO_Pin_8;
+  // - PD11: IRQ1
+  gpio_init.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_11;
   gpio_init.GPIO_PuPd = GPIO_PuPd_NOPULL;
   gpio_init.GPIO_Mode = GPIO_Mode_IN;
   gpio_init.GPIO_OType = GPIO_OType_PP;
   GPIO_Init(GPIOD, &gpio_init);
 
-  gpio_init.GPIO_Pin = GPIO_Pin_12;
-  gpio_init.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  gpio_init.GPIO_Mode = GPIO_Mode_IN;
-  gpio_init.GPIO_OType = GPIO_OType_PP;
-  GPIO_Init(GPIOB, &gpio_init);
-
+#ifdef REMOTEIRQ
   SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource8);
-  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource12);
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource11);
 
-  exti_init.EXTI_Line = EXTI_Line12;
+  exti_init.EXTI_Line = EXTI_Line11;
   exti_init.EXTI_Mode = EXTI_Mode_Interrupt;
   exti_init.EXTI_Trigger = EXTI_Trigger_Rising;
   exti_init.EXTI_LineCmd = ENABLE;
@@ -115,14 +117,21 @@ void remote_init(void) {
   nvic_init.NVIC_IRQChannelSubPriority = 0x01;
   nvic_init.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic_init);
+#endif
 }
 
 void remote_write(uint8_t* data, int size) {
   int i = 0;
   // TODO: Determine correct read/write priority: now read over write
   // Maybe make this blocking?
-  if (rf_mode == RF_STDBYMODE) {
+  if (rf_mode == RF_SLEEP) {
+    remote_switch_mode(RF_STDBYMODE);
+    STM_EVAL_LEDOn(LED3);
+    while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_8) == 1);
+    STM_EVAL_LEDOn(LED6);
+    while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_11) == 1);
     STM_EVAL_LEDOff(LED3);
+    STM_EVAL_LEDOff(LED6);
     remote_enable_access(RF_WRITE);
     remote_enable_data_mode();
     remote_send_byte((uint8_t) (size));
@@ -134,13 +143,14 @@ void remote_write(uint8_t* data, int size) {
       data++;
       size--;
     }
-    remote_enable_configuration_mode();
     remote_switch_mode(RF_TXMODE);
-    remote_disable_configuration_mode();
-    // TODO: remove/reduce wait
-    for (i = 0; i < 0x7FFFF; i++);
-  } else {
-    STM_EVAL_LEDOn(LED3);
+    STM_EVAL_LEDOn(LED5);
+    while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_8) == 0);
+    STM_EVAL_LEDOn(LED8);
+    while(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_11) == 0);
+    STM_EVAL_LEDOff(LED5);
+    STM_EVAL_LEDOff(LED8);
+    remote_switch_mode(RF_SLEEP);
   }
 }
 
@@ -226,6 +236,9 @@ void remote_switch_mode(uint8_t mode) {
   } else if (mode == RF_FRSYNTH) {
     remote_config(RF_GCONREG, RF_CMOD_FREQSYNTH | RF_FBS_868MHZ);
     rf_mode = RF_FRSYNTH;
+  } else if (mode == RF_SLEEP) {
+    remote_config(RF_GCONREG, RF_CMOD_SLEEP | RF_FBS_868MHZ);
+    rf_mode = RF_SLEEP;
   }
 }
 

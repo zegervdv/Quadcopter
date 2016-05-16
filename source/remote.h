@@ -30,6 +30,7 @@
 #define RF_RXMODE                 (uint8_t)(0x02)
 #define RF_STDBYMODE              (uint8_t)(0x04)
 #define RF_FRSYNTH                (uint8_t)(0x08)
+#define RF_SLEEP                  (uint8_t)(0x10)
 
 /**
  * RF Read/Write access

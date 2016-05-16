@@ -148,7 +148,7 @@ void TIM3_IRQHandler(void) {
  */
 void EXTI9_5_IRQHandler(void) {
   if (EXTI_GetFlagStatus(EXTI_Line8) != RESET) {
-    STM_EVAL_LEDToggle(LED8);
+    /* STM_EVAL_LEDToggle(LED8); */
     /* remote_enable_configuration_mode(); */
     /* remote_switch_mode(RF_RXMODE); */
     /* remote_disable_configuration_mode(); */
@@ -172,7 +172,7 @@ void EXTI9_5_IRQHandler(void) {
  */
 void EXTI15_10_IRQHandler(void) {
   if (EXTI_GetITStatus(EXTI_Line12) != RESET) {
-    STM_EVAL_LEDToggle(LED5);
+    /* STM_EVAL_LEDToggle(LED5); */
     remote_handle_IRQ1();
     EXTI_ClearITPendingBit(EXTI_Line12);
   }

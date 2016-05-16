@@ -78,12 +78,14 @@ void quadcopter_init(void) {
   motors_arm_escs();
 
   // Setup Independent Watchdog
-  IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
-  IWDG_SetPrescaler(IWDG_Prescaler_32);
-  IWDG_SetReload(WDG_RLD_TIME(250));
+  /* IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); */
+  /* IWDG_SetPrescaler(IWDG_Prescaler_32); */
+  /* IWDG_SetReload(WDG_RLD_TIME(250)); */
 
-  IWDG_ReloadCounter();
-  IWDG_Enable();
+  /* IWDG_ReloadCounter(); */
+  /* IWDG_Enable(); */
+
+  remote_switch_mode(RF_SLEEP);
   STM_EVAL_LEDOff(LED6);
   STM_EVAL_LEDOff(LED7);
 }

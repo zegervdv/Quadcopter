@@ -52,7 +52,7 @@ int main(void) {
 #endif
     // TODO: Write stats to RF module
     int j = 0;
-    for(j = 0; j < 2e5; j++);
+    for(j = 0; j < 0x7FFFFF; j++);
     uint8_t dummy[BUFFERSIZE] = {0};
     dummy[0] = 0xDE;
     dummy[1] = 0xAD;
