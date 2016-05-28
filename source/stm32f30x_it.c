@@ -5,6 +5,7 @@
 #include "stm32f30x_it.h"
 #include "controls.h"
 #include <string.h>
+#include <stdlib.h>
 
 int i;
 extern uint8_t enabled;
@@ -115,20 +116,36 @@ void SysTick_Handler(void) {
  * USART3 Interrupt handler
  */
 void USART3_IRQHandler(void) {
-  if (USART_GetITStatus(USART3, USART_IT_RXNE) == SET) {
-    static uint8_t cnt = 0;
-    char t = USART_ReceiveData(USART3);
-    if ((t != '\n') && (cnt < CONTROL_MSG_SIZE)) {
-      command_bytes[cnt] = t;
-      cnt++;
-    } else {
-      command_valid = 0x01;
-      // Convert received bytes to command
-      controls_format(command_bytes, &command);
-      // Reset command bytes
-      memset(command_bytes, 0, CONTROL_MSG_SIZE);
+  if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) {
+    STM_EVAL_LEDOn(LED3);
+    static uint8_t cnt = 255;
+    static uint8_t size = 0;
+    static command_list_t* new_command;
+    char byte = USART_ReceiveData(USART3);
+    if (cnt == 255) {
+      size = byte;
+      new_command = (command_list_t*)malloc(sizeof(command_list_t));
+      new_command->raw = (uint8_t*)malloc((size - 1) * sizeof(uint8_t));
+      new_command->next = 0;
+      new_command->timestamp = 0;
       cnt = 0;
+    } else {
+      if (cnt < size) {
+        STM_EVAL_LEDToggle(LED7);
+        new_command->raw[cnt] = byte;
+        cnt++;
+      } else {
+        if (command_list_start == 0) {
+          command_list_start = new_command;
+        } else {
+          command_list_end->next = new_command;
+        }
+        command_list_end = new_command;
+        cnt = 255;
+        STM_EVAL_LEDOff(LED3);
+      }
     }
+    USART_ClearITPendingBit(USART3, USART_IT_RXNE);
   }
 }
 

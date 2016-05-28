@@ -5,6 +5,7 @@
 # Put your source files here (or *.c, etc)
 SRCS = main.c
 SRCS += system_stm32f30x.c
+SRCS += syscalls.c
 SRCS += stm32f30x_it.c
 SRCS += system.c
 SRCS += bluetooth.c

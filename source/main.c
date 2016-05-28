@@ -31,6 +31,8 @@ int main(void) {
   float bat_data = 0;
   sensor_data data;
   pid_output_typedef pid_output = {0};
+  command_t command;
+  uint8_t cmd_valid = 0;
 
   while (1) {
     /* Loop and wait for interrupts */
@@ -45,18 +47,10 @@ int main(void) {
 
     memcpy(stats, &data.roll, BUFFERSIZE);
 
-    if (bluetooth_connected())
-      bluetooth_write(stats, BUFFERSIZE);
 
     if (enabled) {
 
-      if ((command_valid) && (bluetooth_check_integrity(command_bytes, CONTROL_MSG_SIZE - 1, command_bytes[CONTROL_MSG_SIZE - 1]))) {
-        STM_EVAL_LEDOn(LED10);
-      } else {
-        memset(&command, 0, sizeof(command_typedef));
-      }
-      // Reset command flag
-      command_valid = 0x0;
+      cmd_valid = command_parse(&command);
 
       // PID tuning
       if (pid_run_flag) {
@@ -73,10 +67,11 @@ int main(void) {
       // Throttle range is [-600, 600] around an offset of 2200 = [1600, 2800]
       pid_output.throttle = 6 * command.throttle + 2200;
 
-
       // Set motor speeds
       motors_pid_apply(pid_output);
 
+      if (cmd_valid == 1 && bluetooth_connected())
+        bluetooth_write(stats, BUFFERSIZE);
     } else {
       // Animation
     }

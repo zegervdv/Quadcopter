@@ -8,13 +8,12 @@
 
 #include "stm32f30x_conf.h"
 
-#define CONTROL_MSG_SIZE  (4 * (sizeof(float)) + 2)
 
 /**
  * Indicator modes
  */
-#define COMMAND_MODE   (0x00)
-#define TAKEOFF_MODE   (0xFF)
+#define CONTROL_COMMAND_MODE   (uint8_t)(0x00)
+#define CONTROL_PID_UPDATE     (uint8_t)(0x10)
 
 /**
  * Command structure
@@ -28,22 +27,41 @@ typedef struct {
   float pitch;
   float throttle;
   float yaw;
-} command_typedef;
-
-extern command_typedef command;
-extern uint8_t command_valid;
-
-union unsigned_to_signed {
-  uint8_t input[CONTROL_MSG_SIZE - 1];
-  float formatted[4];
-};
-
+} command_t;
 
 /**
- * Convert raw input data to command_typedef
- * data    - uint8_t array
- * command - command_typedef pointer
+ * Unparsed commands linked list
+ * raw         - pointer to raw (unparsed) command bytes
+ * timestamp   - time indicator
+ * TODO: determine needed scale
+ * next        - pointer to next command in list
  */
-void controls_format(uint8_t* data, command_typedef* command);
+typedef struct command_list {
+  uint8_t* raw;
+  uint8_t timestamp;
+  struct command_list* next; 
+} command_list_t;
+
+
+extern command_t command;
+
+extern command_list_t* command_list_start;
+extern command_list_t* command_list_end;
+
+
+// TODO: doc
+uint8_t command_parse(command_t* command);
+
+// TODO: doc
+void command_reset(command_t* command);
+
+// TODO: doc
+void command_control(command_t* command);
+
+// TODO: doc
+void command_pid_update(void);
+
+// TODO: doc
+uint8_t command_timeout(void);
 
 #endif

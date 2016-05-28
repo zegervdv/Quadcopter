@@ -5,33 +5,63 @@
 
 #include "controls.h"
 #include "string.h"
+#include <stdlib.h>
+#include "system.h"
 
 /**
- * Formatted commands
+ * Unprocessed commands linked list
  */
-command_typedef command = {0};
+command_list_t* command_list_start = 0;
+command_list_t* command_list_end = 0;
 
-/**
- * Set to 1 if command is valid
- */
-uint8_t command_valid = 0;
 
-void controls_format(uint8_t* data, command_typedef* command) {
-  union unsigned_to_signed uts;
-  switch (data[0]) {
-  case COMMAND_MODE:
-    memcpy(uts.input, &data[1], CONTROL_MSG_SIZE - 2);
-
-    command->roll = (float)uts.formatted[0];
-    command->pitch = (float)uts.formatted[1];
-    command->throttle = (float)uts.formatted[2];
-    command->yaw = (float)uts.formatted[3];
-    break;
-  case TAKEOFF_MODE:
-    // TODO: Set takeoff command
-    break;
-  default:
-    // Unknown mode, reset command
-    memset(command, 0, CONTROL_MSG_SIZE);
+uint8_t command_parse(command_t* command) {
+  STM_EVAL_LEDToggle(LED4);
+  command_list_t* orig = 0;
+  orig = command_list_start;
+  if (orig == 0) {
+    return 0;
   }
+  switch (orig->raw[0]) {
+    case CONTROL_COMMAND_MODE:
+      if (command_timeout()) {
+        command_reset(command);
+      } else {
+        command_control(command);
+      }
+      break;
+    case CONTROL_PID_UPDATE:
+      command_pid_update();
+      break;
+    default:
+      command_reset(command);
+      break;
+  }
+  command_list_start = orig->next;
+  free(orig->raw);
+  free(orig);
+  return 1;
 }
+
+void command_reset(command_t* command) {
+  STM_EVAL_LEDOn(LED6);
+  memset(command, 0, sizeof(command_t));
+}
+
+void command_control(command_t* command) {
+  STM_EVAL_LEDOn(LED5);
+  memcpy(&command->roll, &command_list_start->raw[1], sizeof(float));
+  memcpy(&command->pitch, &command_list_start->raw[1 + sizeof(float)], sizeof(float));
+  memcpy(&command->throttle, &command_list_start->raw[1 + 2 * sizeof(float)], sizeof(float));
+  memcpy(&command->yaw, &command_list_start->raw[1 + 3 * sizeof(float)], sizeof(float));
+}
+
+void command_pid_update() {
+  // TODO: implement
+}
+
+uint8_t command_timeout() {
+  // TODO: implement
+  return 0;
+}
+
