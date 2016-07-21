@@ -10,3 +10,4 @@
 debug/read_sensors
 
 *.pyc
+simulation/sim
