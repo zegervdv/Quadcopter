@@ -1,16 +1,6 @@
 #include "pid.h"
 #include "arm_math.h"
 
-typedef struct {
-  float iterm;
-  float lastInput;
-  float ki;
-  float kp;
-  float kd;
-  float min;
-  float max;
-} pid_params_typedef;
-
 pid_params_typedef pid_params[4];
 
 void pid_init(void) {
@@ -38,7 +28,7 @@ void pid_init(void) {
   pid_params[PID_YAW].max = MAX_YAW;
 }
 
-void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal) {
+void pid_compute(uint8_t index, float input, float setpoint, int16_t* retVal) {
   pid_params_typedef* pid = &pid_params[index];
 
   /*Compute all the working error variables*/
@@ -49,7 +39,7 @@ void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal) {
   else if (pid->iterm < pid->min) pid->iterm = pid->min;
 
   /*Compute PID Output*/
-  *retVal = (uint16_t)(pid->kp * error + pid->iterm - pid->kd * dInput);
+  *retVal = (int16_t)(pid->kp * error + pid->iterm - pid->kd * dInput);
   if (*retVal > pid->max) *retVal = pid->max;
   else if (*retVal < pid->min) *retVal = pid->min;
 

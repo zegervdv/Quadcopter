@@ -59,7 +59,7 @@ void command_reset(command_t* command);
 void command_control(command_t* command);
 
 // TODO: doc
-void command_pid_update(void);
+void command_pid_update(command_list_t* command);
 
 // TODO: doc
 uint8_t command_timeout(void);

@@ -30,14 +30,32 @@
 
 
 /**
+ * PID parameters
+ */
+typedef struct {
+  float iterm;
+  float lastInput;
+  float ki;
+  float kp;
+  float kd;
+  float min;
+  float max;
+} pid_params_typedef;
+
+/**
  * Store output values
  */
 typedef struct {
-  uint16_t throttle;
-  uint16_t pitch;
-  uint16_t roll;
-  uint16_t yaw;
+  int16_t throttle;
+  int16_t pitch;
+  int16_t roll;
+  int16_t yaw;
 } pid_output_typedef;
+
+/**
+ * External variables
+ */
+extern pid_params_typedef pid_params[4];
 
 /**
  * Initialize the PID tuning parameters
@@ -51,6 +69,6 @@ void pid_init(void);
  * setpoint - new value
  * retVal - result from PID loop
  */
-void pid_compute(uint8_t index, float input, float setpoint, uint16_t* retVal);
+void pid_compute(uint8_t index, float input, float setpoint, int16_t* retVal);
 
 #endif

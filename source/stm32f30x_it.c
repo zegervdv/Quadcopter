@@ -117,7 +117,6 @@ void SysTick_Handler(void) {
  */
 void USART3_IRQHandler(void) {
   if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) {
-    STM_EVAL_LEDOn(LED3);
     static uint8_t cnt = 255;
     static uint8_t size = 0;
     static command_list_t* new_command;
@@ -131,7 +130,6 @@ void USART3_IRQHandler(void) {
       cnt = 0;
     } else {
       if (cnt < size) {
-        STM_EVAL_LEDToggle(LED7);
         new_command->raw[cnt] = byte;
         cnt++;
       } else {
@@ -142,7 +140,6 @@ void USART3_IRQHandler(void) {
         }
         command_list_end = new_command;
         cnt = 255;
-        STM_EVAL_LEDOff(LED3);
       }
     }
     USART_ClearITPendingBit(USART3, USART_IT_RXNE);

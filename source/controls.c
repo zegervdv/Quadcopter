@@ -7,6 +7,7 @@
 #include "string.h"
 #include <stdlib.h>
 #include "system.h"
+#include "pid.h"
 
 /**
  * Unprocessed commands linked list
@@ -16,7 +17,6 @@ command_list_t* command_list_end = 0;
 
 
 uint8_t command_parse(command_t* command) {
-  STM_EVAL_LEDToggle(LED4);
   command_list_t* orig = 0;
   orig = command_list_start;
   if (orig == 0) {
@@ -31,7 +31,7 @@ uint8_t command_parse(command_t* command) {
       }
       break;
     case CONTROL_PID_UPDATE:
-      command_pid_update();
+      command_pid_update(orig);
       break;
     default:
       command_reset(command);
@@ -44,20 +44,25 @@ uint8_t command_parse(command_t* command) {
 }
 
 void command_reset(command_t* command) {
-  STM_EVAL_LEDOn(LED6);
   memset(command, 0, sizeof(command_t));
 }
 
 void command_control(command_t* command) {
-  STM_EVAL_LEDOn(LED5);
   memcpy(&command->roll, &command_list_start->raw[1], sizeof(float));
   memcpy(&command->pitch, &command_list_start->raw[1 + sizeof(float)], sizeof(float));
   memcpy(&command->throttle, &command_list_start->raw[1 + 2 * sizeof(float)], sizeof(float));
   memcpy(&command->yaw, &command_list_start->raw[1 + 3 * sizeof(float)], sizeof(float));
 }
 
-void command_pid_update() {
-  // TODO: implement
+void command_pid_update(command_list_t* command) {
+  uint8_t i = 0;
+  // Disable next PID calculation
+  pid_run_flag = 0;
+  for (i = 1; i < 4; i++) {
+    pid_params[i].iterm = 0;
+    pid_params[i].lastInput = 0;
+    memcpy(&pid_params[i].kp, &command->raw[2+(i-1)*3], 3);
+  }
 }
 
 uint8_t command_timeout() {
