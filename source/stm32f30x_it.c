@@ -122,9 +122,9 @@ void USART3_IRQHandler(void) {
     static command_list_t* new_command;
     char byte = USART_ReceiveData(USART3);
     if (cnt == 255) {
-      size = byte;
+      size = byte - 2;
       new_command = (command_list_t*)malloc(sizeof(command_list_t));
-      new_command->raw = (uint8_t*)malloc((size - 1) * sizeof(uint8_t));
+      new_command->raw = (uint8_t*)malloc((size + 1) * sizeof(uint8_t));
       new_command->next = 0;
       new_command->timestamp = 0;
       cnt = 0;
@@ -140,6 +140,7 @@ void USART3_IRQHandler(void) {
         }
         command_list_end = new_command;
         cnt = 255;
+        STM_EVAL_LEDToggle(LED9);
       }
     }
     USART_ClearITPendingBit(USART3, USART_IT_RXNE);

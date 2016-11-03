@@ -13,6 +13,7 @@
  * Indicator modes
  */
 #define CONTROL_COMMAND_MODE   (uint8_t)(0x00)
+#define CONTROL_ECHO           (uint8_t)(0x0F)
 #define CONTROL_PID_UPDATE     (uint8_t)(0x10)
 
 /**
@@ -40,6 +41,7 @@ typedef struct command_list {
   uint8_t* raw;
   uint8_t timestamp;
   struct command_list* next; 
+  uint8_t valid;
 } command_list_t;
 
 
@@ -60,6 +62,9 @@ void command_control(command_t* command);
 
 // TODO: doc
 void command_pid_update(command_list_t* command);
+
+// TODO: doc
+void command_echo(command_list_t* command);
 
 // TODO: doc
 uint8_t command_timeout(void);

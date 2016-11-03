@@ -47,7 +47,6 @@ int main(void) {
 
     memcpy(stats, &data.roll, BUFFERSIZE);
 
-
     if (enabled) {
 
       cmd_valid = command_parse(&command);
@@ -72,6 +71,7 @@ int main(void) {
 
       if (cmd_valid == 1 && bluetooth_connected())
         bluetooth_write(stats, BUFFERSIZE);
+
     } else {
       // Animation
     }
