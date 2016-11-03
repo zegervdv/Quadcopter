@@ -1,4 +1,9 @@
+#ifndef SIM
 #include "stm32f30x_conf.h"
+#else
+#include <stdint.h>
+#define PI (float)(3.1415)
+#endif
 
 #ifndef PID_H
 #define PID_H
@@ -8,14 +13,14 @@
 
 // PID Tuning Parameters
 #define PID_PITCH (1)
-#define KP_PITCH (45000.0 / PI)
+#define KP_PITCH (500.0 / PI)
 #define KI_PITCH 0
 #define KD_PITCH 0
 #define MIN_PITCH (-500)
 #define MAX_PITCH (500)
 
 #define PID_ROLL (2)
-#define KP_ROLL (45000.0 / PI)
+#define KP_ROLL (500.0 / PI)
 #define KI_ROLL 0
 #define KD_ROLL 0
 #define MIN_ROLL (-500)
@@ -69,6 +74,6 @@ void pid_init(void);
  * setpoint - new value
  * retVal - result from PID loop
  */
-void pid_compute(uint8_t index, float input, float setpoint, int16_t* retVal);
+void pid_compute(uint8_t index, float input, float setpoint, float* retVal);
 
 #endif
