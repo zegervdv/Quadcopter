@@ -1,4 +1,4 @@
-CODEDIR = source
+CODEDIR = firmware/source
 
 .PHONY: debug
 
