@@ -1,0 +1,10 @@
+project_repo: git@github.com:zegervdv/Quadcopter.git
+project_dir: /home/copter/Quadcopter
+username: copter
+system_packages:
+  - git
+  - python-setuptools
+  - hostapd
+  - dhcpd
+python_packages:
+  - pip

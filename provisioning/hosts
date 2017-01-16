@@ -1,0 +1,6 @@
+[copters]
+picopter.local
+
+[vm]
+ansible
+

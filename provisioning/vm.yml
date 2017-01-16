@@ -1,0 +1,9 @@
+---
+# Setup copter for operation
+
+- name: apply configuration
+  hosts: vm
+  remote_user: vagrant
+
+  roles:
+    - common

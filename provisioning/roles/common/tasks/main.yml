@@ -1,0 +1,15 @@
+---
+# Setup for all copters
+
+- name: Install packages and tools
+  apt: pkg="{{ item }}" state=install update-cache=yes
+  with_items: system_packages
+
+- name: Install python packages
+  easy_install: name="{{ item }}"
+  with_items: python_packages
+
+- name: Get latest code from the repo
+  git: repo="{{ project_repo }}" dest="{{ project_dir }}"
+
+
