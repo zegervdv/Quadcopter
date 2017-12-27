@@ -12,3 +12,4 @@ debug/read_sensors
 *.pyc
 
 control/node_modules
+control/copter.log
