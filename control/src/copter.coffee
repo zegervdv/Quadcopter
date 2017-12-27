@@ -1,7 +1,7 @@
 # Copter controller class
 # Encodes and decodes packets to copter
 
-SYNC = String.fromCharCode 85
+SYNC = 85
 
 class Copter
   constructor: (@logger) ->
@@ -9,12 +9,13 @@ class Copter
     @buffer = []
 
   store: (data) ->
-    @buffer.push data
-    if @buffer.length is 22
+    Array::push.apply @buffer, data
+    @logger.debug @buffer.length
+    if @buffer.length >= 22
       out = @buffer
       @clear()
-      @logger.info "Received full packet"
-      @logger.debug "Packet data: #{@buffer}"
+      @logger.info "Received full packet" 
+      @logger.debug "Packet data: #{out}"
       try
         return @decode out
       catch err
@@ -35,7 +36,7 @@ class Copter
     bytes = arr.slice start, start + 4
     value = 0
     bytes.forEach (el, idx) ->
-      value += (2**idx) * el.charCodeAt(0)
+      value += (256**idx) * el
     intView[0] = value
     return floatView[0] 
 
@@ -55,7 +56,7 @@ class Copter
     decode_data.altitude = @parse_floats data, 14
     decode_data.battery = @parse_floats data, 18
 
-    @logger.debug "Decoded packet to #{decode_data}"
+    @logger.info "Decoded packet to #{JSON.stringify decode_data}"
     return decode_data
     
 
