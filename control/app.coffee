@@ -1,7 +1,7 @@
 winston = require 'winston'
 express = require 'express'
 app = express()
-http = require('http')(app)
+http = require('http').Server(app)
 io = require('socket.io')(http)
 
 # Logger configuration
@@ -33,5 +33,5 @@ io.on 'connection', (socket) ->
 app.get '/', (req, res) ->
   res.sendFile __dirname + '/views/index.html'
 
-app.listen 3000, () ->
+http.listen 3000, () ->
   winston.info "Copter control server is listening on :3000"
