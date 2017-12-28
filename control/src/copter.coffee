@@ -19,7 +19,7 @@ class Copter
       try
         return @decode out
       catch err
-        @logger.error err
+        @logger.error err.message
         return null  
     else
       return null
@@ -41,7 +41,7 @@ class Copter
     return floatView[0] 
 
   decode: (data) ->
-    throw new Error('Invalid sync header') if data[0] isnt SYNC and data[1] isnt SYNC
+    throw new Error("Invalid sync header: #{data[0]}, #{data[1]}") if data[0] isnt SYNC and data[1] isnt SYNC
 
     decode_data =
       roll: 0.0

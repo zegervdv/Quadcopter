@@ -28,7 +28,7 @@ port.on 'readable', () ->
     winston.debug "Full packet decoded"
 
 io.on 'connection', (socket) ->
-   winston.info 'Connected to frontend interface'
+   winston.info 'User connected to frontend'
 
 app.get '/', (req, res) ->
   res.sendFile __dirname + '/views/index.html'
