@@ -68,9 +68,9 @@ int main(void) {
 
       // Set motor speeds
       motors_pid_apply(pid_output);
-
-      if (cmd_valid == 1 && bluetooth_connected())
-        bluetooth_write(stats, BUFFERSIZE);
+      
+      for (int i = 0; i < 700000; i++);
+      bluetooth_write(stats, BUFFERSIZE);
 
     } else {
       // Animation
