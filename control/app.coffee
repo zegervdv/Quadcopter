@@ -26,6 +26,7 @@ port.on 'readable', () ->
   done = copter.store data
   if done
     winston.debug "Full packet decoded"
+    io.emit 'status update', done
 
 io.on 'connection', (socket) ->
    winston.info 'User connected to frontend'

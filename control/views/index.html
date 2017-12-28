@@ -5,9 +5,13 @@
       <script src="/socket.io/socket.io.js"></script>
       <script>
         var socket = io();
+        socket.on('status update', function(msg) {
+          console.log(msg);
+        });
       </script>
    </head>
    <body>
       <h1>Quadcopter</h1>
+      <ul id="status"></ul>
    </body>
 </html>
