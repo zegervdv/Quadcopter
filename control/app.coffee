@@ -29,7 +29,12 @@ port.on 'readable', () ->
     io.emit 'status update', done
 
 io.on 'connection', (socket) ->
-   winston.info 'User connected to frontend'
+  winston.info 'User connected to frontend'
+
+  socket.on 'command', (command) ->
+    winston.debug "Sending command #{JSON.stringify command}"
+    data = copter.encode command
+    port.write data
 
 app.get '/', (req, res) ->
   res.sendFile __dirname + '/views/index.html'
